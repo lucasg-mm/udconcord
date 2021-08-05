@@ -1,0 +1,19 @@
+version: "3"
+services:
+  nginx:
+    image: "lucasgmm20/udconcord-proxy"
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3000:80"
+  server:
+    image: lucasgmm20/udconcord-server-dev
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./server"
+    volumes:
+      - "/app/node_modules"
+      - "./server:/app"
+    expose:
+      - "5000"
