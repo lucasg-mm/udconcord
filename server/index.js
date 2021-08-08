@@ -1,15 +1,20 @@
+// requires
 const express = require("express");
+const formidableMiddleware = require("express-formidable");
+const treebanksRouter = require("./routes/treebanks-routes");
 
-// declaring the express app
+// declaring the express app and using middlewares
 const app = express();
+app.use(
+  formidableMiddleware({
+    maxFileSize: 2000 * 1024 * 1024,
+  })
+);
 
-// just for testing
-app.get("/", (req, res) => {
-  console.log("All righty!");
-  res.send({ message: "okay!" });
-});
+// using the routes
+app.use("/treebanks", treebanksRouter);
 
-// listening on the port specified in the .env file
+// listening on the port 5000
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
