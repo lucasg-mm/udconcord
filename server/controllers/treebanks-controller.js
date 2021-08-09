@@ -1,7 +1,7 @@
 const treebanksService = require("../services/treebanks-service");
 const fs = require("fs");
 
-// --- GET REQUESTS ---
+// --- POST REQUESTS ---
 
 /**
  * -- DESCRIPTION:
@@ -40,8 +40,6 @@ exports.apiSearchTreebank = async (req, res, next) => {
     res.status(500).json({ message: "Internal error", error: error });
   }
 };
-
-// --- POST REQUESTS ---
 
 /**
  * -- DESCRIPTION:
