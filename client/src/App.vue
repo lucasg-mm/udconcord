@@ -31,6 +31,8 @@ export default {
       // Props for BaseSearch component
       if (this.showedComponent === "BaseSearch") {
         return { "conllu-data": this.conlluData };
+      } else if (this.showedComponent === "BaseResults") {
+        return { results: this.searchResults };
       } else {
         return {};
       }
