@@ -80,23 +80,36 @@ export default {
   },
 
   beforeMount() {
+    // this component uses a table to render the results
+    // the algorithm bellow pre-proces the results in order
+    // for them to be usable in the table
     this.results.forEach((result) => {
+      // for each result...
       result["foundTokensIds"].forEach((foundTokenId) => {
+        // for each match in this result...
+
+        // gets the matched sentence
         const resultSentence = result["sentence"];
+
+        // gets the index of the matched token
         const matchIndex = foundTokenId - 1;
 
+        // gets the left context (string)
         const leftContext = resultSentence.tokens
           .slice(0, matchIndex)
           .map((e) => e.form)
           .join(" ");
 
+        // gets the match
         const match = resultSentence.tokens[matchIndex].form;
 
+        // gets the right context (string)
         const rightContext = resultSentence.tokens
           .slice(matchIndex + 1, resultSentence.tokens.length)
           .map((e) => e.form)
           .join(" ");
 
+        // organizes the data and stores it in an array
         this.organizedResults.push({
           leftContext,
           match,
@@ -107,14 +120,16 @@ export default {
   },
 
   mounted() {
+    // gets the body of the column with the match results
     let element = document.querySelector(".match-column");
-    console.log(element);
+
+    // scrolls this element to the center of the screen
     element.scrollIntoView({ inline: "center" });
-    // this.$refs["match-column"].scrollIntoView({ behavior: "smooth" });
   },
 
   data() {
     return {
+      // results after some pre-processing
       organizedResults: [],
     };
   },

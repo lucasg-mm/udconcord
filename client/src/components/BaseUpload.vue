@@ -68,6 +68,7 @@ export default {
 <style scoped>
 .heading {
   font-size: 30px;
+  margin-top: 0;
 }
 
 .description {
@@ -79,7 +80,7 @@ export default {
   font-family: "Vidaloka", serif;
   text-align: center;
   background-color: white;
-  padding: 25px;
+  padding: 35px 25px 35px 25px;
 }
 
 .tree-icon {

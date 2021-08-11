@@ -8,11 +8,13 @@
       :is="showedComponent"
       v-bind="currentProperties"
     ></component>
+    <TheFooter></TheFooter>
   </div>
 </template>
 
 <script>
 import TheNavbar from "./components/TheNavbar.vue";
+import TheFooter from "./components/TheFooter.vue";
 import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
@@ -24,6 +26,7 @@ export default {
     BaseUpload,
     BaseSearch,
     BaseResults,
+    TheFooter,
   },
   computed: {
     // props for the dynamic component
