@@ -1,7 +1,7 @@
 <template>
   <Menubar :model="items" class="navbar">
     <template #start>
-      <img alt="logo" height="50" src="../assets/logo.svg" />
+      <img alt="logo" height="30" src="../assets/logo.svg" />
     </template>
   </Menubar>
 </template>

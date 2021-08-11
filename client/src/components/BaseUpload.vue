@@ -78,6 +78,8 @@ export default {
 .centered-content {
   font-family: "Vidaloka", serif;
   text-align: center;
+  background-color: white;
+  padding: 25px;
 }
 
 .tree-icon {

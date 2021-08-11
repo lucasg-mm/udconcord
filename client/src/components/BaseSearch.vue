@@ -9,9 +9,9 @@
     <br />
     <InputText
       style="
-        width: 220px;
+        min-width: 220px;
         border-radius: 0;
-        border-color: white;
+        border-color: black white black black;
         font-family: 'Vidaloka', serif;
       "
       type="text"
@@ -94,6 +94,8 @@ export default {
 .centered-content {
   font-family: "Vidaloka", serif;
   text-align: center;
+  background-color: white;
+  padding: 25px;
 }
 
 .heading {
