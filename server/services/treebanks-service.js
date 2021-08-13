@@ -31,7 +31,7 @@ exports.parseConlluToObject = async (conlluData) => {
  * sentences: array of UD sentences (must be like the one in the
  *            response of the POST endpoint at /treebanks);
  * propertyToSearch: the property to be searched (TODO...);
- * valueToSearch: FORM's (for now) value to be searched.
+ * valueToSearch: FORM's (for now) value to be searched (can be a n-gram).
  *
  * -- RETURNS:
  * conlluObject.sentences: array of objects. Each one represents
@@ -43,6 +43,9 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
   // variable to store search results
   const searchResults = [];
 
+  // separate words forming the n-gram
+  const nGramToSearch = valueToSearch.split(" ");
+
   // iterates through the sentences array
   for (sentence of sentences) {
     // tells if a sentence is already features in the
@@ -50,21 +53,29 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
     let sentenceAlreadyFeatured = false;
 
     // iterates through the tokens of a sentence
-    for (token of sentence["tokens"]) {
-      // if the token's form is the same as the searched one, put the sentence
-      // and the token's id in the searchResults array
-      if (token["form"] === valueToSearch) {
+    for (
+      let i = 0;
+      i < sentence["tokens"].length - nGramToSearch.length + 1;
+      i++
+    ) {
+      // checks the n-gram equality of the form
+      if (nGramEquality(nGramToSearch, sentence["tokens"], i)) {
+        // gets the ids of the matched tokens
+        const matchesIds = getMatchesIds(i, nGramToSearch.length);
+
         // if this sentence is already featured in the searchResults array...
         if (sentenceAlreadyFeatured) {
           // pushes the found token's id in the sentence's
           // corresponding entry (which is the last one in the array)
-          searchResults[searchResults.length - 1].foundTokensIds.push(token.id);
+          searchResults[searchResults.length - 1].foundTokensIds.push(
+            matchesIds
+          );
         } else {
           // if this sentence isn't featured in the searchResults array...
 
           // creates the sentence's corresponding entry
           // in the array and pushes the found token's id in it
-          searchResults.push({ foundTokensIds: [token.id], sentence });
+          searchResults.push({ foundTokensIds: [matchesIds], sentence });
 
           // changes the variable, because now the sentence in featured in
           // searchResults
@@ -77,3 +88,45 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
   // returns the search results
   return searchResults;
 };
+
+// -- AUX FUNCTIONS
+
+// -- DESCRIPTION:
+// Checks for n-gram equality in a given sequence, in a given start.
+//
+// -- PARAMETERS:
+// nGram: n-gram to be looked in the first n tokens of sequence.
+// sequence: sequence of tokens (like a sentence).
+// start: index of token in sequence to start the search
+//
+// -- RETURNS:
+// a boolean indicating wheter there was a match (true) or no (false).
+function nGramEquality(nGram, sequence, start) {
+  let numberOfMatches = 0;
+  for (let i = 0; i < nGram.length; i++) {
+    if (nGram[i] === sequence[start + i].form) {
+      numberOfMatches++;
+    }
+  }
+
+  return nGram.length === numberOfMatches;
+}
+
+// -- DESCRIPTION:
+// Get 'n' ids starting at 'start'.
+//
+// -- PARAMETERS:
+// start: start of the id interval.
+// n: interval size
+//
+// -- RETURNS:
+// an array in the closed interval [start, start + 1, ..., start + n - 1]
+function getMatchesIds(start, n) {
+  const matchesIds = [];
+
+  for (let i = start; i < start + n; i++) {
+    matchesIds.push(i);
+  }
+
+  return matchesIds;
+}
