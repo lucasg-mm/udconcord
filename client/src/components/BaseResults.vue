@@ -133,6 +133,7 @@ export default {
   },
 
   computed: {
+    // number of results returned by a search
     numberOfResults() {
       return this.organizedResults.length;
     },

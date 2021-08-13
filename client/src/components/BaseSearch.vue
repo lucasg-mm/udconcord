@@ -1,10 +1,19 @@
 <template>
   <div class="centered-content">
-    <p class="heading">Now, search for a word!</p>
-    <p class="description">You can use the input field below.</p>
+    <p class="heading">Time to search!</p>
+    <p class="description">You can use the input fields below.</p>
     <br />
     <i class="fas fa-search search-icon"></i>
     <br />
+    <br />
+    <br />
+    <br />
+    I want to look for
+    <Dropdown
+      style="border-radius: 0; border-color: black"
+      v-model="propertyToSearch"
+      :options="availableProperties"
+    />
     <br />
     <br />
     <InputText
@@ -13,6 +22,7 @@
         border-radius: 0;
         border-color: black white black black;
         font-family: 'Vidaloka', serif;
+        color: black;
       "
       type="text"
       v-model="queryString"
@@ -33,11 +43,13 @@
 <script>
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import Dropdown from "primevue/dropdown";
 
 export default {
   components: {
     InputText,
     Button,
+    Dropdown,
   },
 
   emits: ["search-results-received"],
@@ -49,6 +61,8 @@ export default {
   data() {
     return {
       queryString: "",
+      propertyToSearch: "",
+      availableProperties: ["lemmas", "forms"],
     };
   },
 
@@ -63,7 +77,7 @@ export default {
       // defining the request's body
       const requestBody = {
         sentences: this.conlluData,
-        propertyToSearch: "TBA",
+        propertyToSearch: this.propertyToSearch,
         valueToSearch: this.queryString,
       };
 
