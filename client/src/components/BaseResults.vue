@@ -22,6 +22,8 @@
       />
     </div>
 
+    <div class="number-of-results">~ {{ numberOfResults }} results found ~</div>
+
     <div class="results-set">
       <DataTable
         style="font-family: 'Vidaloka', serif; white-space: nowrap"
@@ -127,6 +129,12 @@ export default {
     element.scrollIntoView({ inline: "center" });
   },
 
+  computed: {
+    numberOfResults() {
+      return this.organizedResults.length;
+    },
+  },
+
   data() {
     return {
       // results after some pre-processing
@@ -147,11 +155,16 @@ export default {
 }
 
 .search-set {
-  padding-bottom: 30px;
+  padding-bottom: 20px;
 }
 
 .results-set {
   height: 450px;
   overflow: auto;
+}
+
+.number-of-results {
+  color: #000099;
+  padding-bottom: 15px;
 }
 </style>

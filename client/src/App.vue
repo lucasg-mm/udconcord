@@ -8,13 +8,11 @@
       :is="showedComponent"
       v-bind="currentProperties"
     ></component>
-    <TheFooter></TheFooter>
   </div>
 </template>
 
 <script>
 import TheNavbar from "./components/TheNavbar.vue";
-import TheFooter from "./components/TheFooter.vue";
 import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
@@ -26,7 +24,6 @@ export default {
     BaseUpload,
     BaseSearch,
     BaseResults,
-    TheFooter,
   },
   computed: {
     // props for the dynamic component
@@ -92,10 +89,14 @@ html,
 body,
 #app,
 .main-view {
-  height: 100%;
-  width: 100%;
+  min-height: 100%;
+  min-width: 100%;
   margin: 0;
   background-color: #ccdde8;
+}
+
+body {
+  padding-bottom: 70px;
 }
 
 .showed-content {
@@ -103,5 +104,9 @@ body,
   margin-left: auto;
   margin-right: auto;
   margin-top: 80px;
+}
+
+TheFooter {
+  margin-top: 100px;
 }
 </style>
