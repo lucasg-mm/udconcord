@@ -149,7 +149,6 @@ export default {
   font-family: "Vidaloka", serif;
   text-align: center;
   width: 1200px;
-  height: 600px;
   padding: 50px;
   background-color: #fff;
 }
