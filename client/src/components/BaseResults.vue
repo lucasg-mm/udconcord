@@ -83,31 +83,34 @@ export default {
 
   beforeMount() {
     // this component uses a table to render the results
-    // the algorithm bellow pre-proces the results in order
+    // the algorithm bellow pre-process the results in order
     // for them to be usable in the table
+    console.log(JSON.parse(JSON.stringify(this.results)));
     this.results.forEach((result) => {
       // for each result...
-      result["foundTokensIds"].forEach((foundTokenId) => {
+      result["foundNGramIdGroups"].forEach((foundNGramIdGroup) => {
         // for each match in this result...
 
         // gets the matched sentence
         const resultSentence = result["sentence"];
 
-        // gets the index of the matched token
-        const matchIndex = foundTokenId - 1;
-
         // gets the left context (string)
         const leftContext = resultSentence.tokens
-          .slice(0, matchIndex)
+          .slice(0, foundNGramIdGroup[0])
           .map((e) => e.form)
           .join(" ");
 
         // gets the match
-        const match = resultSentence.tokens[matchIndex].form;
+        const match = foundNGramIdGroup
+          .map((tokenId) => resultSentence.tokens[tokenId].form)
+          .join(" ");
 
         // gets the right context (string)
         const rightContext = resultSentence.tokens
-          .slice(matchIndex + 1, resultSentence.tokens.length)
+          .slice(
+            foundNGramIdGroup[foundNGramIdGroup.length - 1] + 1,
+            resultSentence.tokens.length
+          )
           .map((e) => e.form)
           .join(" ");
 

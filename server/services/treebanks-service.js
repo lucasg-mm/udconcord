@@ -67,7 +67,7 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
         if (sentenceAlreadyFeatured) {
           // pushes the found token's id in the sentence's
           // corresponding entry (which is the last one in the array)
-          searchResults[searchResults.length - 1].foundTokensIds.push(
+          searchResults[searchResults.length - 1].foundNGramIdGroups.push(
             matchesIds
           );
         } else {
@@ -75,7 +75,7 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
 
           // creates the sentence's corresponding entry
           // in the array and pushes the found token's id in it
-          searchResults.push({ foundTokensIds: [matchesIds], sentence });
+          searchResults.push({ foundNGramIdGroups: [matchesIds], sentence });
 
           // changes the variable, because now the sentence in featured in
           // searchResults
