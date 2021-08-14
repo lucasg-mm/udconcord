@@ -1,6 +1,6 @@
 <template>
   <div class="centered-content" :scrollable="true">
-    <div class="search-set">
+    <div class="top-set">
       <InputText
         style="
           min-width: 220px;
@@ -19,6 +19,18 @@
           border-radius: 0;
         "
         label="Search"
+      />
+
+      <Button
+        style="
+          border-color: green;
+          background: green;
+          font-family: 'Vidaloka', serif;
+          border-radius: 0;
+        "
+        class="export-button"
+        label="Export Results"
+        @click="exportResults"
       />
     </div>
 
@@ -85,7 +97,6 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table
-    console.log(JSON.parse(JSON.stringify(this.results)));
     this.results.forEach((result) => {
       // for each result...
       result["foundNGramIdGroups"].forEach((foundNGramIdGroup) => {
@@ -145,6 +156,47 @@ export default {
       organizedResults: [],
     };
   },
+
+  methods: {
+    // -- DESCRIPTION:
+    // gets the string representation for the results. That's for making
+    // the user be able to download it as a .txt file.
+    //
+    // -- RETURNS:
+    // a String, which is the string representation.
+    getResultsStringRepresentation() {
+      let finalString = "";
+
+      this.organizedResults.forEach((result) => {
+        finalString += `>> ${result.leftContext} *****${result.match}***** ${result.rightContext}\n\n\n`;
+      });
+
+      return finalString;
+    },
+
+    // -- DESCRIPTION:
+    // exports the results in a .txt file
+    exportResults() {
+      // gets the string representation of the results
+      const resultsStringRepresentation = this.getResultsStringRepresentation();
+
+      // exports it to the user
+      var element = document.createElement("a");
+      element.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," +
+          encodeURIComponent(resultsStringRepresentation)
+      );
+      element.setAttribute("download", "search-results.txt");
+
+      element.style.display = "none";
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    },
+  },
 };
 </script>
 
@@ -157,8 +209,14 @@ export default {
   background-color: #fff;
 }
 
-.search-set {
+.top-set {
   padding-bottom: 20px;
+  position: relative;
+}
+
+.export-button {
+  position: absolute;
+  right: 0;
 }
 
 .results-set {

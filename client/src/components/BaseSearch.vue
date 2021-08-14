@@ -13,6 +13,8 @@
       style="border-radius: 0; border-color: black"
       v-model="propertyToSearch"
       :options="availableProperties"
+      optionLabel="humanReadableName"
+      optionValue="propName"
     />
     <br />
     <br />
@@ -61,8 +63,11 @@ export default {
   data() {
     return {
       queryString: "",
-      propertyToSearch: "",
-      availableProperties: ["lemmas", "forms"],
+      propertyToSearch: "form",
+      availableProperties: [
+        { humanReadableName: "lemmas", propName: "lemma" },
+        { humanReadableName: "forms", propName: "form" },
+      ],
     };
   },
 

@@ -30,7 +30,7 @@ exports.parseConlluToObject = async (conlluData) => {
  * -- PARAMETERS:
  * sentences: array of UD sentences (must be like the one in the
  *            response of the POST endpoint at /treebanks);
- * propertyToSearch: the property to be searched (TODO...);
+ * propertyToSearch: the property that should be searched: like form or lemma;
  * valueToSearch: FORM's (for now) value to be searched (can be a n-gram).
  *
  * -- RETURNS:
@@ -38,8 +38,6 @@ exports.parseConlluToObject = async (conlluData) => {
  *                         a sentence in the CoNLL-U file.
  */
 exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
-  // OBS.: we're just doing forms for now!
-
   // variable to store search results
   const searchResults = [];
 
@@ -59,7 +57,9 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
       i++
     ) {
       // checks the n-gram equality of the form
-      if (nGramEquality(nGramToSearch, sentence["tokens"], i)) {
+      if (
+        nGramEquality(nGramToSearch, sentence["tokens"], i, propertyToSearch)
+      ) {
         // gets the ids of the matched tokens
         const matchesIds = getMatchesIds(i, nGramToSearch.length);
 
@@ -95,16 +95,17 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
 // Checks for n-gram equality in a given sequence, in a given start.
 //
 // -- PARAMETERS:
-// nGram: n-gram to be looked in the first n tokens of sequence.
-// sequence: sequence of tokens (like a sentence).
-// start: index of token in sequence to start the search
+// nGram: n-gram to be looked in the first n tokens of sequence;
+// sequence: sequence of tokens (like a sentence);
+// start: index of token in sequence to start the search;
+// propertyToSearch: the property that should be searched: like form or lemma.
 //
 // -- RETURNS:
 // a boolean indicating wheter there was a match (true) or no (false).
-function nGramEquality(nGram, sequence, start) {
+function nGramEquality(nGram, sequence, start, propertyToSearch) {
   let numberOfMatches = 0;
   for (let i = 0; i < nGram.length; i++) {
-    if (nGram[i] === sequence[start + i].form) {
+    if (nGram[i] === sequence[start + i][propertyToSearch]) {
       numberOfMatches++;
     }
   }
