@@ -1,6 +1,10 @@
 <template>
   <div class="centered-content" :scrollable="true">
     <div class="top-set">
+      <SearchInput
+        @search-results-received="updateResults"
+        :conllu-data="conlluData"
+      ></SearchInput>
       <Button
         style="
           border-color: green;
@@ -60,58 +64,23 @@
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
+import SearchInput from "./SearchInput.vue";
 
 export default {
   props: {
     results: Object,
+    conlluData: Object,
   },
 
   components: {
+    SearchInput,
     DataTable,
     Column,
     Button,
   },
 
   beforeMount() {
-    // this component uses a table to render the results
-    // the algorithm bellow pre-process the results in order
-    // for them to be usable in the table
-    this.results.forEach((result) => {
-      // for each result...
-      result["foundNGramIdGroups"].forEach((foundNGramIdGroup) => {
-        // for each match in this result...
-
-        // gets the matched sentence
-        const resultSentence = result["sentence"];
-
-        // gets the left context (string)
-        const leftContext = resultSentence.tokens
-          .slice(0, foundNGramIdGroup[0])
-          .map((e) => e.form)
-          .join(" ");
-
-        // gets the match
-        const match = foundNGramIdGroup
-          .map((tokenId) => resultSentence.tokens[tokenId].form)
-          .join(" ");
-
-        // gets the right context (string)
-        const rightContext = resultSentence.tokens
-          .slice(
-            foundNGramIdGroup[foundNGramIdGroup.length - 1] + 1,
-            resultSentence.tokens.length
-          )
-          .map((e) => e.form)
-          .join(" ");
-
-        // organizes the data and stores it in an array
-        this.organizedResults.push({
-          leftContext,
-          match,
-          rightContext,
-        });
-      });
-    });
+    this.organizesResults(this.results);
   },
 
   mounted() {
@@ -137,6 +106,50 @@ export default {
   },
 
   methods: {
+    // -- DESCRIPTION
+    // this component uses a table to render the results
+    // the algorithm bellow pre-process the results in order
+    // for them to be usable in the table.
+    organizesResults(results) {
+      this.organizedResults = [];
+      results.forEach((result) => {
+        // for each result...
+        result["foundNGramIdGroups"].forEach((foundNGramIdGroup) => {
+          // for each match in this result...
+
+          // gets the matched sentence
+          const resultSentence = result["sentence"];
+
+          // gets the left context (string)
+          const leftContext = resultSentence.tokens
+            .slice(0, foundNGramIdGroup[0])
+            .map((e) => e.form)
+            .join(" ");
+
+          // gets the match
+          const match = foundNGramIdGroup
+            .map((tokenId) => resultSentence.tokens[tokenId].form)
+            .join(" ");
+
+          // gets the right context (string)
+          const rightContext = resultSentence.tokens
+            .slice(
+              foundNGramIdGroup[foundNGramIdGroup.length - 1] + 1,
+              resultSentence.tokens.length
+            )
+            .map((e) => e.form)
+            .join(" ");
+
+          // organizes the data and stores it in an array
+          this.organizedResults.push({
+            leftContext,
+            match,
+            rightContext,
+          });
+        });
+      });
+    },
+
     // -- DESCRIPTION:
     // gets the string representation for the results. That's for making
     // the user be able to download it as a .txt file.
@@ -175,6 +188,10 @@ export default {
 
       document.body.removeChild(element);
     },
+
+    updateResults(event) {
+      this.organizesResults(event.searchResults);
+    },
   },
 };
 </script>
@@ -196,6 +213,7 @@ export default {
 .export-button {
   position: absolute;
   right: 0;
+  top: 0;
 }
 
 @media screen and (max-width: 768px) {

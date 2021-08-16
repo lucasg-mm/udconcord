@@ -32,7 +32,7 @@ export default {
       if (this.showedComponent === "BaseSearch") {
         return { "conllu-data": this.conlluData };
       } else if (this.showedComponent === "BaseResults") {
-        return { results: this.searchResults };
+        return { results: this.searchResults, "conllu-data": this.conlluData };
       } else {
         return {};
       }
