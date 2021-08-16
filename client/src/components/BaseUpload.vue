@@ -81,6 +81,7 @@ export default {
   text-align: center;
   background-color: white;
   padding: 35px 25px 35px 25px;
+  min-width: 250px;
 }
 
 .tree-icon {

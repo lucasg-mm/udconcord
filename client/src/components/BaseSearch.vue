@@ -20,12 +20,12 @@
     <br />
     <InputText
       style="
-        min-width: 220px;
         border-radius: 0;
         border-color: black white black black;
         font-family: 'Vidaloka', serif;
         color: black;
       "
+      class="my-input"
       type="text"
       v-model="queryString"
     />
@@ -115,6 +115,7 @@ export default {
   text-align: center;
   background-color: white;
   padding: 35px 25px 35px 25px;
+  min-width: 250px;
 }
 
 .heading {
@@ -129,5 +130,17 @@ export default {
 
 .search-icon {
   font-size: 86px;
+}
+
+@media screen and (max-width: 768px) {
+  .my-input {
+    width: 135px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .my-input {
+    width: 100px;
+  }
 }
 </style>
