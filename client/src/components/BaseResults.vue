@@ -1,26 +1,6 @@
 <template>
   <div class="centered-content" :scrollable="true">
     <div class="top-set">
-      <InputText
-        style="
-          min-width: 220px;
-          border-radius: 0;
-          border-color: black white black black;
-          font-family: 'Vidaloka', serif;
-        "
-        placeholder="Search again"
-        type="text"
-      />
-      <Button
-        style="
-          border-color: #000099;
-          background: #000099;
-          font-family: 'Vidaloka', serif;
-          border-radius: 0;
-        "
-        label="Search"
-      />
-
       <Button
         style="
           border-color: green;
@@ -41,6 +21,7 @@
         style="font-family: 'Vidaloka', serif; white-space: nowrap"
         :value="organizedResults"
         :autoLayout="true"
+        breakpoint="425px"
       >
         <Column
           style="color: black; text-align: right"
@@ -78,7 +59,6 @@
 <script>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 
 export default {
@@ -89,7 +69,6 @@ export default {
   components: {
     DataTable,
     Column,
-    InputText,
     Button,
   },
 
@@ -204,7 +183,7 @@ export default {
 .centered-content {
   font-family: "Vidaloka", serif;
   text-align: center;
-  width: 1200px;
+  width: 80%;
   padding: 50px;
   background-color: #fff;
 }
@@ -217,6 +196,12 @@ export default {
 .export-button {
   position: absolute;
   right: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .export-button {
+    position: static;
+  }
 }
 
 .results-set {
