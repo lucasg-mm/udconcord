@@ -25,7 +25,7 @@
         font-family: 'Vidaloka', serif;
         color: black;
       "
-      class="my-input"
+      class="search-input"
       type="text"
       v-model="queryString"
     />
@@ -133,13 +133,13 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .my-input {
+  .search-input {
     width: 135px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .my-input {
+  .search-input {
     width: 100px;
   }
 }
