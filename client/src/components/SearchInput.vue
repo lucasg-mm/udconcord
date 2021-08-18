@@ -40,7 +40,7 @@ import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
 
 export default {
-  emits: ["search-results-received"],
+  emits: ["search-results-received", "search-initiated"],
 
   components: {
     InputText,
@@ -67,6 +67,10 @@ export default {
     // -- DESCRIPTION:
     // Makes a search in the treebank (just word, for now).
     async search() {
+      // tells the parent the search was started. It can
+      // now show a progress spinner
+      this.$emit("search-initiated");
+
       // gets the backend treebanks route URL
       const treebanksSearchRouteUrl =
         process.env.VUE_APP_URL + "api/treebanks/search";

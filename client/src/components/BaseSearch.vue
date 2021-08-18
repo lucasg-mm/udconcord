@@ -1,32 +1,44 @@
 <template>
-  <div class="centered-content">
-    <p class="heading">Time to search!</p>
-    <p class="description">You can use the input fields below.</p>
-    <br />
-    <i class="fas fa-search search-icon"></i>
-    <br />
-    <br />
-    <br />
-    <br />
-    <SearchInput
-      @search-results-received="forwardResults"
-      :conllu-data="conlluData"
-    ></SearchInput>
+  <div>
+    <div class="centered-content">
+      <p class="heading">Time to search!</p>
+      <p class="description">You can use the input fields below.</p>
+      <br />
+      <ProgressSpinner v-if="isLoading" />
+      <i v-else class="fas fa-search search-icon"></i>
+      <br />
+      <br />
+      <br />
+      <br />
+      <SearchInput
+        @search-initiated="showProgressSpinner"
+        @search-results-received="forwardResults"
+        :conllu-data="conlluData"
+      ></SearchInput>
+    </div>
   </div>
 </template>
 
 <script>
 import SearchInput from "./SearchInput.vue";
+import ProgressSpinner from "primevue/progressspinner";
 
 export default {
   emits: ["search-results-received"],
 
   components: {
     SearchInput,
+    ProgressSpinner,
   },
 
   props: {
     conlluData: Object,
+  },
+
+  data() {
+    return {
+      isLoading: false,
+    };
   },
 
   methods: {
@@ -38,6 +50,12 @@ export default {
       this.$emit("search-results-received", {
         searchResults: event.searchResults,
       });
+    },
+
+    // -- DESCRIPTION:
+    // shows the progress spinner while loading.
+    showProgressSpinner() {
+      this.isLoading = true;
     },
   },
 };
