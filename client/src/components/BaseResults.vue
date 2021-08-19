@@ -157,10 +157,10 @@ export default {
     // -- RETURNS:
     // a String, which is the string representation.
     getResultsStringRepresentation() {
-      let finalString = "";
+      let finalString = "Left Context,Match,Right Context\n";
 
       this.organizedResults.forEach((result) => {
-        finalString += `>> ${result.leftContext} *****${result.match}***** ${result.rightContext}\n\n\n`;
+        finalString += `"${result.leftContext}","${result.match}","${result.rightContext}"\n`;
       });
 
       return finalString;
@@ -179,7 +179,7 @@ export default {
         "data:text/plain;charset=utf-8," +
           encodeURIComponent(resultsStringRepresentation)
       );
-      element.setAttribute("download", "search-results.txt");
+      element.setAttribute("download", "search-results.csv");
 
       element.style.display = "none";
       document.body.appendChild(element);
