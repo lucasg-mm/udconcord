@@ -43,6 +43,7 @@
         >
           <template #body="{ data }">
             <span
+              class="match-highlight"
               style="background-color: #6666ff; color: white; padding: 5px"
               >{{ data.match }}</span
             >
@@ -84,11 +85,8 @@ export default {
   },
 
   mounted() {
-    // gets the body of the column with the match results
-    let element = document.querySelector(".match-column");
-
-    // scrolls this element to the center of the screen
-    element.scrollIntoView({ inline: "center" });
+    // centralizes matches
+    this.scrollToMatches();
   },
 
   computed: {
@@ -106,6 +104,21 @@ export default {
   },
 
   methods: {
+    // -- DESCRIPTION
+    // scrolls to the matches found by the search.
+    scrollToMatches() {
+      // gets the body of the column with the match results
+      const matchColumn = document.querySelector(".match-column");
+      const container = document.querySelector(".results-set");
+      const matchHighlight = document.querySelector(".match-highlight");
+
+      // scrolls container to centralize it to the matched word
+      container.scrollLeft =
+        matchHighlight.offsetWidth +
+        matchColumn.offsetLeft -
+        container.offsetWidth / 2;
+    },
+
     // -- DESCRIPTION
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
@@ -190,7 +203,11 @@ export default {
     },
 
     updateResults(event) {
+      // organizes the results
       this.organizesResults(event.searchResults);
+
+      // scroll to the matches after updates the DOM
+      this.$nextTick(() => this.scrollToMatches());
     },
   },
 };
@@ -225,6 +242,7 @@ export default {
 .results-set {
   height: 450px;
   overflow: auto;
+  scroll-behavior: smooth;
 }
 
 .number-of-results {

@@ -16,14 +16,7 @@ export default {
   data() {
     return {
       // items in the navbar's menu
-      items: [
-        {
-          label: "Home",
-        },
-        {
-          label: "About",
-        },
-      ],
+      items: [],
     };
   },
 };
