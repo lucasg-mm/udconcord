@@ -10,27 +10,30 @@ const fs = require("fs");
  * -- REQUEST'S BODY:
  * sentences: array of UD sentences (must be like the one in the
  *            response of the POST endpoint at the /treebanks route);
- * propertyToSearch: the property to be searched (TODO...);
+ * propertyToSearch: the property to be searched;
  * valueToSearch: FORM's (for now) value to be searched.
+ * caseWay: indicates if the comparisson will be made in case sensitive or
+ *          insensitive way. Can be "sensitive" or "insensitive".
  *
  * -- RESPONSE:
  * HTTP response with the appropriate response code and a JSON.
  * The JSON can be:
  *     - In case of success: array of objects, each one with a found sentence
  *                           and a property with an array of indexes of the found
- *                           token which have the given FORM (for now).
+ *                           token which matched the query string.
  *     - In case of error: object with a message and a nested error object.
  */
 exports.apiSearchTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { sentences, propertyToSearch, valueToSearch } = req.fields;
+    const { sentences, propertyToSearch, valueToSearch, caseWay } = req.fields;
 
     // makes the search
     const searchResults = await treebanksService.searchTreebank(
       sentences,
       propertyToSearch,
-      valueToSearch
+      valueToSearch,
+      caseWay
     );
 
     // returns search results

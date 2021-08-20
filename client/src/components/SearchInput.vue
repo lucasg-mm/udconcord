@@ -8,6 +8,15 @@
       optionLabel="humanReadableName"
       optionValue="propName"
     />
+    in a
+    <Dropdown
+      style="border-radius: 0; border-color: black"
+      v-model="caseWay"
+      :options="availableCases"
+      optionLabel="humanReadableName"
+      optionValue="caseName"
+    />
+    way.
     <br />
     <br />
     <InputText
@@ -56,6 +65,11 @@ export default {
     return {
       queryString: "",
       propertyToSearch: "form",
+      caseWay: "sensitive",
+      availableCases: [
+        { humanReadableName: "case sensitive", caseName: "sensitive" },
+        { humanReadableName: "case insensitive", caseName: "insensitive" },
+      ],
       availableProperties: [
         { humanReadableName: "lemmas", propName: "lemma" },
         { humanReadableName: "forms", propName: "form" },
@@ -81,6 +95,7 @@ export default {
         sentences: this.conlluData,
         propertyToSearch: this.propertyToSearch,
         valueToSearch: this.queryString,
+        caseWay: this.caseWay,
       };
 
       // makes the request

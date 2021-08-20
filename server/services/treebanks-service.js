@@ -31,13 +31,20 @@ exports.parseConlluToObject = async (conlluData) => {
  * sentences: array of UD sentences (must be like the one in the
  *            response of the POST endpoint at /treebanks);
  * propertyToSearch: the property that should be searched: like form or lemma;
- * valueToSearch: FORM's (for now) value to be searched (can be a n-gram).
+ * valueToSearch: FORM's (for now) value to be searched (can be a n-gram);
+ * caseWay: indicates if the comparisson will be made in case sensitive or
+ *          insensitive way. Can be "sensitive" or "insensitive".
  *
  * -- RETURNS:
  * conlluObject.sentences: array of objects. Each one represents
  *                         a sentence in the CoNLL-U file.
  */
-exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
+exports.searchTreebank = async (
+  sentences,
+  propertyToSearch,
+  valueToSearch,
+  caseWay
+) => {
   // variable to store search results
   const searchResults = [];
 
@@ -58,7 +65,13 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
     ) {
       // checks the n-gram equality of the form
       if (
-        nGramEquality(nGramToSearch, sentence["tokens"], i, propertyToSearch)
+        nGramEquality(
+          nGramToSearch,
+          sentence["tokens"],
+          i,
+          propertyToSearch,
+          caseWay
+        )
       ) {
         // gets the ids of the matched tokens
         const matchesIds = getMatchesIds(i, nGramToSearch.length);
@@ -99,14 +112,25 @@ exports.searchTreebank = async (sentences, propertyToSearch, valueToSearch) => {
 // sequence: sequence of tokens (like a sentence);
 // start: index of token in sequence to start the search;
 // propertyToSearch: the property that should be searched: like form or lemma.
+// caseWay: indicates if the comparisson will be made in case sensitive or
+//          insensitive way. Can be "sensitive" or "insensitive".
 //
 // -- RETURNS:
 // a boolean indicating wheter there was a match (true) or no (false).
-function nGramEquality(nGram, sequence, start, propertyToSearch) {
+function nGramEquality(nGram, sequence, start, propertyToSearch, caseWay) {
   let numberOfMatches = 0;
   for (let i = 0; i < nGram.length; i++) {
-    if (nGram[i] === sequence[start + i][propertyToSearch]) {
-      numberOfMatches++;
+    if (caseWay === "insensitive") {
+      if (
+        nGram[i].toLowerCase() ===
+        sequence[start + i][propertyToSearch].toLowerCase()
+      ) {
+        numberOfMatches++;
+      }
+    } else {
+      if (nGram[i] === sequence[start + i][propertyToSearch]) {
+        numberOfMatches++;
+      }
     }
   }
 
