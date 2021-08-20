@@ -14,7 +14,7 @@
         border-color: #000099;
         background: #000099;
         font-family: 'Vidaloka', serif;
-        border-radius: 0;
+        border-radius: 5px;
       "
       mode="basic"
       accept=".conllu"
@@ -82,6 +82,7 @@ export default {
   background-color: white;
   padding: 35px 25px 35px 25px;
   min-width: 250px;
+  border-radius: 5px;
 }
 
 .tree-icon {

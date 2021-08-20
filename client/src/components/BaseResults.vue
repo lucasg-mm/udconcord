@@ -10,7 +10,7 @@
           border-color: green;
           background: green;
           font-family: 'Vidaloka', serif;
-          border-radius: 0;
+          border-radius: 5px;
         "
         class="export-button"
         label="Export Results"
@@ -25,6 +25,8 @@
         style="font-family: 'Vidaloka', serif; white-space: nowrap"
         :value="organizedResults"
         :autoLayout="true"
+        :rowHover="true"
+        @row-dblclick="editSentence"
         breakpoint="425px"
       >
         <Column
@@ -104,6 +106,13 @@ export default {
   },
 
   methods: {
+    editSentence(event) {
+      console.log(
+        JSON.parse(JSON.stringify(this.results[event.index])).sentence.metadata
+          .text
+      );
+    },
+
     // -- DESCRIPTION
     // scrolls to the matches found by the search.
     scrollToMatches() {
@@ -126,39 +135,36 @@ export default {
     organizesResults(results) {
       this.organizedResults = [];
       results.forEach((result) => {
-        // for each result...
-        result["foundNGramIdGroups"].forEach((foundNGramIdGroup) => {
-          // for each match in this result...
+        // for each match in this result...
 
-          // gets the matched sentence
-          const resultSentence = result["sentence"];
+        // gets the matched sentence
+        const resultSentence = result["sentence"];
 
-          // gets the left context (string)
-          const leftContext = resultSentence.tokens
-            .slice(0, foundNGramIdGroup[0])
-            .map((e) => e.form)
-            .join(" ");
+        // gets the left context (string)
+        const leftContext = resultSentence.tokens
+          .slice(0, result["foundNGram"][0])
+          .map((e) => e.form)
+          .join(" ");
 
-          // gets the match
-          const match = foundNGramIdGroup
-            .map((tokenId) => resultSentence.tokens[tokenId].form)
-            .join(" ");
+        // gets the match
+        const match = result["foundNGram"]
+          .map((tokenId) => resultSentence.tokens[tokenId].form)
+          .join(" ");
 
-          // gets the right context (string)
-          const rightContext = resultSentence.tokens
-            .slice(
-              foundNGramIdGroup[foundNGramIdGroup.length - 1] + 1,
-              resultSentence.tokens.length
-            )
-            .map((e) => e.form)
-            .join(" ");
+        // gets the right context (string)
+        const rightContext = resultSentence.tokens
+          .slice(
+            result["foundNGram"][result["foundNGram"].length - 1] + 1,
+            resultSentence.tokens.length
+          )
+          .map((e) => e.form)
+          .join(" ");
 
-          // organizes the data and stores it in an array
-          this.organizedResults.push({
-            leftContext,
-            match,
-            rightContext,
-          });
+        // organizes the data and stores it in an array
+        this.organizedResults.push({
+          leftContext,
+          match,
+          rightContext,
         });
       });
     },
@@ -203,6 +209,11 @@ export default {
     },
 
     updateResults(event) {
+      // forwards event to change the results prop in the parent
+      this.$emit("search-results-received", {
+        searchResults: event.searchResults,
+      });
+
       // organizes the results
       this.organizesResults(event.searchResults);
 
@@ -220,10 +231,11 @@ export default {
   width: 80%;
   padding: 50px;
   background-color: #fff;
+  border-radius: 5px;
 }
 
 .top-set {
-  padding-bottom: 20px;
+  padding-bottom: 50px;
   position: relative;
 }
 

@@ -68,6 +68,7 @@ export default {
   background-color: white;
   padding: 35px 25px 35px 25px;
   min-width: 250px;
+  border-radius: 5px;
 }
 
 .heading {

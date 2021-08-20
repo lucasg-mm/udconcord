@@ -2,7 +2,7 @@
   <div>
     I want to look for
     <Dropdown
-      style="border-radius: 0; border-color: black"
+      style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="propertyToSearch"
       :options="availableProperties"
       optionLabel="humanReadableName"
@@ -10,7 +10,7 @@
     />
     in a
     <Dropdown
-      style="border-radius: 0; border-color: black"
+      style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="caseWay"
       :options="availableCases"
       optionLabel="humanReadableName"
@@ -21,8 +21,9 @@
     <br />
     <InputText
       style="
-        border-radius: 0;
-        border-color: black white black black;
+        border-width: 2px;
+        border-radius: 5px 0 0 5px;
+        border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
         font-family: 'Vidaloka', serif;
         color: black;
       "
@@ -32,10 +33,11 @@
     />
     <Button
       style="
+        border-width: 2px;
         border-color: #000099;
         background: #000099;
         font-family: 'Vidaloka', serif;
-        border-radius: 0;
+        border-radius: 0 5px 5px 0;
       "
       label="Search"
       @click="search"
