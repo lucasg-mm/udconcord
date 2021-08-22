@@ -22,12 +22,14 @@
 
     <div class="results-set">
       <DataTable
+        class="tabela"
         style="font-family: 'Vidaloka', serif; white-space: nowrap"
         :value="organizedResults"
         :autoLayout="true"
         :rowHover="true"
         @row-dblclick="editSentence"
         breakpoint="425px"
+        :rowClass="rowClass"
       >
         <Column
           style="color: black; text-align: right"
@@ -45,10 +47,17 @@
         >
           <template #body="{ data }">
             <span
+              v-if="!editedRowsIndexes.includes(data.index)"
               class="match-highlight"
-              style="background-color: #6666ff; color: white; padding: 5px"
+              style="
+                background-color: #6666ff;
+                color: white;
+                padding: 5px;
+                border-radius: 3px;
+              "
               >{{ data.match }}</span
             >
+            <span v-else>{{ data.match }}</span>
           </template>
         </Column>
 
@@ -73,7 +82,10 @@ export default {
   props: {
     results: Object,
     conlluData: Object,
+    editedRowsIndexes: Array,
   },
+
+  emits: ["sentence-double-click"],
 
   components: {
     SearchInput,
@@ -106,11 +118,26 @@ export default {
   },
 
   methods: {
+    // -- DESCRIPTION:
+    // Applies the 'edited' class to edited sentences' rows.
+    rowClass(data) {
+      // console.log(this.editedRowsIndexes);
+      return this.editedRowsIndexes.includes(data.index) ? "edited" : null;
+    },
+
+    // -- DESCRIPTION:
+    // handles the double click on a sentence, emiting
+    // an event and passing the sentence to the parent component.
     editSentence(event) {
-      console.log(
-        JSON.parse(JSON.stringify(this.results[event.index])).sentence.metadata
-          .text
+      const sentenceObj = JSON.parse(
+        JSON.stringify(this.results[event.index].sentence)
       );
+
+      sentenceObj["index"] = event.index;
+
+      this.$emit("sentence-double-click", {
+        sentence: sentenceObj,
+      });
     },
 
     // -- DESCRIPTION
@@ -134,7 +161,7 @@ export default {
     // for them to be usable in the table.
     organizesResults(results) {
       this.organizedResults = [];
-      results.forEach((result) => {
+      results.forEach((result, index) => {
         // for each match in this result...
 
         // gets the matched sentence
@@ -162,6 +189,7 @@ export default {
 
         // organizes the data and stores it in an array
         this.organizedResults.push({
+          index,
           leftContext,
           match,
           rightContext,
@@ -224,7 +252,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .centered-content {
   font-family: "Vidaloka", serif;
   text-align: center;
@@ -260,5 +288,17 @@ export default {
 .number-of-results {
   color: #000099;
   padding-bottom: 15px;
+}
+
+.tabela::v-deep .edited {
+  background-color: #d2f8d2;
+}
+
+.tabela::v-deep .p-datatable-tbody tr:hover {
+  background-color: #d4ebf2 !important;
+}
+
+.tabela::v-deep .p-datatable-tbody td {
+  border-width: 0px;
 }
 </style>

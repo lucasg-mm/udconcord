@@ -4,6 +4,9 @@
     <component
       @conllu-data-received="handleConlluDataReceived"
       @search-results-received="handleSearchResultsReceived"
+      @sentence-double-click="handleSentenceDoubleClick"
+      @edited-sentence="handleSentenceEdit"
+      @to-results="handleToResults"
       class="showed-content"
       :is="showedComponent"
       v-bind="currentProperties"
@@ -16,6 +19,7 @@ import TheNavbar from "./components/TheNavbar.vue";
 import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
+import BaseEdit from "./components/BaseEdit.vue";
 
 export default {
   name: "App",
@@ -24,6 +28,7 @@ export default {
     BaseUpload,
     BaseSearch,
     BaseResults,
+    BaseEdit,
   },
   computed: {
     // props for the dynamic component
@@ -32,7 +37,13 @@ export default {
       if (this.showedComponent === "BaseSearch") {
         return { "conllu-data": this.conlluData };
       } else if (this.showedComponent === "BaseResults") {
-        return { results: this.searchResults, "conllu-data": this.conlluData };
+        return {
+          results: this.searchResults,
+          "conllu-data": this.conlluData,
+          "edited-rows-indexes": this.editedRowsIndexes,
+        };
+      } else if (this.showedComponent === "BaseEdit") {
+        return { sentence: this.doubleClickedSentence };
       } else {
         return {};
       }
@@ -44,14 +55,71 @@ export default {
       // of an object
       conlluData: null,
 
+      // holds data of a double clicked sentence in the results screen
+      doubleClickedSentence: null,
+
       // holds the results of a search made by the user
       searchResults: [],
 
       // component being rendered at the moment
       showedComponent: "BaseUpload",
+
+      // the edited rows (indicated by their indexes) of the results table
+      editedRowsIndexes: [],
     };
   },
   methods: {
+    /*
+    -- DESCRIPTION:
+    Shows the results screen.
+    */
+    handleToResults() {
+      // updates the shown component to the results one
+      this.showedComponent = "BaseResults";
+    },
+
+    /*
+    -- DESCRIPTION:
+    Replaces a sentence inside the conlluData array with its
+    updated version.
+    */
+    handleSentenceEdit(event) {
+      // gets updated version from event
+      const updatedSentence = event.sentence;
+
+      // gets the gets the index from the sentence to be updated
+      // (in the results array)
+      const updatedSentenceIndexResults = event.index;
+
+      // gets the index from the sentence to be updated
+      // (in the global conlluData array)
+      const updatedSentenceIndex = this.conlluData.findIndex(
+        (sentence) =>
+          sentence.metadata.sent_id === updatedSentence.metadata.sent_id
+      );
+
+      // updates the sentence in the results array
+      this.searchResults[updatedSentenceIndexResults].sentence =
+        updatedSentence;
+
+      // updates the sentence in the global conllu array
+      this.conlluData[updatedSentenceIndex] = updatedSentence;
+
+      // updates the ids of edited sentences
+      this.editedRowsIndexes.push(event.index);
+    },
+
+    // -- DESCRIPTION:
+    // Handles the receiving of the conllu data from
+    // the a double clicked sentence
+    //
+    // -- PARAMETERS:
+    // event: event emited by the BaseResults component
+    handleSentenceDoubleClick(event) {
+      this.doubleClickedSentence = event.sentence;
+      this.showedComponent = "BaseEdit";
+    },
+
     // -- DESCRIPTION:
     // Handles the receiving of the conllu data from
     // the uploaded file

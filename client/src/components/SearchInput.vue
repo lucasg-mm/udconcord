@@ -2,6 +2,7 @@
   <div>
     I want to look for
     <Dropdown
+      class="dropdown"
       style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="propertyToSearch"
       :options="availableProperties"
@@ -10,6 +11,7 @@
     />
     in a
     <Dropdown
+      class="dropdown"
       style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="caseWay"
       :options="availableCases"
@@ -123,7 +125,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+::v-deep(.dropdown.p-dropdown) {
+  .p-dropdown-label,
+  .p-dropdown-items {
+    font-family: "Vidaloka", serif;
+    color: black;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .search-input {
     width: 135px;
