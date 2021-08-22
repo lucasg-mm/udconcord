@@ -49,6 +49,7 @@ export default {
       // results were received, and sends these results
       this.$emit("search-results-received", {
         searchResults: event.searchResults,
+        searchedProperty: event.searchedProperty,
       });
     },
 

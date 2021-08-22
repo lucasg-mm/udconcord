@@ -119,6 +119,7 @@ export default {
       // results were received, and sends these results
       this.$emit("search-results-received", {
         searchResults,
+        searchedProperty: this.propertyToSearch,
       });
     },
   },

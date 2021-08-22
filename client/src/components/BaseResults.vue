@@ -80,12 +80,13 @@ import SearchInput from "./SearchInput.vue";
 
 export default {
   props: {
+    searchedProperty: String,
     results: Object,
     conlluData: Object,
     editedRowsIndexes: Array,
   },
 
-  emits: ["sentence-double-click"],
+  emits: ["sentence-double-click", "search-results-received"],
 
   components: {
     SearchInput,
@@ -95,7 +96,7 @@ export default {
   },
 
   beforeMount() {
-    this.organizesResults(this.results);
+    this.organizesResults(this.results, this.searchedProperty);
   },
 
   mounted() {
@@ -159,7 +160,7 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
-    organizesResults(results) {
+    organizesResults(results, searchedProperty) {
       this.organizedResults = [];
       results.forEach((result, index) => {
         // for each match in this result...
@@ -167,15 +168,34 @@ export default {
         // gets the matched sentence
         const resultSentence = result["sentence"];
 
+        // analyses the searchedProperty and tells whether
+        // the property should be displayed in the table cells
+        // inside square brackets
+        let showAdditionalInfo = searchedProperty === "upostag";
+
         // gets the left context (string)
         const leftContext = resultSentence.tokens
           .slice(0, result["foundNGram"][0])
-          .map((e) => e.form)
+          .map((e) => {
+            if (showAdditionalInfo) {
+              return `${e.form} [${e[this.searchedProperty]}]`;
+            } else {
+              return e.form;
+            }
+          })
           .join(" ");
 
         // gets the match
         const match = result["foundNGram"]
-          .map((tokenId) => resultSentence.tokens[tokenId].form)
+          .map((tokenId) => {
+            if (showAdditionalInfo) {
+              return `${resultSentence.tokens[tokenId].form} [${
+                resultSentence.tokens[tokenId][this.searchedProperty]
+              }]`;
+            } else {
+              return resultSentence.tokens[tokenId].form;
+            }
+          })
           .join(" ");
 
         // gets the right context (string)
@@ -184,7 +204,13 @@ export default {
             result["foundNGram"][result["foundNGram"].length - 1] + 1,
             resultSentence.tokens.length
           )
-          .map((e) => e.form)
+          .map((e) => {
+            if (showAdditionalInfo) {
+              return `${e.form} [${e[this.searchedProperty]}]`;
+            } else {
+              return e.form;
+            }
+          })
           .join(" ");
 
         // organizes the data and stores it in an array
@@ -240,10 +266,11 @@ export default {
       // forwards event to change the results prop in the parent
       this.$emit("search-results-received", {
         searchResults: event.searchResults,
+        searchedProperty: event.searchedProperty,
       });
 
       // organizes the results
-      this.organizesResults(event.searchResults);
+      this.organizesResults(event.searchResults, event.searchedProperty);
 
       // scroll to the matches after updates the DOM
       this.$nextTick(() => this.scrollToMatches());

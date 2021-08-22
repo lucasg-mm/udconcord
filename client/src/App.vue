@@ -41,6 +41,7 @@ export default {
           results: this.searchResults,
           "conllu-data": this.conlluData,
           "edited-rows-indexes": this.editedRowsIndexes,
+          "searched-property": this.searchedProperty,
         };
       } else if (this.showedComponent === "BaseEdit") {
         return { sentence: this.doubleClickedSentence };
@@ -66,6 +67,9 @@ export default {
 
       // the edited rows (indicated by their indexes) of the results table
       editedRowsIndexes: [],
+
+      // the property being searched
+      searchedProperty: "",
     };
   },
   methods: {
@@ -140,11 +144,17 @@ export default {
     // -- PARAMETERS:
     // event: event emited by the BaseSearch component
     handleSearchResultsReceived(event) {
+      // updates the searched property
+      this.searchedProperty = event.searchedProperty;
+
       // updates the search results
       this.searchResults = event.searchResults;
 
       // updates the shown component to the results one
       this.showedComponent = "BaseResults";
+
+      // empties the edited sentences array
+      this.editedRowsIndexes = [];
     },
   },
 };
