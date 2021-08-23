@@ -18,18 +18,23 @@
       />
     </div>
 
-    <div class="number-of-results">~ {{ numberOfResults }} results found ~</div>
+    <div class="number-of-results">~ {{ totalRecords }} results found ~</div>
 
     <div class="results-set">
       <DataTable
+        :lazy="true"
+        :paginator="true"
+        :rows="recordsPerPage"
         class="tabela"
         style="font-family: 'Vidaloka', serif; white-space: nowrap"
         :value="organizedResults"
         :autoLayout="true"
         :rowHover="true"
-        @row-dblclick="editSentence"
         breakpoint="425px"
         :rowClass="rowClass"
+        :totalRecords="totalRecords"
+        @row-dblclick="editSentence"
+        @page="onPage($event)"
       >
         <Column
           style="color: black; text-align: right"
@@ -96,7 +101,7 @@ export default {
   },
 
   beforeMount() {
-    this.organizesResults(this.results, this.searchedProperty);
+    this.loadLazyData(1, 10);
   },
 
   mounted() {
@@ -106,8 +111,8 @@ export default {
 
   computed: {
     // number of results returned by a search
-    numberOfResults() {
-      return this.organizedResults.length;
+    totalRecords() {
+      return this.results.length;
     },
   },
 
@@ -115,10 +120,57 @@ export default {
     return {
       // results after some pre-processing
       organizedResults: [],
+
+      // number os records that should be rendered per page
+      recordsPerPage: 10,
     };
   },
 
   methods: {
+    /*
+    -- DESCRIPTION:
+    Handles the page event, emitted by the DataTable.
+    It just loads the next batch of data in the next page.
+    */
+    onPage(event) {
+      // gets the page number we're going to
+      // (sums 1 because event.page is 0-indexed)
+      const pageToGo = event.page + 1;
+
+      // number of rows rendered in pageToGo
+      const numberOfRows = event.rows;
+
+      // loads the data in the page
+      this.loadLazyData(pageToGo, numberOfRows);
+    },
+
+    /*
+    -- DESCRIPTION:
+    Loads a certain amount of data (from the totality of the results)
+    in the table.
+
+    -- PARAMETERS:
+    pageToGo: table's page in which the table should be rendered.
+    numberOfRows: number of rows to be rendered in the table's page.
+    */
+    loadLazyData(pageToGo, numberOfRows) {
+      console.log(">> Loading lazy data...");
+
+      // gets the results array and the string
+      // indicating which property is being searched
+      const results = this.results;
+      const searchedProperty = this.searchedProperty;
+
+      // gets the data that should be displayed in
+      // pageToGo
+      const dataInCurrPage = results.slice(
+        pageToGo * numberOfRows - numberOfRows,
+        pageToGo * numberOfRows
+      );
+
+      this.organizesResults(dataInCurrPage, searchedProperty);
+    },
+
     // -- DESCRIPTION:
     // Applies the 'edited' class to edited sentences' rows.
     rowClass(data) {
@@ -163,6 +215,7 @@ export default {
     organizesResults(results, searchedProperty) {
       this.organizedResults = [];
       results.forEach((result, index) => {
+        console.log(">> organizando resultados...");
         // for each match in this result...
 
         // gets the matched sentence

@@ -94,6 +94,7 @@ export default {
       const treebanksSearchRouteUrl =
         process.env.VUE_APP_URL + "api/treebanks/search";
 
+      console.log(">>> definindo corpo da requisição...");
       // defining the request's body
       const requestBody = {
         sentences: this.conlluData,
@@ -102,6 +103,7 @@ export default {
         caseWay: this.caseWay,
       };
 
+      console.log(">>> fazendo requisição...");
       // makes the request
       const response = await fetch(treebanksSearchRouteUrl, {
         method: "POST",
