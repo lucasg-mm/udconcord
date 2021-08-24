@@ -1,10 +1,7 @@
 <template>
   <div class="centered-content" :scrollable="true">
     <div class="top-set">
-      <SearchInput
-        @search-results-received="updateResults"
-        :conllu-data="conlluData"
-      ></SearchInput>
+      <SearchInput @search-results-received="updateResults"></SearchInput>
       <Button
         style="
           border-color: green;
@@ -52,7 +49,7 @@
         >
           <template #body="{ data }">
             <span
-              v-if="!editedRowsIndexes.includes(data.index)"
+              v-if="!getEditedRowsIndexes.includes(data.index)"
               class="match-highlight"
               style="
                 background-color: #6666ff;
@@ -82,15 +79,10 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
 import SearchInput from "./SearchInput.vue";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  props: {
-    searchedProperty: String,
-    results: Object,
-    conlluData: Object,
-    editedRowsIndexes: Array,
-  },
-
   emits: ["sentence-double-click", "search-results-received"],
 
   components: {
@@ -101,7 +93,7 @@ export default {
   },
 
   beforeMount() {
-    this.loadLazyData(1, 10);
+    this.loadLazyData(1, this.recordsPerPage);
   },
 
   mounted() {
@@ -110,9 +102,19 @@ export default {
   },
 
   computed: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's getters to this component.
+     */
+    ...mapGetters([
+      "getEditedRowsIndexes",
+      "getSearchResults",
+      "getSearchedProperty",
+    ]),
+
     // number of results returned by a search
     totalRecords() {
-      return this.results.length;
+      return this.getSearchResults.length;
     },
   },
 
@@ -122,11 +124,17 @@ export default {
       organizedResults: [],
 
       // number os records that should be rendered per page
-      recordsPerPage: 10,
+      recordsPerPage: 100,
     };
   },
 
   methods: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's actions to this component
+     */
+    ...mapActions(["setDoubleClickedSentence"]),
+
     /*
     -- DESCRIPTION:
     Handles the page event, emitted by the DataTable.
@@ -158,8 +166,8 @@ export default {
 
       // gets the results array and the string
       // indicating which property is being searched
-      const results = this.results;
-      const searchedProperty = this.searchedProperty;
+      const results = this.getSearchResults;
+      const searchedProperty = this.getSearchedProperty;
 
       // gets the data that should be displayed in
       // pageToGo
@@ -168,29 +176,30 @@ export default {
         pageToGo * numberOfRows
       );
 
-      this.organizesResults(dataInCurrPage, searchedProperty);
+      this.organizesResults(dataInCurrPage, searchedProperty, pageToGo);
     },
 
     // -- DESCRIPTION:
     // Applies the 'edited' class to edited sentences' rows.
     rowClass(data) {
-      // console.log(this.editedRowsIndexes);
-      return this.editedRowsIndexes.includes(data.index) ? "edited" : null;
+      return this.getEditedRowsIndexes.includes(data.index) ? "edited" : null;
     },
 
     // -- DESCRIPTION:
     // handles the double click on a sentence, emiting
     // an event and passing the sentence to the parent component.
     editSentence(event) {
+      const index = event.data.index;
       const sentenceObj = JSON.parse(
-        JSON.stringify(this.results[event.index].sentence)
+        JSON.stringify(this.getSearchResults[index].sentence)
       );
 
-      sentenceObj["index"] = event.index;
+      sentenceObj["index"] = index;
 
-      this.$emit("sentence-double-click", {
-        sentence: sentenceObj,
-      });
+      // sets the double clicked sentence in the global store
+      this.setDoubleClickedSentence({ doubleClickedSentence: sentenceObj });
+
+      this.$emit("sentence-double-click");
     },
 
     // -- DESCRIPTION
@@ -212,7 +221,7 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
-    organizesResults(results, searchedProperty) {
+    organizesResults(results, searchedProperty, pageToGo = 1) {
       this.organizedResults = [];
       results.forEach((result, index) => {
         console.log(">> organizando resultados...");
@@ -231,7 +240,7 @@ export default {
           .slice(0, result["foundNGram"][0])
           .map((e) => {
             if (showAdditionalInfo) {
-              return `${e.form} [${e[this.searchedProperty]}]`;
+              return `${e.form} [${e[this.getSearchedProperty]}]`;
             } else {
               return e.form;
             }
@@ -243,7 +252,7 @@ export default {
           .map((tokenId) => {
             if (showAdditionalInfo) {
               return `${resultSentence.tokens[tokenId].form} [${
-                resultSentence.tokens[tokenId][this.searchedProperty]
+                resultSentence.tokens[tokenId][this.getSearchedProperty]
               }]`;
             } else {
               return resultSentence.tokens[tokenId].form;
@@ -259,7 +268,7 @@ export default {
           )
           .map((e) => {
             if (showAdditionalInfo) {
-              return `${e.form} [${e[this.searchedProperty]}]`;
+              return `${e.form} [${e[this.getSearchedProperty]}]`;
             } else {
               return e.form;
             }
@@ -268,7 +277,7 @@ export default {
 
         // organizes the data and stores it in an array
         this.organizedResults.push({
-          index,
+          index: index + (pageToGo - 1) * this.recordsPerPage,
           leftContext,
           match,
           rightContext,
@@ -315,15 +324,13 @@ export default {
       document.body.removeChild(element);
     },
 
-    updateResults(event) {
-      // forwards event to change the results prop in the parent
-      this.$emit("search-results-received", {
-        searchResults: event.searchResults,
-        searchedProperty: event.searchedProperty,
-      });
-
+    /**
+     * -- DESCRIPTION:
+     * TODO
+     */
+    updateResults() {
       // organizes the results
-      this.organizesResults(event.searchResults, event.searchedProperty);
+      this.organizesResults(this.getSearchResults, this.getSearchedProperty);
 
       // scroll to the matches after updates the DOM
       this.$nextTick(() => this.scrollToMatches());

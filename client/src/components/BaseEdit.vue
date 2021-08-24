@@ -1,7 +1,7 @@
 <template>
   <div class="centered-content">
     <p class="heading">You can edit the sentence's CoNLL-U below!</p>
-    <Textarea v-model="conlluCode" />
+    <Textarea v-model="getDoubleClickedSentence.conllu" />
     <Button
       style="
         margin-top: 20px;
@@ -30,6 +30,8 @@
 <script>
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -43,17 +45,60 @@ export default {
     sentence: Object,
   },
 
-  mounted() {
-    this.conlluCode = this.sentence.conllu;
+  computed: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's getters to this component.
+     */
+    ...mapGetters(["getConlluData", "getDoubleClickedSentence"]),
   },
 
   methods: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's actions to this component
+     */
+    ...mapActions([
+      "updateSearchResultsSentence",
+      "updateConlluDataEl",
+      "pushEditedRowsIndexes",
+    ]),
+
     /*
     -- DESCRIPTION:
     Shows the results screen.
     */
     goToSearchResults() {
       this.$emit("to-results");
+    },
+
+    /**
+     * -- DESCRIPTION:
+     * Update conllu, search results and editedRowsIndexes
+     * at the global store.
+     */
+    updateStore(updatedSentence, updatedSentenceIndexResults) {
+      // gets the index from the sentence to be updated
+      // (in the global conlluData array)
+      const updatedSentenceIndex = this.getConlluData.findIndex(
+        (sentence) =>
+          sentence.metadata.sent_id === updatedSentence.metadata.sent_id
+      );
+
+      // updates the sentence in the results array
+      this.updateSearchResultsSentence({
+        sentence: updatedSentence,
+        index: updatedSentenceIndexResults,
+      });
+
+      // updates the sentence in the global conllu array
+      this.updateConlluDataEl({
+        el: updatedSentence,
+        index: updatedSentenceIndex,
+      });
+
+      // updates the ids of edited sentences
+      this.pushEditedRowsIndexes({ el: updatedSentenceIndexResults });
     },
 
     /*
@@ -67,7 +112,7 @@ export default {
 
       // defining the request's body
       const requestBody = {
-        conllu: this.conlluCode,
+        conllu: this.getDoubleClickedSentence.conllu,
       };
 
       // makes the request
@@ -83,12 +128,8 @@ export default {
       // parses results to javascript object
       const sentenceObject = await response.json();
 
-      // emits event to indicate the sentence was edited,
-      // sending the new object
-      this.$emit("edited-sentence", {
-        index: this.sentence.index,
-        sentence: sentenceObject,
-      });
+      // saves modifications in store
+      this.updateStore(sentenceObject, this.getDoubleClickedSentence.index);
     },
   },
 

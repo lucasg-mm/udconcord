@@ -13,7 +13,6 @@
       <SearchInput
         @search-initiated="showProgressSpinner"
         @search-results-received="forwardResults"
-        :conllu-data="conlluData"
       ></SearchInput>
     </div>
   </div>
@@ -31,10 +30,6 @@ export default {
     ProgressSpinner,
   },
 
-  props: {
-    conlluData: Object,
-  },
-
   data() {
     return {
       isLoading: false,
@@ -44,13 +39,10 @@ export default {
   methods: {
     // -- DESCRIPTION:
     // just forwards the 'search-results-received' to the parent component.
-    forwardResults(event) {
+    forwardResults() {
       // emits event to tell the parent component that the search
-      // results were received, and sends these results
-      this.$emit("search-results-received", {
-        searchResults: event.searchResults,
-        searchedProperty: event.searchedProperty,
-      });
+      // results were received, and changes showed component
+      this.$emit("search-results-received");
     },
 
     // -- DESCRIPTION:

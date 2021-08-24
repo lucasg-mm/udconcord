@@ -51,6 +51,8 @@
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   emits: ["search-results-received", "search-initiated"],
@@ -59,10 +61,6 @@ export default {
     InputText,
     Button,
     Dropdown,
-  },
-
-  props: {
-    conlluData: Object,
   },
 
   data() {
@@ -82,9 +80,27 @@ export default {
     };
   },
 
+  computed: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's getters to this component.
+     */
+    ...mapGetters(["getConlluData"]),
+  },
+
   methods: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's actions to this component.
+     */
+    ...mapActions([
+      "setSearchResults",
+      "setSearchedProperty",
+      "setEditedRowsIndexes",
+    ]),
+
     // -- DESCRIPTION:
-    // Makes a search in the treebank (just word, for now).
+    // Makes a search in the treebank.
     async search() {
       // tells the parent the search was started. It can
       // now show a progress spinner
@@ -97,7 +113,7 @@ export default {
       console.log(">>> definindo corpo da requisição...");
       // defining the request's body
       const requestBody = {
-        sentences: this.conlluData,
+        sentences: this.getConlluData,
         propertyToSearch: this.propertyToSearch,
         valueToSearch: this.queryString,
         caseWay: this.caseWay,
@@ -117,12 +133,16 @@ export default {
       // parses results to javascript object
       const searchResults = await response.json();
 
+      // sets results and searched property on the store
+      this.setSearchResults({ searchResults });
+      this.setSearchedProperty({ searchedProperty: this.propertyToSearch });
+
+      // sets the indexes of edited sentences in the store
+      this.setEditedRowsIndexes({ editedRowsIndexes: [] });
+
       // emits event to tell the parent component that the search
       // results were received, and sends these results
-      this.$emit("search-results-received", {
-        searchResults,
-        searchedProperty: this.propertyToSearch,
-      });
+      this.$emit("search-results-received");
     },
   },
 };

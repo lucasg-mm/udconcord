@@ -26,6 +26,7 @@
 </template>
 <script>
 import FileUpload from "primevue/fileupload";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -35,6 +36,12 @@ export default {
   emits: ["conllu-data-received"],
 
   methods: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's actions to this component
+     */
+    ...mapActions(["setConlluData"]),
+
     // -- DESCRIPTION:
     // Uploads CoNLL-U file to the backend
     async uploadFile(event) {
@@ -56,11 +63,12 @@ export default {
       // parses the conllu data in the response to JSON
       const conlluData = await response.json();
 
+      // defines the conlluData in the store
+      this.setConlluData({ conlluData });
+
       // emits event to tell the parent component that the conllu
       // data was received, and sends the data
-      this.$emit("conllu-data-received", {
-        conlluData,
-      });
+      this.$emit("conllu-data-received");
     },
   },
 };
