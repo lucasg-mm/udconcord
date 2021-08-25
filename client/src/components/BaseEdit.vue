@@ -50,7 +50,22 @@ export default {
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters(["getConlluData", "getDoubleClickedSentence"]),
+    ...mapGetters([
+      "getConlluData",
+      "getDoubleClickedSentence",
+      "getSearchResults",
+    ]),
+  },
+
+  mounted() {
+    console.log("conlluData: ");
+    console.log(this.getConlluData);
+
+    console.log("getDoubleClickedSentence: ");
+    console.log(this.getDoubleClickedSentence);
+
+    console.log("searchResults: ");
+    console.log(this.getSearchResults);
   },
 
   methods: {

@@ -16,7 +16,7 @@ export default {
     state.searchResults = searchResults;
   },
   updateSearchResultsSentence(state, { sentence, index }) {
-    state.searchResults[index].sentence = sentence;
+    state.searchResults[index].sentence = { ...sentence };
   },
   //----------------------------
 

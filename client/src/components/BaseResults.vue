@@ -190,9 +190,7 @@ export default {
     // an event and passing the sentence to the parent component.
     editSentence(event) {
       const index = event.data.index;
-      const sentenceObj = JSON.parse(
-        JSON.stringify(this.getSearchResults[index].sentence)
-      );
+      const sentenceObj = this.getSearchResults[index].sentence;
 
       sentenceObj["index"] = index;
 
