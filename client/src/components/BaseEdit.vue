@@ -1,7 +1,12 @@
 <template>
   <div class="centered-content">
     <p class="heading">You can edit the sentence's CoNLL-U below!</p>
-    <Textarea v-model="getDoubleClickedSentence.conllu" />
+    <Textarea
+      v-model="
+        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+          .conllu
+      "
+    />
     <Button
       style="
         margin-top: 20px;
@@ -52,20 +57,9 @@ export default {
      */
     ...mapGetters([
       "getConlluData",
-      "getDoubleClickedSentence",
+      "getDoubleClickedSentenceIndexes",
       "getSearchResults",
     ]),
-  },
-
-  mounted() {
-    console.log("conlluData: ");
-    console.log(this.getConlluData);
-
-    console.log("getDoubleClickedSentence: ");
-    console.log(this.getDoubleClickedSentence);
-
-    console.log("searchResults: ");
-    console.log(this.getSearchResults);
   },
 
   methods: {
@@ -73,11 +67,7 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component
      */
-    ...mapActions([
-      "updateSearchResultsSentence",
-      "updateConlluDataEl",
-      "pushEditedRowsIndexes",
-    ]),
+    ...mapActions(["updateConlluDataEl", "pushEditedRowsIndexes"]),
 
     /*
     -- DESCRIPTION:
@@ -92,28 +82,17 @@ export default {
      * Update conllu, search results and editedRowsIndexes
      * at the global store.
      */
-    updateStore(updatedSentence, updatedSentenceIndexResults) {
-      // gets the index from the sentence to be updated
-      // (in the global conlluData array)
-      const updatedSentenceIndex = this.getConlluData.findIndex(
-        (sentence) =>
-          sentence.metadata.sent_id === updatedSentence.metadata.sent_id
-      );
-
-      // updates the sentence in the results array
-      this.updateSearchResultsSentence({
-        sentence: updatedSentence,
-        index: updatedSentenceIndexResults,
-      });
-
+    updateStore(updatedSentence) {
       // updates the sentence in the global conllu array
       this.updateConlluDataEl({
         el: updatedSentence,
-        index: updatedSentenceIndex,
+        index: this.getDoubleClickedSentenceIndexes.conlluDataIndex,
       });
 
       // updates the ids of edited sentences
-      this.pushEditedRowsIndexes({ el: updatedSentenceIndexResults });
+      this.pushEditedRowsIndexes({
+        el: this.getDoubleClickedSentenceIndexes.searchResultsIndex,
+      });
     },
 
     /*
@@ -127,7 +106,10 @@ export default {
 
       // defining the request's body
       const requestBody = {
-        conllu: this.getDoubleClickedSentence.conllu,
+        conllu:
+          this.getConlluData[
+            this.getDoubleClickedSentenceIndexes.conlluDataIndex
+          ].conllu,
       };
 
       // makes the request
@@ -144,7 +126,7 @@ export default {
       const sentenceObject = await response.json();
 
       // saves modifications in store
-      this.updateStore(sentenceObject, this.getDoubleClickedSentence.index);
+      this.updateStore(sentenceObject);
     },
   },
 

@@ -18,9 +18,14 @@ const fs = require("fs");
  * -- RESPONSE:
  * HTTP response with the appropriate response code and a JSON.
  * The JSON can be:
- *     - In case of success: array of objects, each one with a found sentence
- *                           and a property with an array of indexes of the found
- *                           token which matched the query string.
+ *     - In case of success:
+ *        Array of objects. Each one represents a sentence in the CoNLL-U file.
+ *        Each object has the form
+ *        {
+ *           foundNGram (the found n-gram in the sentence)
+ *           sentenceIndex (the index of the found sentence in the 'sentences' array)
+ *        }
+ *
  *     - In case of error: object with a message and a nested error object.
  */
 exports.apiSearchTreebank = async (req, res, next) => {

@@ -3,20 +3,17 @@ export default {
     state.conlluData = conlluData;
   },
   updateConlluDataEl(state, { el, index }) {
-    state.conlluData[index] = el;
+    state.conlluData[index] = { ...el };
   },
   //----------------------------
 
-  setDoubleClickedSentence(state, { doubleClickedSentence }) {
-    state.doubleClickedSentence = doubleClickedSentence;
+  setDoubleClickedSentenceIndexes(state, { doubleClickedSentenceIndexes }) {
+    state.doubleClickedSentenceIndexes = doubleClickedSentenceIndexes;
   },
   //----------------------------
 
   setSearchResults(state, { searchResults }) {
     state.searchResults = searchResults;
-  },
-  updateSearchResultsSentence(state, { sentence, index }) {
-    state.searchResults[index].sentence = { ...sentence };
   },
   //----------------------------
 

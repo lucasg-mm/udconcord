@@ -107,6 +107,7 @@ export default {
      * Maps store's getters to this component.
      */
     ...mapGetters([
+      "getConlluData",
       "getEditedRowsIndexes",
       "getSearchResults",
       "getSearchedProperty",
@@ -133,7 +134,7 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component
      */
-    ...mapActions(["setDoubleClickedSentence"]),
+    ...mapActions(["setDoubleClickedSentenceIndexes"]),
 
     /*
     -- DESCRIPTION:
@@ -189,13 +190,18 @@ export default {
     // handles the double click on a sentence, emiting
     // an event and passing the sentence to the parent component.
     editSentence(event) {
-      const index = event.data.index;
-      const sentenceObj = this.getSearchResults[index].sentence;
-
-      sentenceObj["index"] = index;
+      // retrieves the sentence's index to be edited in the conlluData vuex store
+      const searchResultsArrayIndex = event.data.index;
+      const conlluDataArrayIndex =
+        this.getSearchResults[searchResultsArrayIndex].sentenceIndex;
 
       // sets the double clicked sentence in the global store
-      this.setDoubleClickedSentence({ doubleClickedSentence: sentenceObj });
+      this.setDoubleClickedSentenceIndexes({
+        doubleClickedSentenceIndexes: {
+          conlluDataIndex: conlluDataArrayIndex,
+          searchResultsIndex: searchResultsArrayIndex,
+        },
+      });
 
       this.$emit("sentence-double-click");
     },
@@ -226,7 +232,7 @@ export default {
         // for each match in this result...
 
         // gets the matched sentence
-        const resultSentence = result["sentence"];
+        const resultSentence = this.getConlluData[result.sentenceIndex];
 
         // analyses the searchedProperty and tells whether
         // the property should be displayed in the table cells

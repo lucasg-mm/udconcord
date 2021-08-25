@@ -7,16 +7,15 @@ export default {
   },
   //----------------------------
 
-  setDoubleClickedSentence(context, { doubleClickedSentence }) {
-    context.commit("setDoubleClickedSentence", { doubleClickedSentence });
+  setDoubleClickedSentenceIndexes(context, { doubleClickedSentenceIndexes }) {
+    context.commit("setDoubleClickedSentenceIndexes", {
+      doubleClickedSentenceIndexes,
+    });
   },
   //----------------------------
 
   setSearchResults(context, { searchResults }) {
     context.commit("setSearchResults", { searchResults });
-  },
-  updateSearchResultsSentence(context, { sentence, index }) {
-    context.commit("updateSearchResultsSentence", { sentence, index });
   },
   //----------------------------
 

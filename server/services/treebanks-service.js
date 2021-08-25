@@ -66,8 +66,12 @@ exports.txtToSentenceObject = async (conllu) => {
  *          insensitive way. Can be "sensitive" or "insensitive".
  *
  * -- RETURNS:
- * conlluObject.sentences: array of objects. Each one represents
- *                         a sentence in the CoNLL-U file.
+ * Array of objects. Each one represents a sentence in the CoNLL-U file.
+ * Each object has the form
+ * {
+ *    foundNGram (the found n-gram in the sentence)
+ *    sentenceIndex (the index of the found sentence in the 'sentences' array)
+ * }
  */
 exports.searchTreebank = async (
   sentences,
@@ -82,7 +86,7 @@ exports.searchTreebank = async (
   const nGramToSearch = valueToSearch.split(" ");
 
   // iterates through the sentences array
-  for (sentence of sentences) {
+  for (const [index, sentence] of sentences.entries()) {
     // iterates through the tokens of a sentence
     for (
       let i = 0;
@@ -104,7 +108,7 @@ exports.searchTreebank = async (
 
         // creates the sentence's corresponding entry
         // in the array and pushes the found token's id in it
-        searchResults.push({ foundNGram: matchesIds, sentence });
+        searchResults.push({ foundNGram: matchesIds, sentenceIndex: index });
       }
     }
   }
