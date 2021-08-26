@@ -33,8 +33,6 @@ export default {
     FileUpload,
   },
 
-  emits: ["conllu-data-received"],
-
   methods: {
     /**
      * -- DESCRIPTION:
@@ -66,9 +64,8 @@ export default {
       // defines the conlluData in the store
       this.setConlluData({ conlluData });
 
-      // emits event to tell the parent component that the conllu
-      // data was received, and sends the data
-      this.$emit("conllu-data-received");
+      // goes to the search route
+      this.$router.push("/search");
     },
   },
 };

@@ -1,68 +1,24 @@
 <template>
   <div class="main-view">
     <TheNavbar></TheNavbar>
-    <component
-      @conllu-data-received="handleConlluDataReceived"
-      @search-results-received="handleSearchResultsReceived"
-      @sentence-double-click="handleSentenceDoubleClick"
-      @to-results="handleToResults"
-      class="showed-content"
-      :is="showedComponent"
-    ></component>
+    <!-- <keep-alive>
+      <router-view class="showed-content"></router-view>
+    </keep-alive> -->
+    <router-view class="showed-content" v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
   </div>
 </template>
 
 <script>
 import TheNavbar from "./components/TheNavbar.vue";
-import BaseUpload from "./components/BaseUpload.vue";
-import BaseSearch from "./components/BaseSearch.vue";
-import BaseResults from "./components/BaseResults.vue";
-import BaseEdit from "./components/BaseEdit.vue";
 
 export default {
   name: "App",
   components: {
     TheNavbar,
-    BaseUpload,
-    BaseSearch,
-    BaseResults,
-    BaseEdit,
-  },
-  data() {
-    return {
-      // component being rendered at the moment
-      showedComponent: "BaseUpload",
-    };
-  },
-  methods: {
-    /*
-    -- DESCRIPTION:
-    Changes the showed component to BaseResults.
-    */
-    handleToResults() {
-      // updates the shown component to the results one
-      this.showedComponent = "BaseResults";
-    },
-
-    // -- DESCRIPTION:
-    // Changes the showed component to BaseEdit.
-    handleSentenceDoubleClick() {
-      this.showedComponent = "BaseEdit";
-    },
-
-    // -- DESCRIPTION:
-    // Changes the showed component to BaseSearch.
-    handleConlluDataReceived() {
-      // updates the shown component to the search one
-      this.showedComponent = "BaseSearch";
-    },
-
-    // -- DESCRIPTION:
-    // Changes showed component to BaseResults.
-    handleSearchResultsReceived() {
-      // updates the shown component to the results one
-      this.showedComponent = "BaseResults";
-    },
   },
 };
 </script>
@@ -89,9 +45,5 @@ body {
   margin-left: auto;
   margin-right: auto;
   margin-top: 80px;
-}
-
-TheFooter {
-  margin-top: 100px;
 }
 </style>

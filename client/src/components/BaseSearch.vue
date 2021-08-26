@@ -10,10 +10,7 @@
       <br />
       <br />
       <br />
-      <SearchInput
-        @search-initiated="showProgressSpinner"
-        @search-results-received="forwardResults"
-      ></SearchInput>
+      <SearchInput @search-initiated="showProgressSpinner"></SearchInput>
     </div>
   </div>
 </template>
@@ -23,8 +20,6 @@ import SearchInput from "./SearchInput.vue";
 import ProgressSpinner from "primevue/progressspinner";
 
 export default {
-  emits: ["search-results-received"],
-
   components: {
     SearchInput,
     ProgressSpinner,
@@ -37,14 +32,6 @@ export default {
   },
 
   methods: {
-    // -- DESCRIPTION:
-    // just forwards the 'search-results-received' to the parent component.
-    forwardResults() {
-      // emits event to tell the parent component that the search
-      // results were received, and changes showed component
-      this.$emit("search-results-received");
-    },
-
     // -- DESCRIPTION:
     // shows the progress spinner while loading.
     showProgressSpinner() {

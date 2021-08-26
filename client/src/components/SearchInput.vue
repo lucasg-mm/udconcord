@@ -55,7 +55,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  emits: ["search-results-received", "search-initiated"],
+  emits: ["search-initiated", "search-results-received"],
 
   components: {
     InputText,
@@ -140,9 +140,10 @@ export default {
       // sets the indexes of edited sentences in the store
       this.setEditedRowsIndexes({ editedRowsIndexes: [] });
 
-      // emits event to tell the parent component that the search
-      // results were received, and sends these results
       this.$emit("search-results-received");
+
+      // go to the results route
+      this.$router.push("/results");
     },
   },
 };

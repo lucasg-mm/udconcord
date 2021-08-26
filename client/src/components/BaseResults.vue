@@ -83,8 +83,6 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  emits: ["sentence-double-click", "search-results-received"],
-
   components: {
     SearchInput,
     DataTable,
@@ -149,7 +147,6 @@ export default {
       // number of rows rendered in pageToGo
       const numberOfRows = event.rows;
 
-      // loads the data in the page
       this.loadLazyData(pageToGo, numberOfRows);
     },
 
@@ -203,7 +200,8 @@ export default {
         },
       });
 
-      this.$emit("sentence-double-click");
+      // go to the results route
+      this.$router.push("/edit");
     },
 
     // -- DESCRIPTION
@@ -211,7 +209,7 @@ export default {
     scrollToMatches() {
       // gets the body of the column with the match results
       const matchColumn = document.querySelector(".match-column");
-      const container = document.querySelector(".results-set");
+      const container = document.querySelector(".p-datatable-wrapper");
       const matchHighlight = document.querySelector(".match-highlight");
 
       // scrolls container to centralize it to the matched word
@@ -244,7 +242,7 @@ export default {
           .slice(0, result["foundNGram"][0])
           .map((e) => {
             if (showAdditionalInfo) {
-              return `${e.form} [${e[this.getSearchedProperty]}]`;
+              return `${e.form}/${e[this.getSearchedProperty]}`;
             } else {
               return e.form;
             }
@@ -255,9 +253,9 @@ export default {
         const match = result["foundNGram"]
           .map((tokenId) => {
             if (showAdditionalInfo) {
-              return `${resultSentence.tokens[tokenId].form} [${
+              return `${resultSentence.tokens[tokenId].form}/${
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
-              }]`;
+              }`;
             } else {
               return resultSentence.tokens[tokenId].form;
             }
@@ -272,7 +270,7 @@ export default {
           )
           .map((e) => {
             if (showAdditionalInfo) {
-              return `${e.form} [${e[this.getSearchedProperty]}]`;
+              return `${e.form}/${e[this.getSearchedProperty]}`;
             } else {
               return e.form;
             }
@@ -370,15 +368,25 @@ export default {
   }
 }
 
-.results-set {
+.number-of-results {
+  color: black;
+  padding-bottom: 14px;
+  font-size: 14px;
+}
+
+.tabela::v-deep .p-datatable-wrapper {
   height: 450px;
   overflow: auto;
   scroll-behavior: smooth;
 }
 
-.number-of-results {
-  color: #000099;
-  padding-bottom: 15px;
+.tabela::v-deep .p-paginator-page {
+  font-family: "Vidaloka", serif;
+}
+
+.tabela::v-deep .p-paginator-bottom {
+  border-width: 0 0 2px 0;
+  border-color: #e4e5e8;
 }
 
 .tabela::v-deep .edited {

@@ -74,7 +74,8 @@ export default {
     Shows the results screen.
     */
     goToSearchResults() {
-      this.$emit("to-results");
+      // go back to the results screen
+      this.$router.back();
     },
 
     /**
