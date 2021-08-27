@@ -19,8 +19,6 @@
       optionValue="caseName"
     />
     way
-    <br />
-    <br />
     <InputText
       style="
         border-width: 2px;

@@ -1,5 +1,10 @@
 <template>
   <div class="centered-content" :scrollable="true">
+    <p class="heading">Here are your results!</p>
+    <p class="description">
+      Double-click a sentence to edit its CoNLL-U, or search for another
+      property.
+    </p>
     <div class="top-set">
       <SearchInput @search-results-received="updateResults"></SearchInput>
     </div>
@@ -344,6 +349,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.heading {
+  font-size: 30px;
+  margin-top: 0;
+}
+
+.description {
+  color: #495057;
+  font-size: 16px;
+}
+
 .centered-content {
   font-family: "Vidaloka", serif;
   text-align: center;
@@ -355,6 +370,7 @@ export default {
 
 .top-set {
   padding-bottom: 50px;
+  padding-top: 15px;
   position: relative;
 }
 
@@ -402,6 +418,7 @@ export default {
 
 .tabela::v-deep .p-datatable-tbody tr:hover {
   background-color: #d4ebf2 !important;
+  cursor: pointer;
 }
 
 .tabela::v-deep .p-datatable-tbody td {
