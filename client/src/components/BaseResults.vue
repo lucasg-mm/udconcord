@@ -2,17 +2,6 @@
   <div class="centered-content" :scrollable="true">
     <div class="top-set">
       <SearchInput @search-results-received="updateResults"></SearchInput>
-      <Button
-        style="
-          border-color: green;
-          background: green;
-          font-family: 'Vidaloka', serif;
-          border-radius: 5px;
-        "
-        class="export-button"
-        label="Export Results"
-        @click="exportResults"
-      />
     </div>
 
     <div class="number-of-results">~ {{ totalRecords }} results found ~</div>
@@ -70,6 +59,19 @@
           header="Right Context"
         ></Column>
       </DataTable>
+    </div>
+    <div class="bottom-set">
+      <Button
+        style="
+          border-color: green;
+          background: green;
+          font-family: 'Vidaloka', serif;
+          border-radius: 5px;
+        "
+        class="export-button"
+        label="Export Results"
+        @click="exportResults"
+      />
     </div>
   </div>
 </template>
@@ -353,6 +355,11 @@ export default {
 
 .top-set {
   padding-bottom: 50px;
+  position: relative;
+}
+
+.bottom-set {
+  margin-top: 15px;
   position: relative;
 }
 
