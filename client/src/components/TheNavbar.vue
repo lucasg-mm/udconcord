@@ -1,17 +1,30 @@
 <template>
-  <Menubar :model="items" class="navbar">
-    <template #start>
-      <img alt="logo" height="30" src="../assets/logo.svg" />
-    </template>
-  </Menubar>
+  <div class="fixed">
+    <ProgressBar v-if="getIsLoading" mode="indeterminate" />
+    <Menubar :model="items" class="navbar">
+      <template #start>
+        <img alt="logo" height="30" src="../assets/logo.svg" />
+      </template>
+    </Menubar>
+  </div>
 </template>
 
 <script>
 import Menubar from "primevue/menubar";
+import ProgressBar from "primevue/progressbar";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     Menubar,
+    ProgressBar,
+  },
+  computed: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's getters to this component.
+     */
+    ...mapGetters(["getIsLoading"]),
   },
   data() {
     return {
@@ -22,8 +35,24 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.fixed {
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  z-index: 2;
+}
+
+.p-progressbar {
+  height: 5px;
+}
+
+.p-progressbar::v-deep .p-progressbar-value {
+  background: #000099;
+}
+
 .navbar {
+  height: 45px;
   border-radius: 0;
   border-width: 0 0 1px 0;
   border-color: white;

@@ -34,6 +34,7 @@ body,
   min-width: 100%;
   margin: 0;
   background-color: #ccdde8;
+  /* background-color: white; */
 }
 
 body {

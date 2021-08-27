@@ -36,13 +36,16 @@ export default {
   methods: {
     /**
      * -- DESCRIPTION:
-     * Maps store's actions to this component
+     * Maps store's actions to this component.
      */
-    ...mapActions(["setConlluData"]),
+    ...mapActions(["setConlluData", "showLoadingBar", "hideLoadingBar"]),
 
     // -- DESCRIPTION:
     // Uploads CoNLL-U file to the backend
     async uploadFile(event) {
+      // shows loading bar
+      this.showLoadingBar();
+
       // gets the backend treebanks route URL
       const treebanksRouteUrl = process.env.VUE_APP_URL + "api/treebanks";
 
@@ -63,6 +66,9 @@ export default {
 
       // defines the conlluData in the store
       this.setConlluData({ conlluData });
+
+      // hides loading bar
+      this.hideLoadingBar();
 
       // goes to the search route
       this.$router.push("/search");

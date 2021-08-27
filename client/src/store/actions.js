@@ -30,4 +30,13 @@ export default {
   setSearchedProperty(context, { searchedProperty }) {
     context.commit("setSearchedProperty", { searchedProperty });
   },
+
+  //-----------------------------
+  showLoadingBar(context) {
+    context.commit("showLoadingBar");
+  },
+
+  hideLoadingBar(context) {
+    context.commit("hideLoadingBar");
+  },
 };

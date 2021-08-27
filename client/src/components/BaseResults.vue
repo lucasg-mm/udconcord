@@ -15,7 +15,6 @@
 
     <div class="results-set">
       <DataTable
-        :loading="loading"
         :lazy="true"
         :paginator="true"
         :rows="recordsPerPage"
@@ -123,9 +122,6 @@ export default {
 
       // number os records that should be rendered per page
       recordsPerPage: 100,
-
-      // tells whether the data is being processed
-      loading: false,
     };
   },
 
@@ -162,7 +158,6 @@ export default {
     numberOfRows: number of rows to be rendered in the table's page.
     */
     loadLazyData(pageToGo, numberOfRows) {
-      this.loading = true;
       console.log(">> Loading lazy data...");
 
       // gets the results array and the string
@@ -179,7 +174,6 @@ export default {
 
       // formats the data in the DataTable component
       this.organizesResults(dataInCurrPage, searchedProperty, pageToGo);
-      this.loading = false;
 
       // scroll to the matches after updates the DOM
       this.$nextTick(() => this.scrollToMatches());

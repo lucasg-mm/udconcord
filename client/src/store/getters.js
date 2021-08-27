@@ -14,4 +14,7 @@ export default {
   getSearchedProperty(state) {
     return state.searchedProperty;
   },
+  getIsLoading(state) {
+    return state.isLoading;
+  },
 };

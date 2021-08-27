@@ -41,7 +41,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  emits: ["search-initiated", "search-results-received"],
+  emits: ["search-results-received"],
 
   components: {
     InputText,
@@ -83,14 +83,14 @@ export default {
       "setSearchResults",
       "setSearchedProperty",
       "setEditedRowsIndexes",
+      "showLoadingBar",
+      "hideLoadingBar",
     ]),
 
     // -- DESCRIPTION:
     // Makes a search in the treebank.
     async search() {
-      // tells the parent the search was started. It can
-      // now show a progress spinner
-      this.$emit("search-initiated");
+      this.showLoadingBar();
 
       // gets the backend treebanks route URL
       const treebanksSearchRouteUrl =
@@ -98,12 +98,14 @@ export default {
 
       console.log(">>> definindo corpo da requisição...");
       // defining the request's body
-      const requestBody = {
+      let requestBody = {
         sentences: this.getConlluData,
         propertyToSearch: this.propertyToSearch,
         valueToSearch: this.queryString,
         caseWay: this.caseWay,
       };
+
+      requestBody = JSON.stringify(requestBody);
 
       console.log(">>> fazendo requisição...");
       // makes the request
@@ -113,7 +115,7 @@ export default {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
+        body: requestBody,
       });
 
       // parses results to javascript object
@@ -130,6 +132,7 @@ export default {
 
       // go to the results route
       this.$router.push("/results");
+      this.hideLoadingBar();
     },
   },
 };

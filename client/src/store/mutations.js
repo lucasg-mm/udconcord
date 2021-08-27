@@ -28,4 +28,14 @@ export default {
   setSearchedProperty(state, { searchedProperty }) {
     state.searchedProperty = searchedProperty;
   },
+
+  //-----------------------------
+
+  showLoadingBar(state) {
+    state.isLoading = true;
+  },
+
+  hideLoadingBar(state) {
+    state.isLoading = false;
+  },
 };

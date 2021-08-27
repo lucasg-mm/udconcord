@@ -4,39 +4,22 @@
       <p class="heading">Time to search!</p>
       <p class="description">You can use the input fields below.</p>
       <br />
-      <ProgressSpinner v-if="isLoading" />
-      <i v-else class="fas fa-search search-icon"></i>
+      <i class="fas fa-search search-icon"></i>
       <br />
       <br />
       <br />
       <br />
-      <SearchInput @search-initiated="showProgressSpinner"></SearchInput>
+      <SearchInput></SearchInput>
     </div>
   </div>
 </template>
 
 <script>
 import SearchInput from "./SearchInput.vue";
-import ProgressSpinner from "primevue/progressspinner";
 
 export default {
   components: {
     SearchInput,
-    ProgressSpinner,
-  },
-
-  data() {
-    return {
-      isLoading: false,
-    };
-  },
-
-  methods: {
-    // -- DESCRIPTION:
-    // shows the progress spinner while loading.
-    showProgressSpinner() {
-      this.isLoading = true;
-    },
   },
 };
 </script>
