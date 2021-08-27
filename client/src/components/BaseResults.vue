@@ -6,7 +6,9 @@
       property.
     </p>
     <div class="top-set">
-      <SearchInput @search-results-received="updateResults"></SearchInput>
+      <SearchInput
+        @search-results-received="loadLazyData(1, this.recordsPerPage)"
+      ></SearchInput>
     </div>
 
     <div class="number-of-results">~ {{ totalRecords }} results found ~</div>
@@ -175,6 +177,7 @@ export default {
         pageToGo * numberOfRows
       );
 
+      // formats the data in the DataTable component
       this.organizesResults(dataInCurrPage, searchedProperty, pageToGo);
       this.loading = false;
 
@@ -329,18 +332,6 @@ export default {
       element.click();
 
       document.body.removeChild(element);
-    },
-
-    /**
-     * -- DESCRIPTION:
-     * Deals with a new search.
-     */
-    updateResults() {
-      // organizes the results
-      this.organizesResults(this.getSearchResults, this.getSearchedProperty);
-
-      // scroll to the matches after updates the DOM
-      this.$nextTick(() => this.scrollToMatches());
     },
   },
 };
