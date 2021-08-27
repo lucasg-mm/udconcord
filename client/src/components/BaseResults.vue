@@ -67,12 +67,6 @@
     </div>
     <div class="bottom-set">
       <Button
-        style="
-          border-color: green;
-          background: green;
-          font-family: 'Vidaloka', serif;
-          border-radius: 5px;
-        "
         class="export-button"
         label="Export Results"
         @click="exportResults"
@@ -349,6 +343,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.p-button {
+  border-color: #2db92d;
+  background: #2db92d;
+  font-family: "Vidaloka", serif;
+  border-radius: 5px;
+}
+
+.p-button:hover {
+  background: #239023 !important;
+  color: #ffffff !important;
+  border-color: #239023 !important;
+}
+
+.p-button:active {
+  background: #47d247 !important;
+  color: #ffffff !important;
+  border-color: #47d247 !important;
+}
+
 .heading {
   font-size: 30px;
   margin-top: 0;
@@ -363,7 +376,7 @@ export default {
   font-family: "Vidaloka", serif;
   text-align: center;
   width: 80%;
-  padding: 50px;
+  padding: 50px 50px 70px 50px;
   background-color: #fff;
   border-radius: 5px;
 }
@@ -375,7 +388,7 @@ export default {
 }
 
 .bottom-set {
-  margin-top: 15px;
+  margin-top: 30px;
   position: relative;
 }
 

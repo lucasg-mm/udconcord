@@ -3,7 +3,6 @@
     I want to look for
     <Dropdown
       class="dropdown"
-      style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="propertyToSearch"
       :options="availableProperties"
       optionLabel="humanReadableName"
@@ -12,13 +11,12 @@
     in a
     <Dropdown
       class="dropdown"
-      style="border-width: 2px; border-radius: 5px; border-color: #e4e5e8"
       v-model="caseWay"
       :options="availableCases"
       optionLabel="humanReadableName"
       optionValue="caseName"
     />
-    way
+    way:
     <InputText
       style="
         border-width: 2px;
@@ -138,12 +136,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep(.dropdown.p-dropdown) {
-  .p-dropdown-label,
-  .p-dropdown-items {
-    font-family: "Vidaloka", serif;
-    color: black;
-  }
+.p-dropdown::v-deep .p-dropdown-label,
+.p-dropdown-item {
+  font-family: "Vidaloka", serif;
+  color: black;
+}
+
+.dropdown::v-deep .p-dropdown-item {
+  font-family: "Vidaloka", serif !important;
+  color: black !important;
+}
+
+.p-dropdown {
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: #e4e5e8;
 }
 
 .p-button {
