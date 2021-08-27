@@ -18,7 +18,7 @@
       optionLabel="humanReadableName"
       optionValue="caseName"
     />
-    way.
+    way
     <br />
     <br />
     <InputText
@@ -33,17 +33,7 @@
       type="text"
       v-model="queryString"
     />
-    <Button
-      style="
-        border-width: 2px;
-        border-color: #000099;
-        background: #000099;
-        font-family: 'Vidaloka', serif;
-        border-radius: 0 5px 5px 0;
-      "
-      label="Search"
-      @click="search"
-    />
+    <Button label="Search" @click="search" />
   </div>
 </template>
 
@@ -156,6 +146,26 @@ export default {
     font-family: "Vidaloka", serif;
     color: black;
   }
+}
+
+.p-button {
+  border-width: 2px;
+  border-color: #000099;
+  background: #000099;
+  font-family: "Vidaloka", serif;
+  border-radius: 0 5px 5px 0;
+}
+
+.p-button:hover {
+  background: #000066 !important;
+  color: #ffffff !important;
+  border-color: #000066 !important;
+}
+
+.p-button:active {
+  background: #0000e6 !important;
+  color: #ffffff !important;
+  border-color: #0000e6 !important;
 }
 
 @media screen and (max-width: 768px) {
