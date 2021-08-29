@@ -8,6 +8,7 @@ import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
 import BaseEdit from "./components/BaseEdit.vue";
+import ToastService from "primevue/toastservice";
 
 // imports PrimeVue Styles
 import "primevue/resources/themes/saga-blue/theme.css";
@@ -43,6 +44,7 @@ const router = createRouter({
 app.use(PrimeVue);
 app.use(store);
 app.use(router);
+app.use(ToastService);
 
 // mounts app
 app.mount("#app");

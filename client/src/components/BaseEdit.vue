@@ -1,5 +1,6 @@
 <template>
   <div class="centered-content">
+    <Toast></Toast>
     <p class="heading">You can edit the sentence's CoNLL-U below!</p>
     <Textarea
       v-model="
@@ -37,11 +38,13 @@ import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import Toast from "primevue/toast";
 
 export default {
   components: {
     Textarea,
     Button,
+    Toast,
   },
 
   emits: ["edited-sentence", "to-results"],
@@ -128,6 +131,14 @@ export default {
 
       // saves modifications in store
       this.updateStore(sentenceObject);
+
+      // shows message
+      this.$toast.add({
+        severity: "success",
+        summary: "Saved",
+        detail: "Your changes have been successfully saved!",
+        life: 3000,
+      });
     },
   },
 
