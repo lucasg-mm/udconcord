@@ -55,7 +55,7 @@ export default {
   height: 45px;
   border-radius: 0;
   border-width: 0 0 1px 0;
-  border-color: white;
+  border-color: #e4e5e8;
   background-color: white;
   font-family: "Vidaloka", serif;
   color: black;
