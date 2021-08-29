@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="input-set">
     I want to look for
     <Dropdown
       class="dropdown"
@@ -128,24 +128,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.input-set {
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+}
+
 .p-inputtext {
+  padding: 10px 32px 10px 10px;
+  font-size: 18px;
   margin-top: 10px;
   border-width: 2px;
   border-radius: 5px 0 0 5px;
   border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   color: black;
 }
 
 .p-dropdown::v-deep .p-dropdown-label,
 .p-dropdown-item {
-  font-family: "Vidaloka", serif;
+  padding: 10px 32px 10px 10px;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
   color: black;
-}
-
-.dropdown::v-deep .p-dropdown-item {
-  font-family: "Vidaloka", serif !important;
-  color: black !important;
 }
 
 .p-dropdown {
@@ -155,10 +159,12 @@ export default {
 }
 
 .p-button {
+  padding: 10px 32px;
+  font-size: 18px;
   border-width: 2px;
   border-color: #000099;
   background: #000099;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   border-radius: 0 5px 5px 0;
 }
 

@@ -5,7 +5,7 @@
     <div class="with-divisor">
       <Menubar :model="items" class="navbar">
         <template #start>
-          <img alt="logo" height="30" src="../assets/logo.svg" />
+          <img alt="logo" height="35" src="../assets/logo.svg" />
         </template>
       </Menubar>
     </div>
@@ -60,7 +60,7 @@ export default {
 }
 
 .navbar {
-  height: 55px;
+  height: 60px;
   border-radius: 0;
   border-width: 0 0 1px 0;
   border-color: #e4e5e8;
