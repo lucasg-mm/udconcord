@@ -10,12 +10,6 @@
     <br />
     <br />
     <FileUpload
-      style="
-        border-color: #000099;
-        background: #000099;
-        font-family: 'Vidaloka', serif;
-        border-radius: 5px;
-      "
       mode="basic"
       accept=".conllu"
       :maxFileSize="100000000"
@@ -76,7 +70,26 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.p-fileupload::v-deep .p-button {
+  border-color: #000099;
+  background: #000099;
+  font-family: "Vidaloka", serif;
+  border-radius: 5px;
+}
+
+.p-fileupload::v-deep .p-button:hover {
+  background: #000066 !important;
+  color: #ffffff !important;
+  border-color: #000066 !important;
+}
+
+.p-fileupload::v-deep .p-button:active {
+  background: #0000e6 !important;
+  color: #ffffff !important;
+  border-color: #0000e6 !important;
+}
+
 .heading {
   font-size: 30px;
   margin-top: 0;
