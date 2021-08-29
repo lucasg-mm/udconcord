@@ -97,6 +97,11 @@ export default {
     this.loadLazyData(1, this.recordsPerPage);
   },
 
+  activated() {
+    // scroll to matchs when the component is reactivated
+    this.scrollToMatches();
+  },
+
   computed: {
     /**
      * -- DESCRIPTION:
