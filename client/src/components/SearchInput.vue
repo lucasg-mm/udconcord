@@ -17,18 +17,7 @@
       optionValue="caseName"
     />
     way:
-    <InputText
-      style="
-        border-width: 2px;
-        border-radius: 5px 0 0 5px;
-        border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
-        font-family: 'Vidaloka', serif;
-        color: black;
-      "
-      class="search-input"
-      type="text"
-      v-model="queryString"
-    />
+    <InputText class="search-input" type="text" v-model="queryString" />
     <Button label="Search" @click="search" />
   </div>
 </template>
@@ -139,6 +128,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.p-inputtext {
+  margin-top: 10px;
+  border-width: 2px;
+  border-radius: 5px 0 0 5px;
+  border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
+  font-family: "Vidaloka", serif;
+  color: black;
+}
+
 .p-dropdown::v-deep .p-dropdown-label,
 .p-dropdown-item {
   font-family: "Vidaloka", serif;
