@@ -33,8 +33,7 @@ body,
   min-height: 100%;
   min-width: 100%;
   margin: 0;
-  background-color: #ccdde8;
-  /* background-color: white; */
+  background-color: #eff4f8;
 }
 
 body {

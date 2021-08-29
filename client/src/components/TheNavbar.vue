@@ -40,6 +40,8 @@ export default {
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
+  padding: 0 20px;
+  background-color: white;
   z-index: 2;
 }
 
@@ -52,7 +54,7 @@ export default {
 }
 
 .navbar {
-  height: 45px;
+  height: 55px;
   border-radius: 0;
   border-width: 0 0 1px 0;
   border-color: #e4e5e8;
