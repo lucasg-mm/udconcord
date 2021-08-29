@@ -1,9 +1,6 @@
 <template>
   <div class="main-view">
     <TheNavbar></TheNavbar>
-    <!-- <keep-alive>
-      <router-view class="showed-content"></router-view>
-    </keep-alive> -->
     <router-view class="showed-content" v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
@@ -24,7 +21,7 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Vidaloka&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 html,
 body,
@@ -33,7 +30,7 @@ body,
   min-height: 100%;
   min-width: 100%;
   margin: 0;
-  background-color: #eff4f8;
+  background-color: #fff;
 }
 
 body {

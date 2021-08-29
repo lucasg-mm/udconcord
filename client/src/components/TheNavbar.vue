@@ -1,11 +1,14 @@
 <template>
   <div class="fixed">
     <ProgressBar v-if="getIsLoading" mode="indeterminate" />
-    <Menubar :model="items" class="navbar">
-      <template #start>
-        <img alt="logo" height="30" src="../assets/logo.svg" />
-      </template>
-    </Menubar>
+
+    <div class="with-divisor">
+      <Menubar :model="items" class="navbar">
+        <template #start>
+          <img alt="logo" height="30" src="../assets/logo.svg" />
+        </template>
+      </Menubar>
+    </div>
   </div>
 </template>
 
@@ -40,9 +43,12 @@ export default {
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
-  padding: 0 20px;
   background-color: white;
   z-index: 2;
+}
+
+.with-divisor {
+  padding: 0 20px;
 }
 
 .p-progressbar {

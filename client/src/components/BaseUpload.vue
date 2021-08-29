@@ -1,15 +1,18 @@
 <template>
   <div class="centered-content">
-    <p class="heading">Please, submit your treebank!</p>
+    <!-- <p class="heading">Please, submit your treebank!</p> -->
+    <h1 class="heading">Please, submit your treebank!</h1>
     <p class="description">
       Remember, your file must be in the CoNLL-U format.
     </p>
     <br />
-    <i class="fas fa-tree tree-icon"></i>
+    <img class="trees" src="../assets/trees.svg" />
     <br />
     <br />
     <br />
     <FileUpload
+      chooseLabel="Choose file"
+      class="p-fileupload-lg"
       mode="basic"
       accept=".conllu"
       :maxFileSize="100000000"
@@ -72,9 +75,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .p-fileupload::v-deep .p-button {
+  padding: 10px 32px;
+  font-size: 20px;
   border-color: #000099;
   background: #000099;
-  font-family: "Vidaloka", serif;
   border-radius: 5px;
 }
 
@@ -91,25 +95,25 @@ export default {
 }
 
 .heading {
-  font-size: 30px;
-  margin-top: 0;
+  font-size: 40px;
+  font-weight: 700;
 }
 
 .description {
   color: #495057;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .centered-content {
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   text-align: center;
-  background-color: white;
-  padding: 35px 25px 35px 25px;
-  min-width: 250px;
+  background-color: #eff4f8;
+  padding: 50px;
+  min-width: 65%;
   border-radius: 5px;
 }
 
-.tree-icon {
-  font-size: 86px;
+.trees {
+  height: 350px;
 }
 </style>
