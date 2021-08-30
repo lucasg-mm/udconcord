@@ -7,22 +7,64 @@
     </p>
     <div class="table-container">
       <DataTable
+        editMode="cell"
+        class="editable-cells-table"
         :autoLayout="true"
         columnResizeMode="expand"
         :value="
           getConlluData[getDoubleClickedSentenceIndexes.conlluDataIndex].tokens
         "
       >
-        <Column field="id" header="Id"></Column>
-        <Column field="form" header="Form"></Column>
-        <Column field="lemma" header="Lemma"></Column>
-        <Column field="upostag" header="Upos Tag"></Column>
-        <Column field="xpostag" header="Xpos Tag"></Column>
-        <Column field="feats" header="Feats"></Column>
-        <Column field="head" header="Head"></Column>
-        <Column field="deprel" header="DepRel"></Column>
-        <Column field="deps" header="Deps"></Column>
-        <Column field="misc" header="Misc"></Column>
+        <Column field="id" header="Id">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="form" header="Form">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="lemma" header="Lemma">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="upostag" header="Upos Tag">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="xpostag" header="Xpos Tag">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="feats" header="Feats">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="head" header="Head">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="deprel" header="DepRel">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="deps" header="Deps">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column field="misc" header="Misc">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
       </DataTable>
     </div>
 
@@ -46,6 +88,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import Toast from "primevue/toast";
 import Column from "primevue/column";
+import InputText from "primevue/inputtext";
 
 export default {
   components: {
@@ -53,6 +96,7 @@ export default {
     Toast,
     DataTable,
     Column,
+    InputText,
   },
 
   emits: ["edited-sentence", "to-results"],
