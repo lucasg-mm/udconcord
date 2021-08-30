@@ -1,7 +1,7 @@
 <template>
   <div class="centered-content">
     <Toast></Toast>
-    <p class="heading">You can edit the sentence's CoNLL-U below!</p>
+    <h1 class="heading">You can edit the sentence's CoNLL-U below!</h1>
     <Textarea
       v-model="
         this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
@@ -152,10 +152,12 @@ Textarea {
 }
 
 .p-button {
+  padding: 10px 32px;
+  font-size: 18px;
   border-width: 2px;
   border-color: #000099;
   background: #000099;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   border-radius: 0 5px 5px 0;
 }
 
@@ -186,7 +188,7 @@ Textarea {
   margin-right: 10px;
   border-color: #000099;
   color: #000099;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   border-radius: 5px;
 }
 
@@ -194,7 +196,7 @@ Textarea {
   margin-top: 20px;
   border-color: #000099;
   background: #000099;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   border-radius: 5px;
 }
 
@@ -209,16 +211,16 @@ Textarea {
 }
 
 .heading {
-  font-size: 25px;
-  margin-top: 0;
+  font-size: 35px;
+  font-weight: 700;
 }
 
 .centered-content {
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   text-align: center;
-  width: 80%;
+  width: 90%;
   padding: 50px 50px 90px 50px;
-  background-color: #fff;
+  background-color: #eff4f8;
   border-radius: 5px;
 }
 </style>
