@@ -2,6 +2,9 @@
   <div class="centered-content">
     <Toast></Toast>
     <h1 class="heading">You can edit the sentence's CoNLL-U below!</h1>
+    <p class="description">
+      Don't forget to save your changes before you quit this screen.
+    </p>
     <Textarea
       v-model="
         this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
@@ -222,5 +225,10 @@ Textarea {
   padding: 50px 50px 90px 50px;
   background-color: #eff4f8;
   border-radius: 5px;
+}
+
+.description {
+  color: #495057;
+  font-size: 18px;
 }
 </style>
