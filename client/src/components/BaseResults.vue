@@ -1,6 +1,6 @@
 <template>
   <div class="centered-content" :scrollable="true">
-    <p class="heading">Here are your results!</p>
+    <h1 class="heading">Here are your results!</h1>
     <p class="description">
       Double-click a sentence to edit its CoNLL-U, or search for another
       property.
@@ -11,7 +11,7 @@
       ></SearchInput>
     </div>
 
-    <div class="number-of-results">~ {{ totalRecords }} results found ~</div>
+    <div class="number-of-results">{{ totalRecords }} results found</div>
 
     <div class="results-set">
       <DataTable
@@ -19,7 +19,6 @@
         :paginator="true"
         :rows="recordsPerPage"
         class="tabela"
-        style="font-family: 'Vidaloka', serif; white-space: nowrap"
         :value="organizedResults"
         :autoLayout="true"
         :rowHover="true"
@@ -337,10 +336,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.p-datatable {
+  font-family: "Roboto", sans-serif;
+  white-space: nowrap;
+}
+
+.tabela::v-deep .p-datatable-tbody tr {
+  background-color: #eff4f8 !important;
+}
+
 .p-button {
   border-color: #2db92d;
   background: #2db92d;
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   border-radius: 5px;
 }
 
@@ -357,21 +365,21 @@ export default {
 }
 
 .heading {
-  font-size: 30px;
-  margin-top: 0;
+  font-size: 38px;
+  font-weight: 700;
 }
 
 .description {
   color: #495057;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .centered-content {
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
   text-align: center;
-  width: 80%;
+  width: 90%;
   padding: 50px 50px 70px 50px;
-  background-color: #fff;
+  background-color: #eff4f8;
   border-radius: 5px;
 }
 
@@ -387,6 +395,8 @@ export default {
 }
 
 .export-button {
+  padding: 10px 32px;
+  font-size: 18px;
   position: absolute;
   right: 0;
   top: 0;
@@ -399,7 +409,7 @@ export default {
 }
 
 .number-of-results {
-  color: black;
+  color: #495057;
   padding-bottom: 14px;
   font-size: 14px;
 }
@@ -411,12 +421,14 @@ export default {
 }
 
 .tabela::v-deep .p-paginator-page {
-  font-family: "Vidaloka", serif;
+  font-family: "Roboto", sans-serif;
+  background-color: #eff4f8;
 }
 
 .tabela::v-deep .p-paginator-bottom {
   border-width: 0 0 2px 0;
   border-color: #e4e5e8;
+  background-color: #eff4f8;
 }
 
 .tabela::v-deep .edited {
