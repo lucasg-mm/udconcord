@@ -342,7 +342,7 @@ export default {
 }
 
 .tabela::v-deep .p-datatable-tbody tr {
-  background-color: #eff4f8 !important;
+  background-color: #eff4f8;
 }
 
 .p-button {
@@ -432,7 +432,7 @@ export default {
 }
 
 .tabela::v-deep .edited {
-  background-color: #d2f8d2;
+  background-color: #d2f8d2 !important;
 }
 
 .tabela::v-deep .p-datatable-tbody tr:hover {
