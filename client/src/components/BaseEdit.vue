@@ -5,12 +5,26 @@
     <p class="description">
       Don't forget to save your changes before you quit this screen.
     </p>
-    <Textarea
-      v-model="
-        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
-          .conllu
-      "
-    />
+    <div class="table-container">
+      <DataTable
+        :autoLayout="true"
+        columnResizeMode="expand"
+        :value="
+          getConlluData[getDoubleClickedSentenceIndexes.conlluDataIndex].tokens
+        "
+      >
+        <Column field="id" header="Id"></Column>
+        <Column field="form" header="Form"></Column>
+        <Column field="lemma" header="Lemma"></Column>
+        <Column field="upostag" header="Upos Tag"></Column>
+        <Column field="xpostag" header="Xpos Tag"></Column>
+        <Column field="feats" header="Feats"></Column>
+        <Column field="head" header="Head"></Column>
+        <Column field="deprel" header="DepRel"></Column>
+        <Column field="deps" header="Deps"></Column>
+        <Column field="misc" header="Misc"></Column>
+      </DataTable>
+    </div>
 
     <div class="bottom-set">
       <div class="buttons">
@@ -26,23 +40,32 @@
 </template>
 
 <script>
-import Textarea from "primevue/textarea";
+import DataTable from "primevue/datatable";
 import Button from "primevue/button";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 import Toast from "primevue/toast";
+import Column from "primevue/column";
 
 export default {
   components: {
-    Textarea,
     Button,
     Toast,
+    DataTable,
+    Column,
   },
 
   emits: ["edited-sentence", "to-results"],
 
   props: {
     sentence: Object,
+  },
+
+  mounted() {
+    console.log(
+      this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+        .tokens
+    );
   },
 
   computed: {
@@ -144,6 +167,15 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
+.table-container {
+  overflow: auto;
+}
+
+.p-datatable {
+  width: 100%;
+  height: 500px;
+}
 
 Textarea {
   resize: none;
