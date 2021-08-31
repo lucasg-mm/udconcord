@@ -19,38 +19,8 @@ exports.parseConlluToObject = async (conlluData) => {
   // specified in the conlluData variable
   conlluObject.serial = conlluData;
 
-  // picks the conllu from the sentence and puts it in the conllu property
-  conlluObject.sentences.forEach((sentence) => {
-    sentence.conllu = sentence.serial;
-  });
-
   // return an array of objects
   return conlluObject.sentences;
-};
-
-/**
- * -- DESCRIPTION:
- * Parses conllu of a sentence to sentence object.
- *
- * -- PARAMETERS:
- * conllu: string with the sentence's conllu.
- *
- * -- RETURNS:
- * sentenceObject: object representing the sentence.
- */
-exports.txtToSentenceObject = async (conllu) => {
-  // instantiates a new CoNLL-U object
-  const sentenceObject = new conlluJsLibrary.Sentence();
-
-  // makes the object assume the form of the data
-  // specified in the conlluData variable
-  sentenceObject.serial = conllu;
-
-  // sends back the conllu, also
-  sentenceObject.conllu = conllu;
-
-  // return an array of objects
-  return sentenceObject;
 };
 
 /**

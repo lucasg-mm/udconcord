@@ -51,35 +51,6 @@ exports.apiSearchTreebank = async (req, res, next) => {
 
 /**
  * -- DESCRIPTION:
- * Parses conllu to sentence object.
- *
- * -- REQUEST'S BODY:
- * conllu: string with the sentence's conllu.
- *
- * -- RESPONSE:
- * HTTP response with the appropriate response code and a JSON.
- * The JSON can be:
- *     - In case of success: object representing the sentence.
- *     - In case of error: object with a message and a nested error object.
- */
-exports.apiEditTreebank = async (req, res, next) => {
-  try {
-    // gets the request's properties
-    const { conllu } = req.fields;
-
-    // parses .conllu string to a sentence object
-    const sentenceObject = await treebanksService.txtToSentenceObject(conllu);
-
-    // returns the sentence object
-    res.json(sentenceObject);
-  } catch (error) {
-    // in case of error, send a message and the error object
-    res.status(500).json({ message: "Internal error", error: error });
-  }
-};
-
-/**
- * -- DESCRIPTION:
  * Creates a new treebank.
  *
  * -- REQUEST'S BODY:

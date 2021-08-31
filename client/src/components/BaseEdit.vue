@@ -7,6 +7,14 @@
     </p>
     <div class="table-container">
       <DataTable
+        class="metadata-table"
+        :autoLayout="true"
+        columnResizeMode="expand"
+        :value="metadata"
+      >
+        <Column header="Metadata" field="meta"> </Column>
+      </DataTable>
+      <DataTable
         editMode="cell"
         class="editable-cells-table"
         :autoLayout="true"
@@ -108,7 +116,6 @@ export default {
   mounted() {
     console.log(
       this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
-        .tokens
     );
   },
 
@@ -122,6 +129,30 @@ export default {
       "getDoubleClickedSentenceIndexes",
       "getSearchResults",
     ]),
+
+    /**
+     * -- DESCRIPTION:
+     * Holds the metadata of the edited sentence.
+     */
+    metadata() {
+      let metadata = [];
+
+      for (const key in this.getConlluData[
+        this.getDoubleClickedSentenceIndexes.conlluDataIndex
+      ].metadata) {
+        metadata.push({
+          meta: `# ${key}=${
+            this.getConlluData[
+              this.getDoubleClickedSentenceIndexes.conlluDataIndex
+            ].metadata[key]
+          }`,
+        });
+      }
+
+      console.log(metadata);
+
+      return metadata;
+    },
   },
 
   methods: {
@@ -218,7 +249,12 @@ export default {
 
 .p-datatable {
   width: 100%;
-  height: 500px;
+  height: 300px;
+  display: table-row;
+}
+
+.p-datatable.metadata-table {
+  height: auto;
 }
 
 Textarea {
