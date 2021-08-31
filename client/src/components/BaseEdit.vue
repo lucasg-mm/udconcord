@@ -8,8 +8,9 @@
     <div class="table-container">
       <DataTable
         v-for="metaName in metadataNames"
+        editMode="cell"
         :key="metaName"
-        class="p-datatable-sm metadata-table"
+        class="p-datatable-sm"
         :autoLayout="true"
         columnResizeMode="expand"
         :value="[
@@ -17,11 +18,15 @@
             .metadata,
         ]"
       >
-        <Column :header="metaName" :field="metaName"> </Column>
+        <Column :header="metaName" :field="metaName">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
       </DataTable>
       <DataTable
         editMode="cell"
-        class="p-datatable-sm editable-cells-table"
+        class="p-datatable-sm"
         :autoLayout="true"
         columnResizeMode="expand"
         :value="
@@ -118,11 +123,11 @@ export default {
     sentence: Object,
   },
 
-  mounted() {
-    console.log(
-      this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
-    );
-  },
+  // mounted() {
+  //   console.log(
+  //     this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+  //   );
+  // },
 
   computed: {
     /**
@@ -164,13 +169,7 @@ export default {
      * Update conllu, search results and editedRowsIndexes
      * at the global store.
      */
-    updateStore(updatedSentence) {
-      // updates the sentence in the global conllu array
-      this.updateConlluDataEl({
-        el: updatedSentence,
-        index: this.getDoubleClickedSentenceIndexes.conlluDataIndex,
-      });
-
+    updateStore() {
       // updates the ids of edited sentences
       this.pushEditedRowsIndexes({
         el: this.getDoubleClickedSentenceIndexes.searchResultsIndex,
@@ -182,33 +181,8 @@ export default {
     Saves the modifications in the sentence's conllu.
     */
     async saveChanges() {
-      // gets the backend treebanks route URL
-      const treebanksEditRouteUrl =
-        process.env.VUE_APP_URL + "api/treebanks/edit";
-
-      // defining the request's body
-      const requestBody = {
-        conllu:
-          this.getConlluData[
-            this.getDoubleClickedSentenceIndexes.conlluDataIndex
-          ].conllu,
-      };
-
-      // makes the request
-      const response = await fetch(treebanksEditRouteUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      // parses results to javascript object
-      const sentenceObject = await response.json();
-
       // saves modifications in store
-      this.updateStore(sentenceObject);
+      this.updateStore();
 
       // shows message
       this.$toast.add({
@@ -230,6 +204,10 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+
+.p-inputtext {
+  width: 100%;
+}
 
 .table-container {
   overflow: auto;
