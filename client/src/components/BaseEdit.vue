@@ -7,16 +7,21 @@
     </p>
     <div class="table-container">
       <DataTable
-        class="metadata-table"
+        v-for="metaName in metadataNames"
+        :key="metaName"
+        class="p-datatable-sm metadata-table"
         :autoLayout="true"
         columnResizeMode="expand"
-        :value="metadata"
+        :value="[
+          getConlluData[getDoubleClickedSentenceIndexes.conlluDataIndex]
+            .metadata,
+        ]"
       >
-        <Column header="Metadata" field="meta"> </Column>
+        <Column :header="metaName" :field="metaName"> </Column>
       </DataTable>
       <DataTable
         editMode="cell"
-        class="editable-cells-table"
+        class="p-datatable-sm editable-cells-table"
         :autoLayout="true"
         columnResizeMode="expand"
         :value="
@@ -130,28 +135,11 @@ export default {
       "getSearchResults",
     ]),
 
-    /**
-     * -- DESCRIPTION:
-     * Holds the metadata of the edited sentence.
-     */
-    metadata() {
-      let metadata = [];
-
-      for (const key in this.getConlluData[
-        this.getDoubleClickedSentenceIndexes.conlluDataIndex
-      ].metadata) {
-        metadata.push({
-          meta: `# ${key}=${
-            this.getConlluData[
-              this.getDoubleClickedSentenceIndexes.conlluDataIndex
-            ].metadata[key]
-          }`,
-        });
-      }
-
-      console.log(metadata);
-
-      return metadata;
+    metadataNames() {
+      return Object.keys(
+        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+          .metadata
+      );
     },
   },
 
@@ -245,25 +233,12 @@ export default {
 
 .table-container {
   overflow: auto;
+  height: 600px;
 }
 
 .p-datatable {
   width: 100%;
-  height: 300px;
   display: table-row;
-}
-
-.p-datatable.metadata-table {
-  height: auto;
-}
-
-Textarea {
-  resize: none;
-  font-family: "Roboto Mono", monospace;
-  width: 100%;
-  height: 450px;
-  border-width: 0;
-  font-size: 15px;
 }
 
 .p-button {
