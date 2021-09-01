@@ -7,18 +7,18 @@
     </p>
     <div class="table-container">
       <DataTable
-        v-for="metaName in metadataNames"
         editMode="cell"
-        :key="metaName"
         class="p-datatable-sm"
         :autoLayout="true"
         columnResizeMode="expand"
-        :value="[
-          getConlluData[getDoubleClickedSentenceIndexes.conlluDataIndex]
-            .metadata,
-        ]"
+        :value="editingSentence.metadata"
       >
-        <Column :header="metaName" :field="metaName">
+        <Column header="Key" field="key">
+          <template #editor="slotProps">
+            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+          </template>
+        </Column>
+        <Column header="Value" field="value">
           <template #editor="slotProps">
             <InputText v-model="slotProps.data[slotProps.column.props.field]" />
           </template>
@@ -29,13 +29,14 @@
         class="p-datatable-sm"
         :autoLayout="true"
         columnResizeMode="expand"
-        :value="
-          getConlluData[getDoubleClickedSentenceIndexes.conlluDataIndex].tokens
-        "
+        :value="editingSentence.tokens"
       >
         <Column field="id" header="Id">
           <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
+            <InputText
+              class="id-column"
+              v-model="slotProps.data[slotProps.column.props.field]"
+            />
           </template>
         </Column>
         <Column field="form" header="Form">
@@ -119,33 +120,21 @@ export default {
 
   emits: ["edited-sentence", "to-results"],
 
-  props: {
-    sentence: Object,
+  activated() {
+    // makes a deep copy of the sentence the user requested to edit
+    this.editingSentence = JSON.parse(
+      JSON.stringify(
+        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+      )
+    );
   },
-
-  // mounted() {
-  //   console.log(
-  //     this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
-  //   );
-  // },
 
   computed: {
     /**
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters([
-      "getConlluData",
-      "getDoubleClickedSentenceIndexes",
-      "getSearchResults",
-    ]),
-
-    metadataNames() {
-      return Object.keys(
-        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
-          .metadata
-      );
-    },
+    ...mapGetters(["getConlluData", "getDoubleClickedSentenceIndexes"]),
   },
 
   methods: {
@@ -170,6 +159,12 @@ export default {
      * at the global store.
      */
     updateStore() {
+      // updates the conlluData Vuex array
+      this.updateConlluDataEl({
+        el: this.editingSentence,
+        index: this.getDoubleClickedSentenceIndexes.conlluDataIndex,
+      });
+
       // updates the ids of edited sentences
       this.pushEditedRowsIndexes({
         el: this.getDoubleClickedSentenceIndexes.searchResultsIndex,
@@ -196,7 +191,8 @@ export default {
 
   data() {
     return {
-      conlluCode: "",
+      // the sentence being edited (a deep copy of the one in the vuex store)
+      editingSentence: "",
     };
   },
 };
@@ -207,6 +203,10 @@ export default {
 
 .p-inputtext {
   width: 100%;
+}
+
+.p-inputtext.id-column {
+  width: 50px;
 }
 
 .table-container {
