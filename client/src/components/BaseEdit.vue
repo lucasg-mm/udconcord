@@ -5,86 +5,109 @@
     <p class="description">
       Don't forget to save your changes before you quit this screen.
     </p>
-    <div class="table-container">
-      <DataTable
-        editMode="cell"
-        class="p-datatable-sm"
-        :autoLayout="true"
-        columnResizeMode="expand"
-        :value="editingSentence.metadata"
-      >
-        <Column header="Key" field="key">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column header="Value" field="value">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-      </DataTable>
-      <DataTable
-        editMode="cell"
-        class="p-datatable-sm"
-        :autoLayout="true"
-        columnResizeMode="expand"
-        :value="editingSentence.tokens"
-      >
-        <Column field="id" header="Id">
-          <template #editor="slotProps">
-            <InputText
-              class="id-column"
-              v-model="slotProps.data[slotProps.column.props.field]"
-            />
-          </template>
-        </Column>
-        <Column field="form" header="Form">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="lemma" header="Lemma">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="upostag" header="Upos Tag">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="xpostag" header="Xpos Tag">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="feats" header="Feats">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="head" header="Head">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="deprel" header="DepRel">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="deps" header="Deps">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-        <Column field="misc" header="Misc">
-          <template #editor="slotProps">
-            <InputText v-model="slotProps.data[slotProps.column.props.field]" />
-          </template>
-        </Column>
-      </DataTable>
+    <div class="table-overflow">
+      <div class="table-container">
+        <DataTable
+          editMode="cell"
+          class="p-datatable-sm"
+          :autoLayout="true"
+          :value="editingSentence.metadata"
+        >
+          <Column header="Key" field="key">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column header="Value" field="value">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+        </DataTable>
+        <DataTable
+          editMode="cell"
+          class="p-datatable-sm"
+          :autoLayout="true"
+          columnResizeMode="expand"
+          :value="editingSentence.tokens"
+        >
+          <Column field="id" header="Id">
+            <template #editor="slotProps">
+              <InputText
+                class="id-column"
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="form" header="Form">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="lemma" header="Lemma">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="upostag" header="Upos Tag">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="xpostag" header="Xpos Tag">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="feats" header="Feats">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="head" header="Head">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="deprel" header="DepRel">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="deps" header="Deps">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+          <Column field="misc" header="Misc">
+            <template #editor="slotProps">
+              <InputText
+                v-model="slotProps.data[slotProps.column.props.field]"
+              />
+            </template>
+          </Column>
+        </DataTable>
+      </div>
     </div>
 
     <div class="bottom-set">
@@ -209,13 +232,17 @@ export default {
   width: 50px;
 }
 
-.table-container {
+.table-overflow {
   overflow: auto;
   height: 600px;
 }
 
-.p-datatable {
+.table-container {
+  display: table;
   width: 100%;
+}
+
+.p-datatable {
   display: table-row;
 }
 
