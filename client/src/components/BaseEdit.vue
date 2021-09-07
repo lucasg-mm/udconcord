@@ -12,6 +12,8 @@
           class="p-datatable-sm"
           :autoLayout="true"
           :value="editingSentence.metadata"
+          contextMenu
+          @rowContextmenu="onRowContextMenuMetadata"
         >
           <Column header="Key" field="key">
             <template #editor="slotProps">
@@ -34,6 +36,8 @@
           :autoLayout="true"
           columnResizeMode="expand"
           :value="editingSentence.tokens"
+          contextMenu
+          @rowContextmenu="onRowContextMenuSentence"
         >
           <Column field="id" header="Id">
             <template #editor="slotProps">
@@ -107,6 +111,7 @@
             </template>
           </Column>
         </DataTable>
+        <ContextMenu :model="menuModel" ref="cm" />
       </div>
     </div>
 
@@ -131,6 +136,7 @@ import { mapGetters } from "vuex";
 import Toast from "primevue/toast";
 import Column from "primevue/column";
 import InputText from "primevue/inputtext";
+import ContextMenu from "primevue/contextmenu";
 
 export default {
   components: {
@@ -139,6 +145,7 @@ export default {
     DataTable,
     Column,
     InputText,
+    ContextMenu,
   },
 
   emits: ["edited-sentence", "to-results"],
@@ -210,12 +217,123 @@ export default {
         life: 3000,
       });
     },
+
+    /**
+     * -- DESCRIPTION:
+     * Shows context menu.
+     */
+    onRowContextMenuMetadata(event) {
+      this.clicked = {
+        table: "metadata",
+        index: event.index,
+      };
+      this.$refs.cm.show(event.originalEvent);
+    },
+
+    onRowContextMenuSentence(event) {
+      this.clicked = {
+        table: "tokens",
+        index: event.index,
+      };
+      this.$refs.cm.show(event.originalEvent);
+    },
+
+    /**
+     * --DESCRIPTION:
+     * Adds row above the one clicked.
+     */
+    addRowAbove(row) {
+      // deals with insert of metadata
+      if (row.table === "metadata") {
+        this.editingSentence[row.table].splice(row.index, 0, {
+          key: "_",
+          value: "_",
+        });
+      } else if (row.table === "tokens") {
+        this.editingSentence[row.table].splice(row.index, 0, {
+          deprel: "_",
+          deps: "_",
+          feats: "_",
+          form: "_",
+          head: "_",
+          id: "_",
+          lemma: "_",
+          misc: "_",
+          upostag: "_",
+          xpostag: "_",
+        });
+      }
+
+      this.selectedRowIndex = null;
+    },
+
+    /**
+     * --DESCRIPTION:
+     * Adds row below the one clicked.
+     */
+    addRowBelow(row) {
+      // deals with insert of metadata
+      if (row.table === "metadata") {
+        this.editingSentence[row.table].splice(row.index + 1, 0, {
+          key: "_",
+          value: "_",
+        });
+      } else if (row.table === "tokens") {
+        this.editingSentence[row.table].splice(row.index + 1, 0, {
+          deprel: "_",
+          deps: "_",
+          feats: "_",
+          form: "_",
+          head: "_",
+          id: "_",
+          lemma: "_",
+          misc: "_",
+          upostag: "_",
+          xpostag: "_",
+        });
+      }
+
+      this.selectedRowIndex = null;
+    },
+
+    /**
+     * --DESCRIPTION:
+     * Deletes clicked row.
+     */
+    deleteRow(row) {
+      // removes the row
+      this.editingSentence[row.table].splice(row.index, 1);
+
+      this.selectedRowIndex = null;
+    },
   },
 
   data() {
     return {
       // the sentence being edited (a deep copy of the one in the vuex store)
       editingSentence: "",
+
+      // holds the data for the clicked row
+      clicked: null,
+
+      // model with options of the context menu
+      menuModel: [
+        {
+          label: "Add row above",
+          icon: "pi pi-fw pi-angle-double-up",
+          command: () => this.addRowAbove(this.clicked),
+        },
+        {
+          label: "Add row below",
+          icon: "pi pi-fw pi-angle-double-down",
+          command: () => this.addRowBelow(this.clicked),
+        },
+        {
+          label: "Delete",
+          icon: "pi pi-fw pi-times",
+          command: () => this.deleteRow(this.clicked),
+        },
+      ],
     };
   },
 };
