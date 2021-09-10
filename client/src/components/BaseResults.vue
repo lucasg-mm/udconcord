@@ -96,9 +96,13 @@ export default {
     this.loadLazyData(1, this.recordsPerPage);
   },
 
-  activated() {
-    // scroll to matchs when the component is reactivated
-    this.scrollToMatches();
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      if (from.path === "/edit") {
+        // scroll to matches column
+        vm.restoreScrollState();
+      }
+    });
   },
 
   computed: {
@@ -121,11 +125,17 @@ export default {
 
   data() {
     return {
+      // stores the previous route
+      previousRoute: "",
+
       // results after some pre-processing
       organizedResults: [],
 
       // number os records that should be rendered per page
       recordsPerPage: 100,
+
+      // stores the scroll state of the results' container
+      scrollState: {},
     };
   },
 
@@ -193,6 +203,9 @@ export default {
     // handles the double click on a sentence, emiting
     // an event and passing the sentence to the parent component.
     editSentence(event) {
+      const container = document.querySelector(".p-datatable-wrapper");
+      this.saveScrollState(container);
+
       // retrieves the sentence's index to be edited in the conlluData vuex store
       const searchResultsArrayIndex = event.data.index;
       const conlluDataArrayIndex =
@@ -223,6 +236,28 @@ export default {
         matchHighlight.offsetWidth +
         matchColumn.offsetLeft -
         container.offsetWidth / 2;
+    },
+
+    // -- DESCRIPTION
+    // Restores the scroll position of the results table defined before
+    // the user left the /results component.
+    restoreScrollState() {
+      const container = document.querySelector(".p-datatable-wrapper");
+      console.log(this.scrollState);
+      container.scrollTop = this.scrollState.scrollTop;
+      const checkIfScrollIsFinished = setInterval(() => {
+        if (container.scrollTop === this.scrollState.scrollTop) {
+          container.scrollLeft = this.scrollState.scrollLeft;
+          clearInterval(checkIfScrollIsFinished);
+        }
+      }, 20);
+    },
+
+    saveScrollState(el) {
+      this.scrollState = {
+        scrollLeft: el.scrollLeft,
+        scrollTop: el.scrollTop,
+      };
     },
 
     // -- DESCRIPTION
