@@ -60,7 +60,7 @@ export default {
 }
 
 .navbar {
-  height: 60px;
+  height: 50px;
   border-radius: 0;
   border-width: 0 0 1px 0;
   border-color: #e4e5e8;
