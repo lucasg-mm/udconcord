@@ -51,6 +51,7 @@ export default {
         { humanReadableName: "lemmas", propName: "lemma" },
         { humanReadableName: "forms", propName: "form" },
         { humanReadableName: "POS tags", propName: "upostag" },
+        { humanReadableName: "dep. relations", propName: "deprel" },
       ],
     };
   },

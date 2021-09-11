@@ -1,10 +1,10 @@
 <template>
   <div class="centered-content" :scrollable="true">
-    <h1 class="heading">Here are your results!</h1>
+    <!-- <h1 class="heading">Here are your results!</h1>
     <p class="description">
       Double-click a sentence to edit its CoNLL-U, or search for another
       property.
-    </p>
+    </p> -->
     <div class="top-set">
       <SearchInput
         @search-results-received="loadLazyData(1, this.recordsPerPage)"
@@ -276,7 +276,8 @@ export default {
         // analyses the searchedProperty and tells whether
         // the property should be displayed in the table cells
         // inside square brackets
-        let showAdditionalInfo = searchedProperty === "upostag";
+        let showAdditionalInfo =
+          searchedProperty === "upostag" || searchedProperty === "deprel";
 
         // gets the left context (string)
         const leftContext = resultSentence.tokens
