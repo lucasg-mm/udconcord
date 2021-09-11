@@ -11,10 +11,11 @@
       ></SearchInput>
     </div>
 
-    <div class="number-of-results">{{ totalRecords }} results found</div>
-
     <div class="results-set">
       <DataTable
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        :rowsPerPageOptions="[10, 50, 100]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} results"
         :lazy="true"
         :paginator="true"
         :rows="recordsPerPage"
@@ -243,7 +244,6 @@ export default {
     // the user left the /results component.
     restoreScrollState() {
       const container = document.querySelector(".p-datatable-wrapper");
-      console.log(this.scrollState);
       container.scrollTop = this.scrollState.scrollTop;
       const checkIfScrollIsFinished = setInterval(() => {
         if (container.scrollTop === this.scrollState.scrollTop) {
@@ -477,5 +477,11 @@ export default {
 
 .tabela::v-deep .p-datatable-tbody td {
   border-width: 0px;
+}
+
+::v-deep(.p-paginator) {
+  .p-paginator-current {
+    margin-left: auto;
+  }
 }
 </style>
