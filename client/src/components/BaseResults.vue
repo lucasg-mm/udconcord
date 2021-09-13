@@ -71,14 +71,8 @@
       <SplitButton
         class="export-button"
         label="Export"
-        icon="pi pi-plus"
         :model="exportButtonItems"
       ></SplitButton>
-      <!-- <Button
-        class="export-button"
-        label="Export Results"
-        @click="exportResults"
-      /> -->
     </div>
   </div>
 </template>
@@ -148,7 +142,6 @@ export default {
       exportButtonItems: [
         {
           label: "Export treebank",
-          icon: "pi pi-refresh",
           command: () => {
             this.exportTreebank();
           },
@@ -434,25 +427,6 @@ export default {
   background-color: #eff4f8;
 }
 
-.p-button {
-  border-color: #2db92d;
-  background: #2db92d;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
-}
-
-.p-button:hover {
-  background: #239023 !important;
-  color: #ffffff !important;
-  border-color: #239023 !important;
-}
-
-.p-button:active {
-  background: #47d247 !important;
-  color: #ffffff !important;
-  border-color: #47d247 !important;
-}
-
 .heading {
   font-size: 38px;
   font-weight: 700;
@@ -484,11 +458,14 @@ export default {
 }
 
 .export-button {
-  padding: 10px 32px;
-  font-size: 18px;
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.export-button::v-deep .p-button {
+  padding: 10px 32px 10px 20px;
+  font-size: 18px;
 }
 
 @media screen and (max-width: 768px) {
