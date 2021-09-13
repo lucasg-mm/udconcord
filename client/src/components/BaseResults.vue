@@ -141,7 +141,7 @@ export default {
       // items in the export button items (it's a split button)
       exportButtonItems: [
         {
-          label: "Export treebank",
+          label: "Export treebank (.conllu)",
           command: () => {
             this.exportTreebank();
           },
