@@ -334,6 +334,21 @@ export default {
       // removes the row
       this.editingSentence[row.table].splice(row.index, 1);
 
+      // fixes ids
+      for (let i = 0; i < this.editingSentence[row.table].length; i++) {
+        // head ids
+        if (this.editingSentence[row.table][i].head >= row.index + 1) {
+          this.editingSentence[row.table][i].head =
+            Number(this.editingSentence[row.table][i].head) - 1;
+        }
+
+        // token ids
+        if (i >= row.index) {
+          this.editingSentence[row.table][i].id =
+            this.editingSentence[row.table][i].id - 1;
+        }
+      }
+
       this.selectedRowIndex = null;
     },
   },
