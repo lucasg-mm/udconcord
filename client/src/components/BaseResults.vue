@@ -68,11 +68,17 @@
       </DataTable>
     </div>
     <div class="bottom-set">
-      <Button
+      <SplitButton
+        class="export-button"
+        label="Export"
+        icon="pi pi-plus"
+        :model="exportButtonItems"
+      ></SplitButton>
+      <!-- <Button
         class="export-button"
         label="Export Results"
         @click="exportResults"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -80,7 +86,7 @@
 <script>
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
-import Button from "primevue/button";
+import SplitButton from "primevue/splitbutton";
 import SearchInput from "./SearchInput.vue";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
@@ -90,7 +96,7 @@ export default {
     SearchInput,
     DataTable,
     Column,
-    Button,
+    SplitButton,
   },
 
   beforeMount() {
@@ -137,6 +143,17 @@ export default {
 
       // stores the scroll state of the results' container
       scrollState: {},
+
+      // items in the export button items (it's a split button)
+      exportButtonItems: [
+        {
+          label: "Export treebank",
+          icon: "pi pi-refresh",
+          command: () => {
+            this.exportTreebank();
+          },
+        },
+      ],
     };
   },
 
@@ -145,7 +162,42 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component
      */
-    ...mapActions(["setDoubleClickedSentenceIndexes"]),
+    ...mapActions([
+      "setDoubleClickedSentenceIndexes",
+      "showLoadingBar",
+      "hideLoadingBar",
+    ]),
+
+    async exportTreebank() {
+      // shows loading bar
+      this.showLoadingBar();
+
+      // gets the backend treebanks route URL
+      const treebanksSearchRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/parse";
+
+      // defining the request's body
+      let requestBody = {
+        sentences: this.getConlluData,
+      };
+
+      requestBody = JSON.stringify(requestBody);
+
+      // makes the request
+      const response = await fetch(treebanksSearchRouteUrl, {
+        method: "POST",
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      const conlluText = await response.text();
+      this.exportResults(conlluText, "edited-treebank.conllu");
+      // shows loading bar
+      this.hideLoadingBar();
+    },
 
     /*
     -- DESCRIPTION:
@@ -253,6 +305,10 @@ export default {
       }, 20);
     },
 
+    /*
+     * -- DESCRIPTION
+     * Saves the scroll position of the container containing the conllu editor.
+     */
     saveScrollState(el) {
       this.scrollState = {
         scrollLeft: el.scrollLeft,
@@ -347,10 +403,7 @@ export default {
 
     // -- DESCRIPTION:
     // exports the results in a .txt file
-    exportResults() {
-      // gets the string representation of the results
-      const resultsStringRepresentation = this.getResultsStringRepresentation();
-
+    exportResults(resultsStringRepresentation, fileName) {
       // exports it to the user
       var element = document.createElement("a");
       element.setAttribute(
@@ -358,7 +411,7 @@ export default {
         "data:text/plain;charset=utf-8," +
           encodeURIComponent(resultsStringRepresentation)
       );
-      element.setAttribute("download", "search-results.csv");
+      element.setAttribute("download", fileName);
 
       element.style.display = "none";
       document.body.appendChild(element);

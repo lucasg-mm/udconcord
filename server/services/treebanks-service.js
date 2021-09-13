@@ -1,6 +1,37 @@
 const conlluJsLibrary = require("conllujs");
 
 /**
+ * TODO
+ */
+exports.parseObjectToConllu = async (sentences) => {
+  let conlluText = "";
+
+  sentences.forEach((sentence) => {
+    // builds metadata part
+    sentence.metadata.forEach((pair) => {
+      conlluText += `# ${pair.key}`;
+
+      // just writes value if the line is not a singly
+      if (pair.value) {
+        conlluText += ` = ${pair.value}`;
+      }
+
+      conlluText += "\n";
+    });
+
+    // builds tokens part (each line is a token)
+    sentence.tokens.forEach((token) => {
+      conlluText += `${token.id}\t${token.form}\t${token.lemma}\t${token.upostag}\t${token.xpostag}\t${token.feats}\t${token.head}\t${token.deprel}\t${token.deps}\t${token.misc}\n`;
+    });
+
+    // a line break after each sentence
+    conlluText += "\n";
+  });
+
+  return conlluText;
+};
+
+/**
  * -- DESCRIPTION:
  * Parses the text of a CoNLL-U file to a array of objects.
  *

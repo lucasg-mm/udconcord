@@ -1,7 +1,38 @@
 const treebanksService = require("../services/treebanks-service");
 const fs = require("fs");
+const stream = require("stream");
 
 // --- POST REQUESTS ---
+
+/**
+ * TODO
+ */
+exports.apiParseTreebank = async (req, res, next) => {
+  try {
+    // gets the request's properties
+    const { sentences } = req.fields;
+
+    // parses the object to conllu text
+    const conlluText = await treebanksService.parseObjectToConllu(sentences);
+
+    // returns the text file
+    let fileContents = Buffer.from(conlluText, "utf-8");
+
+    let readStream = new stream.PassThrough();
+    readStream.end(fileContents);
+
+    res.set(
+      "Content-disposition",
+      "attachment; filename=edited-treebank.conllu"
+    );
+    res.set("Content-Type", "text/plain");
+
+    readStream.pipe(res);
+  } catch (error) {
+    // in case of error, send a message and the error object
+    res.status(500).json({ message: "Internal error", error: error });
+  }
+};
 
 /**
  * -- DESCRIPTION:
