@@ -340,18 +340,34 @@ export default {
           value: "_",
         });
       } else if (row.table === "tokens") {
-        this.editingSentence[row.table].splice(row.index + 1, 0, {
-          deprel: "_",
-          deps: "_",
-          feats: "_",
-          form: "_",
-          head: "_",
-          id: row.index + 2,
-          lemma: "_",
-          misc: "_",
-          upostag: "_",
-          xpostag: "_",
-        });
+        if (this.isMultiWordToken(this.editingSentence[row.table][row.index])) {
+          this.editingSentence[row.table].splice(row.index + 1, 0, {
+            deprel: "_",
+            deps: "_",
+            feats: "_",
+            form: "_",
+            head: "_",
+            id: this.getIdBounds(this.editingSentence[row.table][row.index].id)
+              .lowerBound,
+            lemma: "_",
+            misc: "_",
+            upostag: "_",
+            xpostag: "_",
+          });
+        } else {
+          this.editingSentence[row.table].splice(row.index + 1, 0, {
+            deprel: "_",
+            deps: "_",
+            feats: "_",
+            form: "_",
+            head: "_",
+            id: this.editingSentence[row.table][row.index].id + 1,
+            lemma: "_",
+            misc: "_",
+            upostag: "_",
+            xpostag: "_",
+          });
+        }
 
         // fixes ids
         for (let i = 0; i < this.editingSentence[row.table].length; i++) {
@@ -476,11 +492,6 @@ export default {
       // model with options of the context menu (for sentence part)
       menuModelSentence: [
         {
-          label: "Add multi-word token above",
-          icon: "pi pi-fw pi-caret-up",
-          command: () => console.log("above"),
-        },
-        {
           label: "Add token above",
           icon: "pi pi-fw pi-angle-double-up",
           command: () => this.addRowAbove(this.clicked),
@@ -491,12 +502,7 @@ export default {
           command: () => this.addRowBelow(this.clicked),
         },
         {
-          label: "Add multi-word token below",
-          icon: "pi pi-fw pi-caret-down",
-          command: () => console.log("below"),
-        },
-        {
-          label: "Delete",
+          label: "Delete token",
           icon: "pi pi-fw pi-times",
           command: () => this.deleteRow(this.clicked),
         },
