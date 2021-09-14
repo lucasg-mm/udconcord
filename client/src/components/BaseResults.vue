@@ -70,6 +70,7 @@
     <div class="bottom-set">
       <SplitButton
         class="export-button"
+        @click="exportTreebank"
         label="Export"
         :model="exportButtonItems"
       ></SplitButton>
@@ -146,6 +147,18 @@ export default {
             this.exportTreebank();
           },
         },
+        {
+          label: "Export search results (.csv)",
+          command: () => {
+            this.exportSearchResults("csv");
+          },
+        },
+        {
+          label: "Export search results (.txt)",
+          command: () => {
+            this.exportSearchResults("txt");
+          },
+        },
       ],
     };
   },
@@ -187,7 +200,7 @@ export default {
       });
 
       const conlluText = await response.text();
-      this.exportResults(conlluText, "edited-treebank.conllu");
+      this.exportFile(conlluText, "edited-treebank.conllu");
       // shows loading bar
       this.hideLoadingBar();
     },
@@ -309,6 +322,42 @@ export default {
       };
     },
 
+    async exportSearchResults(fileExtension) {
+      console.log(fileExtension);
+
+      this.showLoadingBar();
+      // gets the results array and the string
+      // indicating which property is being searched
+      // organizes all the results at once
+      const results = this.getSearchResults;
+      const searchedProperty = this.getSearchedProperty;
+      this.organizesResults(results, searchedProperty);
+
+      // gets the backend export results route URL
+      const exportResultsRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/export-results";
+
+      const requestBody = JSON.stringify({
+        organizedResults: this.organizedResults,
+        fileExtension,
+      });
+
+      // makes the request
+      const response = await fetch(exportResultsRouteUrl, {
+        method: "POST",
+        headers: {
+          Accept: "text/plain",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      const resultsText = await response.text();
+      this.exportFile(resultsText, `search-results.${fileExtension}`);
+
+      this.hideLoadingBar();
+    },
+
     // -- DESCRIPTION
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
@@ -379,30 +428,13 @@ export default {
     },
 
     // -- DESCRIPTION:
-    // gets the string representation for the results. That's for making
-    // the user be able to download it as a .txt file.
-    //
-    // -- RETURNS:
-    // a String, which is the string representation.
-    getResultsStringRepresentation() {
-      let finalString = "Left Context,Match,Right Context\n";
-
-      this.organizedResults.forEach((result) => {
-        finalString += `"${result.leftContext}","${result.match}","${result.rightContext}"\n`;
-      });
-
-      return finalString;
-    },
-
-    // -- DESCRIPTION:
-    // exports the results in a .txt file
-    exportResults(resultsStringRepresentation, fileName) {
+    // exports a text file
+    exportFile(text, fileName) {
       // exports it to the user
       var element = document.createElement("a");
       element.setAttribute(
         "href",
-        "data:text/plain;charset=utf-8," +
-          encodeURIComponent(resultsStringRepresentation)
+        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
       );
       element.setAttribute("download", fileName);
 

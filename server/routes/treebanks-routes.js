@@ -12,4 +12,7 @@ router.post("/search", treebanksController.apiSearchTreebank);
 // route to parse a conll object to a conllu file
 router.post("/parse", treebanksController.apiParseTreebank);
 
+// route to parse search results to .csv
+router.post("/export-results", treebanksController.apiResultsToCSV);
+
 module.exports = router;

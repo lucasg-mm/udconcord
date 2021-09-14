@@ -4,6 +4,39 @@ const stream = require("stream");
 
 // --- POST REQUESTS ---
 
+exports.apiResultsToCSV = async (req, res, next) => {
+  try {
+    // gets the request's properties
+    const { organizedResults, fileExtension } = req.fields;
+
+    // parses the results to text
+    let resultsText;
+    if (fileExtension === "csv") {
+      resultsText = await treebanksService.parseResultsToCSV(organizedResults);
+    } else {
+      resultsText = await treebanksService.getResultsStringRepresentation(
+        organizedResults
+      );
+    }
+
+    // returns the text file
+    let fileContents = Buffer.from(resultsText, "utf-8");
+
+    let readStream = new stream.PassThrough();
+    readStream.end(fileContents);
+
+    res.set(
+      "Content-disposition",
+      `attachment; filename=results.${fileExtension}`
+    );
+    res.set("Content-Type", "text/plain");
+
+    readStream.pipe(res);
+  } catch (error) {
+    res.status(500).json({ message: "Internal error", error: error });
+  }
+};
+
 /**
  * TODO
  */

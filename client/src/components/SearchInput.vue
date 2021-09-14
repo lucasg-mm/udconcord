@@ -111,6 +111,8 @@ export default {
       // parses results to javascript object
       const searchResults = await response.json();
 
+      console.log("searchResults", searchResults);
+
       // sets results and searched property on the store
       this.setSearchResults({ searchResults });
       this.setSearchedProperty({ searchedProperty: this.propertyToSearch });
