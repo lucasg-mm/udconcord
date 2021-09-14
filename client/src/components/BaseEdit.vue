@@ -111,7 +111,8 @@
             </template>
           </Column>
         </DataTable>
-        <ContextMenu :model="menuModel" ref="cm" />
+        <ContextMenu :model="menuModelMetadata" ref="cm" />
+        <ContextMenu :model="menuModelSentence" ref="sent" />
       </div>
     </div>
 
@@ -235,7 +236,18 @@ export default {
         table: "tokens",
         index: event.index,
       };
-      this.$refs.cm.show(event.originalEvent);
+      this.$refs.sent.show(event.originalEvent);
+    },
+
+    isMultiWordToken(token) {
+      return /(\d*)-(\d*)/.test(token.id);
+    },
+
+    getIdBounds(id) {
+      return {
+        lowerBound: Number(/(\d*)-(\d*)/.exec(id)[1]),
+        upperBound: Number(/(\d*)-(\d*)/.exec(id)[2]),
+      };
     },
 
     /**
@@ -250,32 +262,66 @@ export default {
           value: "_",
         });
       } else if (row.table === "tokens") {
-        this.editingSentence[row.table].splice(row.index, 0, {
-          deprel: "_",
-          deps: "_",
-          feats: "_",
-          form: "_",
-          head: "_",
-          id: row.index + 1,
-          lemma: "_",
-          misc: "_",
-          upostag: "_",
-          xpostag: "_",
-        });
-      }
-
-      // fixes ids
-      for (let i = 0; i < this.editingSentence[row.table].length; i++) {
-        // head ids
-        if (this.editingSentence[row.table][i].head >= row.index + 1) {
-          this.editingSentence[row.table][i].head =
-            Number(this.editingSentence[row.table][i].head) + 1;
+        if (this.isMultiWordToken(this.editingSentence[row.table][row.index])) {
+          this.editingSentence[row.table].splice(row.index, 0, {
+            deprel: "_",
+            deps: "_",
+            feats: "_",
+            form: "_",
+            head: "_",
+            id: this.getIdBounds(this.editingSentence[row.table][row.index].id)
+              .lowerBound,
+            lemma: "_",
+            misc: "_",
+            upostag: "_",
+            xpostag: "_",
+          });
+        } else {
+          this.editingSentence[row.table].splice(row.index, 0, {
+            deprel: "_",
+            deps: "_",
+            feats: "_",
+            form: "_",
+            head: "_",
+            id: this.editingSentence[row.table][row.index].id,
+            lemma: "_",
+            misc: "_",
+            upostag: "_",
+            xpostag: "_",
+          });
         }
 
-        // token ids
-        if (i > row.index) {
-          this.editingSentence[row.table][i].id =
-            this.editingSentence[row.table][i].id + 1;
+        // fixes ids
+        for (let i = 0; i < this.editingSentence[row.table].length; i++) {
+          // head ids
+          if (this.editingSentence[row.table][i].head >= row.index + 1) {
+            this.editingSentence[row.table][i].head =
+              Number(this.editingSentence[row.table][i].head) + 1;
+          }
+
+          // token ids
+          if (i > row.index) {
+            // if it's a multi-word token
+            if (/(\d*)-(\d*)/.test(this.editingSentence[row.table][i].id)) {
+              let lowerBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[1]
+                ) + 1;
+
+              let upperBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[2]
+                ) + 1;
+
+              this.editingSentence[row.table][
+                i
+              ].id = `${lowerBound}-${upperBound}`;
+            } else {
+              // not a multi-word token
+              this.editingSentence[row.table][i].id =
+                this.editingSentence[row.table][i].id + 1;
+            }
+          }
         }
       }
 
@@ -306,20 +352,38 @@ export default {
           upostag: "_",
           xpostag: "_",
         });
-      }
 
-      // fixes ids
-      for (let i = 0; i < this.editingSentence[row.table].length; i++) {
-        // head ids
-        if (this.editingSentence[row.table][i].head >= row.index + 2) {
-          this.editingSentence[row.table][i].head =
-            Number(this.editingSentence[row.table][i].head) + 1;
-        }
+        // fixes ids
+        for (let i = 0; i < this.editingSentence[row.table].length; i++) {
+          // head ids
+          if (this.editingSentence[row.table][i].head >= row.index + 2) {
+            this.editingSentence[row.table][i].head =
+              Number(this.editingSentence[row.table][i].head) + 1;
+          }
 
-        // token ids
-        if (i > row.index + 1) {
-          this.editingSentence[row.table][i].id =
-            this.editingSentence[row.table][i].id + 1;
+          // token ids
+          if (i > row.index + 1) {
+            // if it's a multi-word token
+            if (/(\d*)-(\d*)/.test(this.editingSentence[row.table][i].id)) {
+              let lowerBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[1]
+                ) + 1;
+
+              let upperBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[2]
+                ) + 1;
+
+              this.editingSentence[row.table][
+                i
+              ].id = `${lowerBound}-${upperBound}`;
+            } else {
+              // not a multi-word token
+              this.editingSentence[row.table][i].id =
+                this.editingSentence[row.table][i].id + 1;
+            }
+          }
         }
       }
 
@@ -331,21 +395,50 @@ export default {
      * Deletes clicked row.
      */
     deleteRow(row) {
+      let hasToFixIndexes = true;
+      if (
+        row.table === "tokens" &&
+        /(\d*)-(\d*)/.test(this.editingSentence[row.table][row.index].id)
+      ) {
+        // doesn't have to fix indexes when deleting multi-word tokens
+        hasToFixIndexes = false;
+      }
+
       // removes the row
       this.editingSentence[row.table].splice(row.index, 1);
 
-      // fixes ids
-      for (let i = 0; i < this.editingSentence[row.table].length; i++) {
-        // head ids
-        if (this.editingSentence[row.table][i].head >= row.index + 1) {
-          this.editingSentence[row.table][i].head =
-            Number(this.editingSentence[row.table][i].head) - 1;
-        }
+      if (row.table === "tokens" && hasToFixIndexes) {
+        // fixes ids
+        for (let i = 0; i < this.editingSentence[row.table].length; i++) {
+          // head ids
+          if (this.editingSentence[row.table][i].head >= row.index + 1) {
+            this.editingSentence[row.table][i].head =
+              Number(this.editingSentence[row.table][i].head) - 1;
+          }
 
-        // token ids
-        if (i >= row.index) {
-          this.editingSentence[row.table][i].id =
-            this.editingSentence[row.table][i].id - 1;
+          // token ids
+          if (i >= row.index) {
+            // if it's a multi-word token
+            if (/(\d*)-(\d*)/.test(this.editingSentence[row.table][i].id)) {
+              let lowerBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[1]
+                ) - 1;
+
+              let upperBound =
+                Number(
+                  /(\d*)-(\d*)/.exec(this.editingSentence[row.table][i].id)[2]
+                ) - 1;
+
+              this.editingSentence[row.table][
+                i
+              ].id = `${lowerBound}-${upperBound}`;
+            } else {
+              // not a multi-word token
+              this.editingSentence[row.table][i].id =
+                this.editingSentence[row.table][i].id - 1;
+            }
+          }
         }
       }
 
@@ -361,8 +454,8 @@ export default {
       // holds the data for the clicked row
       clicked: null,
 
-      // model with options of the context menu
-      menuModel: [
+      // model with options of the context menu (for metadata part)
+      menuModelMetadata: [
         {
           label: "Add row above",
           icon: "pi pi-fw pi-angle-double-up",
@@ -372,6 +465,35 @@ export default {
           label: "Add row below",
           icon: "pi pi-fw pi-angle-double-down",
           command: () => this.addRowBelow(this.clicked),
+        },
+        {
+          label: "Delete",
+          icon: "pi pi-fw pi-times",
+          command: () => this.deleteRow(this.clicked),
+        },
+      ],
+
+      // model with options of the context menu (for sentence part)
+      menuModelSentence: [
+        {
+          label: "Add multi-word token above",
+          icon: "pi pi-fw pi-caret-up",
+          command: () => console.log("above"),
+        },
+        {
+          label: "Add token above",
+          icon: "pi pi-fw pi-angle-double-up",
+          command: () => this.addRowAbove(this.clicked),
+        },
+        {
+          label: "Add token below",
+          icon: "pi pi-fw pi-angle-double-down",
+          command: () => this.addRowBelow(this.clicked),
+        },
+        {
+          label: "Add multi-word token below",
+          icon: "pi pi-fw pi-caret-down",
+          command: () => console.log("below"),
         },
         {
           label: "Delete",
