@@ -34,7 +34,11 @@
           headerStyle="display: none"
           field="leftContext"
           header="Left Context"
-        ></Column>
+        >
+          <template #body="{ data }">
+            <span v-html="data.leftContext"></span>
+          </template>
+        </Column>
         <Column
           bodyClass="match-column"
           style="color: black; text-align: center"
@@ -53,8 +57,8 @@
                 padding: 5px;
                 border-radius: 3px;
               "
-              >{{ data.match }}</span
-            >
+              v-html="data.match"
+            ></span>
             <span v-else>{{ data.match }}</span>
           </template>
         </Column>
@@ -64,7 +68,11 @@
           headerStyle="display: none"
           field="rightContext"
           header="Right Context"
-        ></Column>
+        >
+          <template #body="{ data }">
+            <span v-html="data.rightContext"></span>
+          </template>
+        </Column>
       </DataTable>
     </div>
     <div class="bottom-set">
@@ -371,36 +379,46 @@ export default {
         // gets the matched sentence
         const resultSentence = this.getConlluData[result.sentenceIndex];
 
-        // analyses the searchedProperty and tells whether
-        // the property should be displayed in the table cells
-        // inside square brackets
-        let showAdditionalInfo =
-          searchedProperty === "upostag" || searchedProperty === "deprel";
+        // different info should be displayed
+        // depending on the searchedProperty
+        let showUposTagInfo = searchedProperty === "upostag";
+
+        let showDeprelInfo = searchedProperty === "deprel";
 
         // gets the left context (string)
         const leftContext = resultSentence.tokens
           .slice(0, result["foundNGram"][0])
-          .map((e) => {
-            if (showAdditionalInfo) {
+          .map((e, index) => {
+            if (showUposTagInfo) {
               return `${e.form}/${e[this.getSearchedProperty]}`;
+            } else if (showDeprelInfo) {
+              return `${e.form}<sub>${index + 1}</sub>/${
+                e[this.getSearchedProperty]
+              }`;
             } else {
               return e.form;
             }
           })
-          .join(" ");
+          .join("\xa0\xa0\xa0");
 
         // gets the match
         const match = result["foundNGram"]
           .map((tokenId) => {
-            if (showAdditionalInfo) {
+            if (showUposTagInfo) {
               return `${resultSentence.tokens[tokenId].form}/${
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
               }`;
+            } else if (showDeprelInfo) {
+              return `${resultSentence.tokens[tokenId].form}<sub>${
+                tokenId + 1
+              }</sub>/${
+                resultSentence.tokens[tokenId][this.getSearchedProperty]
+              }/${resultSentence.tokens[tokenId].head}`;
             } else {
               return resultSentence.tokens[tokenId].form;
             }
           })
-          .join(" ");
+          .join("\xa0\xa0\xa0");
 
         // gets the right context (string)
         const rightContext = resultSentence.tokens
@@ -408,14 +426,20 @@ export default {
             result["foundNGram"][result["foundNGram"].length - 1] + 1,
             resultSentence.tokens.length
           )
-          .map((e) => {
-            if (showAdditionalInfo) {
+          .map((e, index) => {
+            if (showUposTagInfo) {
               return `${e.form}/${e[this.getSearchedProperty]}`;
+            } else if (showDeprelInfo) {
+              return `${e.form}<sub>${
+                result["foundNGram"][result["foundNGram"].length - 1] +
+                2 +
+                index
+              }</sub>/${e[this.getSearchedProperty]}`;
             } else {
               return e.form;
             }
           })
-          .join(" ");
+          .join("\xa0\xa0\xa0");
 
         // organizes the data and stores it in an array
         this.organizedResults.push({
