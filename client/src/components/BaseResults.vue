@@ -381,26 +381,12 @@ export default {
 
         // different info should be displayed
         // depending on the searchedProperty
-        let showUposTagInfo = searchedProperty === "upostag";
+        const showUposTagInfo = searchedProperty === "upostag";
 
-        let showDeprelInfo = searchedProperty === "deprel";
+        const showDeprelInfo = searchedProperty === "deprel";
 
-        // gets the left context (string)
-        const leftContext = resultSentence.tokens
-          .slice(0, result["foundNGram"][0])
-          .map((e, index) => {
-            if (showUposTagInfo) {
-              return `${e.form}/${e[this.getSearchedProperty]}`;
-            } else if (showDeprelInfo) {
-              return `${e.form}<sub>${index + 1}</sub>/${
-                e[this.getSearchedProperty]
-              }`;
-            } else {
-              return e.form;
-            }
-          })
-          .join("\xa0\xa0\xa0");
-
+        // stores heads
+        const heads = [];
         // gets the match
         const match = result["foundNGram"]
           .map((tokenId) => {
@@ -409,13 +395,42 @@ export default {
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
               }`;
             } else if (showDeprelInfo) {
+              // stores match's head
+              heads.push(resultSentence.tokens[tokenId].head);
+
               return `${resultSentence.tokens[tokenId].form}<sub>${
-                tokenId + 1
+                resultSentence.tokens[tokenId].id
               }</sub>/${
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
               }/${resultSentence.tokens[tokenId].head}`;
             } else {
               return resultSentence.tokens[tokenId].form;
+            }
+          })
+          .join("\xa0\xa0\xa0");
+
+        // gets the left context (string)
+        const leftContext = resultSentence.tokens
+          .slice(0, result["foundNGram"][0])
+          .map((e) => {
+            if (showUposTagInfo) {
+              return `${e.form}/${e[this.getSearchedProperty]}`;
+            } else if (showDeprelInfo) {
+              if (heads.includes(e.id.toString())) {
+                return `<span style="
+                background-color: #46a8f5;
+                color: white;
+                padding: 5px;
+                border-radius: 3px;>${e.form}<sub>${e.id}</sub>/${
+                  e[this.getSearchedProperty]
+                }</span>`;
+              } else {
+                return `${e.form}<sub>${e.id}</sub>/${
+                  e[this.getSearchedProperty]
+                }`;
+              }
+            } else {
+              return e.form;
             }
           })
           .join("\xa0\xa0\xa0");
@@ -426,15 +441,24 @@ export default {
             result["foundNGram"][result["foundNGram"].length - 1] + 1,
             resultSentence.tokens.length
           )
-          .map((e, index) => {
+          .map((e) => {
             if (showUposTagInfo) {
               return `${e.form}/${e[this.getSearchedProperty]}`;
             } else if (showDeprelInfo) {
-              return `${e.form}<sub>${
-                result["foundNGram"][result["foundNGram"].length - 1] +
-                2 +
-                index
-              }</sub>/${e[this.getSearchedProperty]}`;
+              if (heads.includes(e.id.toString())) {
+                return `<span style="
+                background-color: #46a8f5;
+                color: white;
+                padding: 5px;
+                border-radius: 3px;
+              ">${e.form}<sub>${e.id}</sub>/${
+                  e[this.getSearchedProperty]
+                }</span>`;
+              } else {
+                return `${e.form}<sub>${e.id}</sub>/${
+                  e[this.getSearchedProperty]
+                }`;
+              }
             } else {
               return e.form;
             }
