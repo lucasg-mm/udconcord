@@ -145,6 +145,33 @@ exports.searchTreebank = async (
 
 // -- AUX FUNCTIONS
 
+function featsComparison(tokenFeats, featsToCompare, caseWay) {
+  let numberOfMatchs = 0;
+  let sensitivityFlag = "";
+
+  // splits the feats that should be searched
+  featsToCompare = featsToCompare.split("|");
+
+  // determines the sensitivity flag (empty if the search should be case sensitive)
+  if (caseWay === "insensitive") {
+    // case insensitive search
+    sensitivityFlag = "i";
+  }
+
+  for (let i = 0; i < featsToCompare.length; i++) {
+    // mounts the regex
+    const re = new RegExp(featsToCompare[i], sensitivityFlag);
+
+    // determines if the feat is present in the analyzed token
+    if (re.test(tokenFeats)) {
+      numberOfMatchs++;
+    }
+  }
+
+  // returns true if every feat matched with something
+  return featsToCompare.length === numberOfMatchs;
+}
+
 // -- DESCRIPTION:
 // Checks for n-gram equality in a given sequence, in a given start.
 //
@@ -161,15 +188,28 @@ exports.searchTreebank = async (
 function nGramEquality(nGram, sequence, start, propertyToSearch, caseWay) {
   let numberOfMatches = 0;
   for (let i = 0; i < nGram.length; i++) {
-    if (caseWay === "insensitive") {
-      if (
-        nGram[i].toLowerCase() ===
-        sequence[start + i][propertyToSearch].toLowerCase()
-      ) {
-        numberOfMatches++;
+    if (propertyToSearch !== "feats") {
+      if (caseWay === "insensitive") {
+        if (
+          nGram[i].toLowerCase() ===
+          sequence[start + i][propertyToSearch].toLowerCase()
+        ) {
+          numberOfMatches++;
+        }
+      } else {
+        if (nGram[i] === sequence[start + i][propertyToSearch]) {
+          numberOfMatches++;
+        }
       }
     } else {
-      if (nGram[i] === sequence[start + i][propertyToSearch]) {
+      // comparison of 'feats'
+      if (
+        featsComparison(
+          sequence[start + i][propertyToSearch],
+          nGram[i],
+          caseWay
+        )
+      ) {
         numberOfMatches++;
       }
     }

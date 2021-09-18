@@ -52,6 +52,7 @@ export default {
         { humanReadableName: "forms", propName: "form" },
         { humanReadableName: "POS tags", propName: "upostag" },
         { humanReadableName: "dep. relations", propName: "deprel" },
+        { humanReadableName: "feats", propName: "feats" },
       ],
     };
   },
