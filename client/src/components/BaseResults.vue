@@ -385,12 +385,14 @@ export default {
 
         const showDeprelInfo = searchedProperty === "deprel";
 
+        const showFeatsInfo = searchedProperty === "feats";
+
         // stores heads
         const heads = [];
         // gets the match
         const match = result["foundNGram"]
           .map((tokenId) => {
-            if (showUposTagInfo) {
+            if (showUposTagInfo || showFeatsInfo) {
               return `${resultSentence.tokens[tokenId].form}/${
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
               }`;
@@ -413,7 +415,7 @@ export default {
         const leftContext = resultSentence.tokens
           .slice(0, result["foundNGram"][0])
           .map((e) => {
-            if (showUposTagInfo) {
+            if (showUposTagInfo || showFeatsInfo) {
               return `${e.form}/${e[this.getSearchedProperty]}`;
             } else if (showDeprelInfo) {
               if (heads.includes(e.id.toString())) {
@@ -442,7 +444,7 @@ export default {
             resultSentence.tokens.length
           )
           .map((e) => {
-            if (showUposTagInfo) {
+            if (showUposTagInfo || showFeatsInfo) {
               return `${e.form}/${e[this.getSearchedProperty]}`;
             } else if (showDeprelInfo) {
               if (heads.includes(e.id.toString())) {
