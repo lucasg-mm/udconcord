@@ -419,13 +419,12 @@ export default {
               return `${e.form}/${e[this.getSearchedProperty]}`;
             } else if (showDeprelInfo) {
               if (heads.includes(e.id.toString())) {
-                return `<span style="
-                background-color: #46a8f5;
-                color: white;
-                padding: 5px;
-                border-radius: 3px;>${e.form}<sub>${e.id}</sub>/${
-                  e[this.getSearchedProperty]
-                }</span>`;
+                return `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">${
+                  e.form
+                }<sub>${e.id}</sub>/${e[this.getSearchedProperty]}</span>`;
+                // return `${e.form}<sub>${e.id}</sub>/${
+                //   e[this.getSearchedProperty]
+                // }`;
               } else {
                 return `${e.form}<sub>${e.id}</sub>/${
                   e[this.getSearchedProperty]
@@ -474,6 +473,7 @@ export default {
           match,
           rightContext,
         });
+        console.log(this.organizedResults);
       });
     },
 
