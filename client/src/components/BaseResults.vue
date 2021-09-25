@@ -404,7 +404,7 @@ export default {
                 resultSentence.tokens[tokenId].id
               }</sub>/${
                 resultSentence.tokens[tokenId][this.getSearchedProperty]
-              }/${resultSentence.tokens[tokenId].head}`;
+              }(${resultSentence.tokens[tokenId].head})`;
             } else {
               return resultSentence.tokens[tokenId].form;
             }
@@ -422,9 +422,6 @@ export default {
                 return `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">${
                   e.form
                 }<sub>${e.id}</sub>/${e[this.getSearchedProperty]}</span>`;
-                // return `${e.form}<sub>${e.id}</sub>/${
-                //   e[this.getSearchedProperty]
-                // }`;
               } else {
                 return `${e.form}<sub>${e.id}</sub>/${
                   e[this.getSearchedProperty]
