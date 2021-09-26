@@ -1,20 +1,135 @@
 const conlluJsLibrary = require("conllujs");
 
-exports.getResultsStringRepresentation = (organizedResults) => {
+exports.getResultsStringRepresentation = (
+  organizedResults,
+  searchedProperty
+) => {
   let finalString = "";
-  organizedResults.forEach((result) => {
-    finalString += `>> ${result.leftContext} *****${result.match}***** ${result.rightContext}\n\n\n`;
-  });
+
+  if (searchedProperty === "deprel") {
+    organizedResults.forEach((result) => {
+      // formats left context
+      const regexp = /(?:.*">)*(.*)<sub>(.*)<\/sub>\/([^<]*)*/;
+      const tokensLeftContext = result["leftContext"].split("\xa0\xa0\xa0");
+      tokensLeftContext.forEach((tokenLeftContext) => {
+        const result = tokenLeftContext.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}(${tokenId})/${deprelName} `;
+      });
+
+      // formats match
+      finalString += "*****";
+      const tokensMatch = result["match"].split("\xa0\xa0\xa0");
+      tokensMatch.forEach((tokenMatch) => {
+        const result = tokenMatch.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}(${tokenId})/${deprelName} `;
+      });
+      finalString += "*****";
+
+      // formats right context
+      const tokensRightContext = result["rightContext"].split("\xa0\xa0\xa0");
+      tokensRightContext.forEach((tokenRightContext) => {
+        console.log(tokenRightContext);
+        const result = tokenRightContext.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}_${tokenId}/${deprelName} `;
+      });
+
+      finalString += "\n\n\n";
+    });
+  } else {
+    organizedResults.forEach((result) => {
+      finalString += `>> ${result.leftContext} *****${result.match}***** ${result.rightContext}\n\n\n`;
+    });
+  }
   return finalString;
 };
 
-exports.parseResultsToCSV = (organizedResults) => {
+exports.parseResultsToCSV = (organizedResults, searchedProperty) => {
   // concatenates .csv lines
   let finalString = "Left Context,Match,Right Context\n";
 
-  organizedResults.forEach((result) => {
-    finalString += `"${result.leftContext}","${result.match}","${result.rightContext}"\n`;
-  });
+  if (searchedProperty === "deprel") {
+    organizedResults.forEach((result) => {
+      // formats left context
+      finalString += '"';
+      const regexp = /(?:.*">)*(.*)<sub>(.*)<\/sub>\/([^<]*)*/;
+      const tokensLeftContext = result["leftContext"].split("\xa0\xa0\xa0");
+      tokensLeftContext.forEach((tokenLeftContext) => {
+        const result = tokenLeftContext.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}(${tokenId})/${deprelName} `;
+      });
+
+      // formats match
+      finalString += '","';
+      const tokensMatch = result["match"].split("\xa0\xa0\xa0");
+      tokensMatch.forEach((tokenMatch) => {
+        const result = tokenMatch.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}(${tokenId})/${deprelName} `;
+      });
+      finalString += '","';
+
+      // formats right context
+      const tokensRightContext = result["rightContext"].split("\xa0\xa0\xa0");
+      tokensRightContext.forEach((tokenRightContext) => {
+        console.log(tokenRightContext);
+        const result = tokenRightContext.match(regexp);
+        let form;
+        let tokenId;
+        let deprelName;
+        if (result) {
+          form = result[1];
+          tokenId = result[2];
+          deprelName = result[3];
+        }
+        finalString += `${form}_${tokenId}/${deprelName} `;
+      });
+
+      finalString += '"\n';
+    });
+  } else {
+    organizedResults.forEach((result) => {
+      finalString += `"${result.leftContext}","${result.match}","${result.rightContext}"\n`;
+    });
+  }
 
   return finalString;
 };

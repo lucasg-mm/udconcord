@@ -6,9 +6,7 @@
       property.
     </p> -->
     <div class="top-set">
-      <SearchInput
-        @search-results-received="loadLazyData(1, this.recordsPerPage)"
-      ></SearchInput>
+      <SearchInput @search-results-received="resultsReceiver"></SearchInput>
     </div>
 
     <div class="results-set">
@@ -133,6 +131,9 @@ export default {
 
   data() {
     return {
+      // already loaded data
+      processedData: {},
+
       // stores the previous route
       previousRoute: "",
 
@@ -179,6 +180,11 @@ export default {
       "showLoadingBar",
       "hideLoadingBar",
     ]),
+
+    resultsReceiver() {
+      this.processedData = {};
+      this.loadLazyData(1, this.recordsPerPage);
+    },
 
     async exportTreebank() {
       // shows loading bar
@@ -237,7 +243,7 @@ export default {
     numberOfRows: number of rows to be rendered in the table's page.
     */
     loadLazyData(pageToGo, numberOfRows) {
-      console.log(">> Loading lazy data...");
+      // console.log(">> Loading lazy data...");
 
       // gets the results array and the string
       // indicating which property is being searched
@@ -329,7 +335,7 @@ export default {
     },
 
     async exportSearchResults(fileExtension) {
-      console.log(fileExtension);
+      // console.log(fileExtension);
 
       this.showLoadingBar();
       // gets the results array and the string
@@ -346,6 +352,7 @@ export default {
       const requestBody = JSON.stringify({
         organizedResults: this.organizedResults,
         fileExtension,
+        searchedProperty,
       });
 
       // makes the request
@@ -369,107 +376,112 @@ export default {
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
     organizesResults(results, searchedProperty, pageToGo = 1) {
-      this.organizedResults = [];
-      results.forEach((result, index) => {
-        console.log(">> organizando resultados...");
-        // for each match in this result...
+      if (pageToGo in this.processedData) {
+        this.organizedResults = this.processedData[pageToGo];
+      } else {
+        this.organizedResults = [];
+        results.forEach((result, index) => {
+          // console.log(">> organizando resultados...");
+          // for each match in this result...
 
-        // gets the matched sentence
-        const resultSentence = this.getConlluData[result.sentenceIndex];
+          // gets the matched sentence
+          const resultSentence = this.getConlluData[result.sentenceIndex];
 
-        // different info should be displayed
-        // depending on the searchedProperty
-        const showUposTagInfo = searchedProperty === "upostag";
+          // different info should be displayed
+          // depending on the searchedProperty
+          const showUposTagInfo = searchedProperty === "upostag";
 
-        const showDeprelInfo = searchedProperty === "deprel";
+          const showDeprelInfo = searchedProperty === "deprel";
 
-        const showFeatsInfo = searchedProperty === "feats";
+          const showFeatsInfo = searchedProperty === "feats";
 
-        // stores heads
-        const heads = [];
-        // gets the match
-        const match = result["foundNGram"]
-          .map((tokenId) => {
-            if (showUposTagInfo || showFeatsInfo) {
-              return `${resultSentence.tokens[tokenId].form}/${
-                resultSentence.tokens[tokenId][this.getSearchedProperty]
-              }`;
-            } else if (showDeprelInfo) {
-              // stores match's head
-              heads.push(resultSentence.tokens[tokenId].head);
-
-              return `${resultSentence.tokens[tokenId].form}<sub>${
-                resultSentence.tokens[tokenId].id
-              }</sub>/${
-                resultSentence.tokens[tokenId][this.getSearchedProperty]
-              }(${resultSentence.tokens[tokenId].head})`;
-            } else {
-              return resultSentence.tokens[tokenId].form;
-            }
-          })
-          .join("\xa0\xa0\xa0");
-
-        // gets the left context (string)
-        const leftContext = resultSentence.tokens
-          .slice(0, result["foundNGram"][0])
-          .map((e) => {
-            if (showUposTagInfo || showFeatsInfo) {
-              return `${e.form}/${e[this.getSearchedProperty]}`;
-            } else if (showDeprelInfo) {
-              if (heads.includes(e.id.toString())) {
-                return `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">${
-                  e.form
-                }<sub>${e.id}</sub>/${e[this.getSearchedProperty]}</span>`;
-              } else {
-                return `${e.form}<sub>${e.id}</sub>/${
-                  e[this.getSearchedProperty]
+          // stores heads
+          const heads = [];
+          // gets the match
+          const match = result["foundNGram"]
+            .map((tokenId) => {
+              if (showUposTagInfo || showFeatsInfo) {
+                return `${resultSentence.tokens[tokenId].form}/${
+                  resultSentence.tokens[tokenId][this.getSearchedProperty]
                 }`;
-              }
-            } else {
-              return e.form;
-            }
-          })
-          .join("\xa0\xa0\xa0");
+              } else if (showDeprelInfo) {
+                // stores match's head
+                heads.push(Number(resultSentence.tokens[tokenId].head));
 
-        // gets the right context (string)
-        const rightContext = resultSentence.tokens
-          .slice(
-            result["foundNGram"][result["foundNGram"].length - 1] + 1,
-            resultSentence.tokens.length
-          )
-          .map((e) => {
-            if (showUposTagInfo || showFeatsInfo) {
-              return `${e.form}/${e[this.getSearchedProperty]}`;
-            } else if (showDeprelInfo) {
-              if (heads.includes(e.id.toString())) {
-                return `<span style="
+                return `${resultSentence.tokens[tokenId].form}<sub>${
+                  resultSentence.tokens[tokenId].id
+                }</sub>/${
+                  resultSentence.tokens[tokenId][this.getSearchedProperty]
+                }(${resultSentence.tokens[tokenId].head})`;
+              } else {
+                return resultSentence.tokens[tokenId].form;
+              }
+            })
+            .join("\xa0\xa0\xa0");
+
+          // gets the left context (string)
+          const leftContext = resultSentence.tokens
+            .slice(0, result["foundNGram"][0])
+            .map((e) => {
+              if (showUposTagInfo || showFeatsInfo) {
+                return `${e.form}/${e[this.getSearchedProperty]}`;
+              } else if (showDeprelInfo) {
+                if (heads.includes(e.id)) {
+                  return `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">${
+                    e.form
+                  }<sub>${e.id}</sub>/${e[this.getSearchedProperty]}</span>`;
+                } else {
+                  return `${e.form}<sub>${e.id}</sub>/${
+                    e[this.getSearchedProperty]
+                  }`;
+                }
+              } else {
+                return e.form;
+              }
+            })
+            .join("\xa0\xa0\xa0");
+
+          // gets the right context (string)
+          const rightContext = resultSentence.tokens
+            .slice(
+              result["foundNGram"][result["foundNGram"].length - 1] + 1,
+              resultSentence.tokens.length
+            )
+            .map((e) => {
+              if (showUposTagInfo || showFeatsInfo) {
+                return `${e.form}/${e[this.getSearchedProperty]}`;
+              } else if (showDeprelInfo) {
+                if (heads.includes(e.id)) {
+                  return `<span style="
                 background-color: #46a8f5;
                 color: white;
                 padding: 5px;
                 border-radius: 3px;
               ">${e.form}<sub>${e.id}</sub>/${
-                  e[this.getSearchedProperty]
-                }</span>`;
+                    e[this.getSearchedProperty]
+                  }</span>`;
+                } else {
+                  return `${e.form}<sub>${e.id}</sub>/${
+                    e[this.getSearchedProperty]
+                  }`;
+                }
               } else {
-                return `${e.form}<sub>${e.id}</sub>/${
-                  e[this.getSearchedProperty]
-                }`;
+                return e.form;
               }
-            } else {
-              return e.form;
-            }
-          })
-          .join("\xa0\xa0\xa0");
+            })
+            .join("\xa0\xa0\xa0");
 
-        // organizes the data and stores it in an array
-        this.organizedResults.push({
-          index: index + (pageToGo - 1) * this.recordsPerPage,
-          leftContext,
-          match,
-          rightContext,
+          // organizes the data and stores it in an array
+          this.organizedResults.push({
+            index: index + (pageToGo - 1) * this.recordsPerPage,
+            leftContext,
+            match,
+            rightContext,
+          });
+          // console.log(this.organizedResults);
         });
-        console.log(this.organizedResults);
-      });
+        this.processedData[pageToGo] = this.organizedResults;
+      }
     },
 
     // -- DESCRIPTION:
