@@ -1,8 +1,5 @@
 const conlluJsLibrary = require("conllujs");
 
-/**
- * TODO
- */
 exports.getResultsStringRepresentation = (organizedResults) => {
   let finalString = "";
   organizedResults.forEach((result) => {
@@ -11,9 +8,6 @@ exports.getResultsStringRepresentation = (organizedResults) => {
   return finalString;
 };
 
-/**
- * TODO
- */
 exports.parseResultsToCSV = (organizedResults) => {
   // concatenates .csv lines
   let finalString = "Left Context,Match,Right Context\n";
@@ -25,9 +19,6 @@ exports.parseResultsToCSV = (organizedResults) => {
   return finalString;
 };
 
-/**
- * TODO
- */
 exports.parseObjectToConllu = async (sentences) => {
   let conlluText = "";
 
