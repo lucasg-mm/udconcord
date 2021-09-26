@@ -49,7 +49,6 @@
         >
           <template #body="{ data }">
             <span
-              v-if="!getEditedRowsIndexes.includes(data.index)"
               class="match-highlight"
               style="
                 background-color: #6666ff;
@@ -59,7 +58,6 @@
               "
               v-html="data.match"
             ></span>
-            <span v-else>{{ data.match }}</span>
           </template>
         </Column>
 
