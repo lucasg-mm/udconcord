@@ -335,15 +335,13 @@ export default {
     },
 
     async exportSearchResults(fileExtension) {
-      // console.log(fileExtension);
-
       this.showLoadingBar();
       // gets the results array and the string
       // indicating which property is being searched
       // organizes all the results at once
       const results = this.getSearchResults;
       const searchedProperty = this.getSearchedProperty;
-      this.organizesResults(results, searchedProperty);
+      this.organizesResults(results, searchedProperty, 1, true);
 
       // gets the backend export results route URL
       const exportResultsRouteUrl =
@@ -375,8 +373,13 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
-    organizesResults(results, searchedProperty, pageToGo = 1) {
-      if (pageToGo in this.processedData) {
+    organizesResults(
+      results,
+      searchedProperty,
+      pageToGo = 1,
+      exporting = false
+    ) {
+      if (pageToGo in this.processedData && exporting === false) {
         this.organizedResults = this.processedData[pageToGo];
       } else {
         this.organizedResults = [];

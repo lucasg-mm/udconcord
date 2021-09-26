@@ -110,7 +110,6 @@ exports.parseResultsToCSV = (organizedResults, searchedProperty) => {
       // formats right context
       const tokensRightContext = result["rightContext"].split("\xa0\xa0\xa0");
       tokensRightContext.forEach((tokenRightContext) => {
-        console.log(tokenRightContext);
         const result = tokenRightContext.match(regexp);
         let form;
         let tokenId;
