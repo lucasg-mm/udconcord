@@ -2,7 +2,6 @@
   <div class="input-set">
     I want to look for
     <Dropdown
-      class="dropdown"
       v-model="propertyToSearch"
       :options="availableProperties"
       optionLabel="humanReadableName"
@@ -10,7 +9,6 @@
     />
     in a
     <Dropdown
-      class="dropdown"
       v-model="caseWay"
       :options="availableCases"
       optionLabel="humanReadableName"
@@ -18,7 +16,29 @@
     />
     way:
     <InputText class="search-input" type="text" v-model="queryString" />
-    <Button label="Search" @click="search" />
+    <Button class="search-btn" label="Search" @click="search" />
+    <Button
+      @click="showOptions = !showOptions"
+      icon="pi pi-cog"
+      class="options-btn p-button-rounded"
+    />
+    <transition name="fade">
+      <div v-if="showOptions" class="visualization-options">
+        Show in the results:
+        <span class="option-prop">
+          <Checkbox id="prop1" name="prop" value="upos" />
+          <label for="prop1"> POS tags</label>
+        </span>
+        <span class="option-prop">
+          <Checkbox id="prop2" name="prop" value="deprel" />
+          <label for="prop2"> Depedency relations</label>
+        </span>
+        <span class="option-prop">
+          <Checkbox id="prop3" name="prop" value="feats" />
+          <label for="prop3"> Features</label>
+        </span>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -26,6 +46,7 @@
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
+import Checkbox from "primevue/checkbox";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
@@ -36,10 +57,12 @@ export default {
     InputText,
     Button,
     Dropdown,
+    Checkbox,
   },
 
   data() {
     return {
+      showOptions: false,
       queryString: "",
       propertyToSearch: "form",
       caseWay: "sensitive",
@@ -132,6 +155,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.visualization-options {
+  margin-top: 30px;
+}
+
+.option-prop {
+  padding-left: 20px;
+}
+
 .input-set {
   font-family: "Roboto", sans-serif;
   font-size: 18px;
@@ -148,6 +189,13 @@ export default {
   color: black;
 }
 
+.p-multiselect {
+  padding: 4px 0 4px 4px;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: #e4e5e8;
+}
+
 .p-dropdown::v-deep .p-dropdown-label,
 .p-dropdown-item {
   padding: 10px 32px 10px 10px;
@@ -162,26 +210,17 @@ export default {
   border-color: #e4e5e8;
 }
 
-.p-button {
+.options-btn::v-deep {
+  margin-left: 25px;
+  padding: 21px !important;
+}
+
+.search-btn.p-button {
   padding: 10px 32px;
   font-size: 18px;
   border-width: 2px;
-  border-color: #000099;
-  background: #000099;
   font-family: "Roboto", sans-serif;
   border-radius: 0 5px 5px 0;
-}
-
-.p-button:hover {
-  background: #000066 !important;
-  color: #ffffff !important;
-  border-color: #000066 !important;
-}
-
-.p-button:active {
-  background: #0000e6 !important;
-  color: #ffffff !important;
-  border-color: #0000e6 !important;
 }
 
 @media screen and (max-width: 768px) {
