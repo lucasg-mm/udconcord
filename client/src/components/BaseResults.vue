@@ -74,8 +74,8 @@
     <div class="bottom-set">
       <SplitButton
         class="export-button"
-        @click="exportTreebank"
-        label="Export"
+        @click="exportTreebank(this.getConlluData)"
+        label="Download"
         :model="exportButtonItems"
       ></SplitButton>
     </div>
@@ -149,19 +149,33 @@ export default {
       // items in the export button items (it's a split button)
       exportButtonItems: [
         {
-          label: "Export treebank (.conllu)",
+          label: "Download treebank (.conllu)",
           command: () => {
-            this.exportTreebank();
+            this.exportTreebank(this.getConlluData);
           },
         },
         {
-          label: "Export search results (.csv)",
+          label: "Download search results (.conllu)",
+          command: () => {
+            // downloads every sentence in the results
+            // as .conllu
+            const sentencesToDownload = [];
+            this.getSearchResults.forEach((result) => {
+              sentencesToDownload.push(
+                this.getConlluData[result.sentenceIndex]
+              );
+            });
+            this.exportTreebank(sentencesToDownload);
+          },
+        },
+        {
+          label: "Download search results (.csv)",
           command: () => {
             this.exportSearchResults("csv");
           },
         },
         {
-          label: "Export search results (.txt)",
+          label: "Download search results (.txt)",
           command: () => {
             this.exportSearchResults("txt");
           },
@@ -186,7 +200,7 @@ export default {
       this.loadLazyData(1, this.recordsPerPage);
     },
 
-    async exportTreebank() {
+    async exportTreebank(conlluData) {
       // shows loading bar
       this.showLoadingBar();
 
@@ -196,7 +210,7 @@ export default {
 
       // defining the request's body
       let requestBody = {
-        sentences: this.getConlluData,
+        sentences: conlluData,
       };
 
       requestBody = JSON.stringify(requestBody);
