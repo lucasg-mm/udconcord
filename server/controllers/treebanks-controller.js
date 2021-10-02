@@ -7,19 +7,19 @@ const stream = require("stream");
 exports.apiResultsToCSV = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { organizedResults, fileExtension, searchedProperty } = req.fields;
+    const { organizedResults, fileExtension } = req.fields;
 
     // parses the results to text
     let resultsText;
     if (fileExtension === "csv") {
       resultsText = await treebanksService.parseResultsToCSV(
         organizedResults,
-        searchedProperty
+        shownProps
       );
     } else {
       resultsText = await treebanksService.getResultsStringRepresentation(
         organizedResults,
-        searchedProperty
+        shownProps
       );
     }
 

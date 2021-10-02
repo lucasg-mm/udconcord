@@ -353,7 +353,6 @@ export default {
       // indicating which property is being searched
       // organizes all the results at once
       const results = this.getSearchResults;
-      const searchedProperty = this.getLastSearchParams.searchedProperty;
       this.organizesResults(results, 1, true);
 
       // gets the backend export results route URL
@@ -363,7 +362,6 @@ export default {
       const requestBody = JSON.stringify({
         organizedResults: this.organizedResults,
         fileExtension,
-        searchedProperty,
       });
 
       // makes the request
@@ -448,7 +446,7 @@ export default {
 
       // show features
       if (this.getLastSearchParams.shownProps.includes("feats")) {
-        uposText = "/" + e["feats"];
+        featsText = "/" + e["feats"];
       }
 
       return (
@@ -471,7 +469,6 @@ export default {
       } else {
         this.organizedResults = [];
         results.forEach((result, index) => {
-          // console.log(">> organizando resultados...");
           // for each match in this result...
 
           // gets the matched sentence
@@ -518,7 +515,6 @@ export default {
             match,
             rightContext,
           });
-          // console.log(this.organizedResults);
         });
         this.processedData[pageToGo] = this.organizedResults;
       }

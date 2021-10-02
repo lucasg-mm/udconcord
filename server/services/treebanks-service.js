@@ -1,136 +1,35 @@
 const conlluJsLibrary = require("conllujs");
 
-exports.getResultsStringRepresentation = (
-  organizedResults,
-  searchedProperty
-) => {
-  let finalString = "";
-
-  if (searchedProperty === "deprel") {
-    organizedResults.forEach((result) => {
-      // formats left context
-      const regexp = /(?:.*">)*(.*)<sub>(.*)<\/sub>\/([^<]*)*/;
-      const tokensLeftContext = result["leftContext"].split("\xa0\xa0\xa0");
-      tokensLeftContext.forEach((tokenLeftContext) => {
-        const result = tokenLeftContext.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}(${tokenId})/${deprelName} `;
-      });
-
-      // formats match
-      finalString += "*****";
-      const tokensMatch = result["match"].split("\xa0\xa0\xa0");
-      tokensMatch.forEach((tokenMatch) => {
-        const result = tokenMatch.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}(${tokenId})/${deprelName} `;
-      });
-      finalString += "*****";
-
-      // formats right context
-      const tokensRightContext = result["rightContext"].split("\xa0\xa0\xa0");
-      tokensRightContext.forEach((tokenRightContext) => {
-        const result = tokenRightContext.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}_${tokenId}/${deprelName} `;
-      });
-
-      finalString += "\n\n\n";
+// called when user wants to export search results as .txt
+exports.getResultsStringRepresentation = (organizedResults) => {
+  let finalText = "";
+  // iterates through every sentence
+  organizedResults.forEach((sentence) => {
+    // iterates through every token in the left context
+    sentence.leftContext.split("\xa0\xa0\xa0").forEach((token) => {
+      finalText += getContextTokenText(token);
+      finalText += " ";
     });
-  } else {
-    organizedResults.forEach((result) => {
-      finalString += `>> ${result.leftContext} *****${result.match}***** ${result.rightContext}\n\n\n`;
+
+    // iterates through every token in the match
+    sentence.match.split("\xa0\xa0\xa0").forEach((token) => {
+      finalText += getContextTokenText(token);
+      finalText += " ";
     });
-  }
-  return finalString;
+
+    // iterates through every token in the right context
+    sentence.rightContext.split("\xa0\xa0\xa0").forEach((token) => {
+      finalText += getContextTokenText(token);
+      finalText += " ";
+    });
+
+    finalText += "\n\n\n";
+  });
+
+  return finalText;
 };
 
-exports.parseResultsToCSV = (organizedResults, searchedProperty) => {
-  // concatenates .csv lines
-  let finalString = "Left Context,Match,Right Context\n";
-
-  if (searchedProperty === "deprel") {
-    organizedResults.forEach((result) => {
-      // formats left context
-      finalString += '"';
-      const regexp = /(?:.*">)*(.*)<sub>(.*)<\/sub>\/([^<]*)*/;
-      const tokensLeftContext = result["leftContext"].split("\xa0\xa0\xa0");
-      tokensLeftContext.forEach((tokenLeftContext) => {
-        const result = tokenLeftContext.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}(${tokenId})/${deprelName} `;
-      });
-
-      // formats match
-      finalString += '","';
-      const tokensMatch = result["match"].split("\xa0\xa0\xa0");
-      tokensMatch.forEach((tokenMatch) => {
-        const result = tokenMatch.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}(${tokenId})/${deprelName} `;
-      });
-      finalString += '","';
-
-      // formats right context
-      const tokensRightContext = result["rightContext"].split("\xa0\xa0\xa0");
-      tokensRightContext.forEach((tokenRightContext) => {
-        const result = tokenRightContext.match(regexp);
-        let form;
-        let tokenId;
-        let deprelName;
-        if (result) {
-          form = result[1];
-          tokenId = result[2];
-          deprelName = result[3];
-        }
-        finalString += `${form}_${tokenId}/${deprelName} `;
-      });
-
-      finalString += '"\n';
-    });
-  } else {
-    organizedResults.forEach((result) => {
-      finalString += `"${result.leftContext}","${result.match}","${result.rightContext}"\n`;
-    });
-  }
-
-  return finalString;
-};
+exports.parseResultsToCSV = (organizedResults, shownProps) => {};
 
 exports.parseObjectToConllu = async (sentences) => {
   let conlluText = "";
@@ -248,6 +147,21 @@ exports.searchTreebank = async (
 };
 
 // -- AUX FUNCTIONS
+
+// returns the text of a token in the context, as it should be
+// displayed in the export .txt and .csv files
+function getContextTokenText(token, shownProps) {
+  token = token.replace("<sub>", "_");
+  token = token.replace("</sub>", "");
+  token = token.replace(/<span .*;">/g, "");
+  token = token.replace("</span>", "");
+
+  return token;
+}
+
+// returns the text of a matched token, as it should be
+// displayed in the export .txt and .csv files
+function getMatchedTokenText(token, shownProps) {}
 
 function featsComparison(tokenFeats, featsToCompare, caseWay) {
   let numberOfMatchs = 0;
