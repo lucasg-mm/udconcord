@@ -21,9 +21,6 @@ const store = createStore({
       // the edited rows (indicated by their indexes) of the results table
       editedRowsIndexes: [],
 
-      // the property being searched
-      searchedProperty: "",
-
       // parameters used in the last search
       lastSearchParams: {},
 

@@ -27,12 +27,6 @@ export default {
   },
   //----------------------------
 
-  setSearchedProperty(context, { searchedProperty }) {
-    context.commit("setSearchedProperty", { searchedProperty });
-  },
-
-  //----------------------------
-
   setLastSearchParams(
     context,
     { searchedProperty, caseWay, searchTerm, shownProps }

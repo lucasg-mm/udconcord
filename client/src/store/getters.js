@@ -11,9 +11,6 @@ export default {
   getEditedRowsIndexes(state) {
     return state.editedRowsIndexes;
   },
-  getSearchedProperty(state) {
-    return state.searchedProperty;
-  },
   getIsLoading(state) {
     return state.isLoading;
   },

@@ -101,7 +101,6 @@ export default {
      */
     ...mapActions([
       "setSearchResults",
-      "setSearchedProperty",
       "setEditedRowsIndexes",
       "setLastSearchParams",
       "showLoadingBar",
@@ -146,7 +145,6 @@ export default {
 
       // sets results and searched property on the store
       this.setSearchResults({ searchResults });
-      this.setSearchedProperty({ searchedProperty: this.propertyToSearch });
       this.setLastSearchParams({
         searchedProperty: this.propertyToSearch,
         caseWay: this.caseWay,

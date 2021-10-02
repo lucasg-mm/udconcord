@@ -120,7 +120,6 @@ export default {
       "getConlluData",
       "getEditedRowsIndexes",
       "getSearchResults",
-      "getSearchedProperty",
       "getLastSearchParams",
     ]),
 
@@ -263,7 +262,6 @@ export default {
       // gets the results array and the string
       // indicating which property is being searched
       const results = this.getSearchResults;
-      const searchedProperty = this.getSearchedProperty;
 
       // gets the data that should be displayed in
       // pageToGo
@@ -273,7 +271,7 @@ export default {
       );
 
       // formats the data in the DataTable component
-      this.organizesResults(dataInCurrPage, searchedProperty, pageToGo);
+      this.organizesResults(dataInCurrPage, pageToGo);
 
       // scroll to the matches after updates the DOM
       this.$nextTick(() => this.scrollToMatches());
@@ -355,8 +353,8 @@ export default {
       // indicating which property is being searched
       // organizes all the results at once
       const results = this.getSearchResults;
-      const searchedProperty = this.getSearchedProperty;
-      this.organizesResults(results, searchedProperty, 1, true);
+      const searchedProperty = this.getLastSearchParams.searchedProperty;
+      this.organizesResults(results, 1, true);
 
       // gets the backend export results route URL
       const exportResultsRouteUrl =
@@ -467,12 +465,7 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
-    organizesResults(
-      results,
-      searchedProperty,
-      pageToGo = 1,
-      exporting = false
-    ) {
+    organizesResults(results, pageToGo = 1, exporting = false) {
       if (pageToGo in this.processedData && exporting === false) {
         this.organizedResults = this.processedData[pageToGo];
       } else {
