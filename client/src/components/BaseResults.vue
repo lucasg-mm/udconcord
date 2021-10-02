@@ -121,6 +121,7 @@ export default {
       "getEditedRowsIndexes",
       "getSearchResults",
       "getSearchedProperty",
+      "getLastSearchParams",
     ]),
 
     // number of results returned by a search
@@ -383,6 +384,85 @@ export default {
       this.hideLoadingBar();
     },
 
+    // gets the markup of matched token of a resulting sentence
+    getMatchedTokenMarkUp(resultSentence, tokenId) {
+      let formText = resultSentence.tokens[tokenId].form;
+      let uposText = "";
+      let deprelText = "";
+      let featsText = "";
+
+      // show upos
+      if (this.getLastSearchParams.shownProps.includes("upos")) {
+        // gets upos text
+        uposText = "/" + resultSentence.tokens[tokenId].upostag;
+      }
+
+      // show deprel
+      if (this.getLastSearchParams.shownProps.includes("deprel")) {
+        // put id info in the form
+        formText = `${resultSentence.tokens[tokenId].form}<sub>${resultSentence.tokens[tokenId].id}</sub>`;
+
+        // gets deprel text
+        deprelText =
+          "/" +
+          resultSentence.tokens[tokenId].deprel +
+          "(" +
+          resultSentence.tokens[tokenId].head +
+          ")";
+      }
+
+      // show features
+      if (this.getLastSearchParams.shownProps.includes("feats")) {
+        // gets feats text
+        featsText = "/" + resultSentence.tokens[tokenId].feats;
+      }
+
+      return formText + uposText + deprelText + featsText;
+    },
+
+    // gets the markup of token in the context of a resulting sentence
+    getContextTokenMarkUp(e, heads) {
+      let formText = e.form;
+      let uposText = "";
+      let deprelText = "";
+      let featsText = "";
+      let openingSpanTag = "";
+      let closingSpanTag = "";
+
+      // show upos
+      if (this.getLastSearchParams.shownProps.includes("upos")) {
+        uposText = "/" + e["upostag"];
+      }
+
+      // show deprel
+      if (this.getLastSearchParams.shownProps.includes("deprel")) {
+        // put id info in the form
+        formText = `${e.form}<sub>${e.id}</sub>`;
+
+        // sets tag style if it is a head
+        if (heads.includes(e.id)) {
+          openingSpanTag = `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">`;
+          closingSpanTag = "</span>";
+        }
+
+        deprelText = "/" + e["deprel"];
+      }
+
+      // show features
+      if (this.getLastSearchParams.shownProps.includes("feats")) {
+        uposText = "/" + e["feats"];
+      }
+
+      return (
+        openingSpanTag +
+        formText +
+        uposText +
+        deprelText +
+        featsText +
+        closingSpanTag
+      );
+    },
+
     // -- DESCRIPTION
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
@@ -404,35 +484,16 @@ export default {
           // gets the matched sentence
           const resultSentence = this.getConlluData[result.sentenceIndex];
 
-          // different info should be displayed
-          // depending on the searchedProperty
-          const showUposTagInfo = searchedProperty === "upostag";
-
-          const showDeprelInfo = searchedProperty === "deprel";
-
-          const showFeatsInfo = searchedProperty === "feats";
-
           // stores heads
           const heads = [];
           // gets the match
           const match = result["foundNGram"]
             .map((tokenId) => {
-              if (showUposTagInfo || showFeatsInfo) {
-                return `${resultSentence.tokens[tokenId].form}/${
-                  resultSentence.tokens[tokenId][this.getSearchedProperty]
-                }`;
-              } else if (showDeprelInfo) {
-                // stores match's head
-                heads.push(Number(resultSentence.tokens[tokenId].head));
+              // stores match's head
+              heads.push(Number(resultSentence.tokens[tokenId].head));
 
-                return `${resultSentence.tokens[tokenId].form}<sub>${
-                  resultSentence.tokens[tokenId].id
-                }</sub>/${
-                  resultSentence.tokens[tokenId][this.getSearchedProperty]
-                }(${resultSentence.tokens[tokenId].head})`;
-              } else {
-                return resultSentence.tokens[tokenId].form;
-              }
+              // returns matched token's mark up to render in the table rows
+              return this.getMatchedTokenMarkUp(resultSentence, tokenId);
             })
             .join("\xa0\xa0\xa0");
 
@@ -440,21 +501,8 @@ export default {
           const leftContext = resultSentence.tokens
             .slice(0, result["foundNGram"][0])
             .map((e) => {
-              if (showUposTagInfo || showFeatsInfo) {
-                return `${e.form}/${e[this.getSearchedProperty]}`;
-              } else if (showDeprelInfo) {
-                if (heads.includes(e.id)) {
-                  return `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">${
-                    e.form
-                  }<sub>${e.id}</sub>/${e[this.getSearchedProperty]}</span>`;
-                } else {
-                  return `${e.form}<sub>${e.id}</sub>/${
-                    e[this.getSearchedProperty]
-                  }`;
-                }
-              } else {
-                return e.form;
-              }
+              // returns context token's mark up to render in the table rows
+              return this.getContextTokenMarkUp(e, heads);
             })
             .join("\xa0\xa0\xa0");
 
@@ -465,26 +513,8 @@ export default {
               resultSentence.tokens.length
             )
             .map((e) => {
-              if (showUposTagInfo || showFeatsInfo) {
-                return `${e.form}/${e[this.getSearchedProperty]}`;
-              } else if (showDeprelInfo) {
-                if (heads.includes(e.id)) {
-                  return `<span style="
-                background-color: #46a8f5;
-                color: white;
-                padding: 5px;
-                border-radius: 3px;
-              ">${e.form}<sub>${e.id}</sub>/${
-                    e[this.getSearchedProperty]
-                  }</span>`;
-                } else {
-                  return `${e.form}<sub>${e.id}</sub>/${
-                    e[this.getSearchedProperty]
-                  }`;
-                }
-              } else {
-                return e.form;
-              }
+              // returns context token's mark up to render in the table rows
+              return this.getContextTokenMarkUp(e, heads);
             })
             .join("\xa0\xa0\xa0");
 

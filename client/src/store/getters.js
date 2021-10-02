@@ -17,4 +17,7 @@ export default {
   getIsLoading(state) {
     return state.isLoading;
   },
+  getLastSearchParams(state) {
+    return state.lastSearchParams;
+  },
 };

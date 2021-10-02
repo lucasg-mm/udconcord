@@ -24,6 +24,9 @@ const store = createStore({
       // the property being searched
       searchedProperty: "",
 
+      // parameters used in the last search
+      lastSearchParams: {},
+
       // tells if the app is loading something (when it is, it shows a progress bar at the
       // top of the page)
       isLoading: false,

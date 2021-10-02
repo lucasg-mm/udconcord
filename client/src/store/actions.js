@@ -31,6 +31,20 @@ export default {
     context.commit("setSearchedProperty", { searchedProperty });
   },
 
+  //----------------------------
+
+  setLastSearchParams(
+    context,
+    { searchedProperty, caseWay, searchTerm, shownProps }
+  ) {
+    context.commit("setLastSearchParams", {
+      searchedProperty,
+      caseWay,
+      searchTerm,
+      shownProps,
+    });
+  },
+
   //-----------------------------
   showLoadingBar(context) {
     context.commit("showLoadingBar");

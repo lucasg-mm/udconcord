@@ -26,15 +26,20 @@
       <div v-if="showOptions" class="visualization-options">
         Show in the results:
         <span class="option-prop">
-          <Checkbox id="prop1" name="prop" value="upos" />
+          <Checkbox id="prop1" name="prop" value="upos" v-model="shownProps" />
           <label for="prop1"> POS tags</label>
         </span>
         <span class="option-prop">
-          <Checkbox id="prop2" name="prop" value="deprel" />
+          <Checkbox
+            id="prop2"
+            name="prop"
+            value="deprel"
+            v-model="shownProps"
+          />
           <label for="prop2"> Depedency relations</label>
         </span>
         <span class="option-prop">
-          <Checkbox id="prop3" name="prop" value="feats" />
+          <Checkbox id="prop3" name="prop" value="feats" v-model="shownProps" />
           <label for="prop3"> Features</label>
         </span>
       </div>
@@ -62,6 +67,7 @@ export default {
 
   data() {
     return {
+      shownProps: [],
       showOptions: false,
       queryString: "",
       propertyToSearch: "form",
@@ -97,6 +103,7 @@ export default {
       "setSearchResults",
       "setSearchedProperty",
       "setEditedRowsIndexes",
+      "setLastSearchParams",
       "showLoadingBar",
       "hideLoadingBar",
     ]),
@@ -140,6 +147,12 @@ export default {
       // sets results and searched property on the store
       this.setSearchResults({ searchResults });
       this.setSearchedProperty({ searchedProperty: this.propertyToSearch });
+      this.setLastSearchParams({
+        searchedProperty: this.propertyToSearch,
+        caseWay: this.caseWay,
+        searchTerm: this.queryString,
+        shownProps: this.shownProps,
+      });
 
       // sets the indexes of edited sentences in the store
       this.setEditedRowsIndexes({ editedRowsIndexes: [] });

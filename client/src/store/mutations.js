@@ -28,6 +28,19 @@ export default {
   setSearchedProperty(state, { searchedProperty }) {
     state.searchedProperty = searchedProperty;
   },
+  //----------------------------
+
+  setLastSearchParams(
+    state,
+    { searchedProperty, caseWay, searchTerm, shownProps }
+  ) {
+    state.lastSearchParams = {
+      searchedProperty,
+      caseWay,
+      searchTerm,
+      shownProps,
+    };
+  },
 
   //-----------------------------
 
