@@ -79,8 +79,8 @@ export default {
       availableProperties: [
         { humanReadableName: "lemmas", propName: "lemma" },
         { humanReadableName: "forms", propName: "form" },
-        { humanReadableName: "POS tags", propName: "upostag" },
-        { humanReadableName: "dep. relations", propName: "deprel" },
+        { humanReadableName: "pos tags", propName: "upostag" },
+        { humanReadableName: "deprels", propName: "deprel" },
         { humanReadableName: "feats", propName: "feats" },
       ],
     };

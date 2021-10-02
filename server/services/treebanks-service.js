@@ -12,10 +12,15 @@ exports.getResultsStringRepresentation = (organizedResults) => {
     });
 
     // iterates through every token in the match
-    sentence.match.split("\xa0\xa0\xa0").forEach((token) => {
+    finalText += "*****";
+    const matchTokens = sentence.match.split("\xa0\xa0\xa0");
+    matchTokens.forEach((token, index) => {
       finalText += getContextTokenText(token);
-      finalText += " ";
+      if (index != matchTokens.length - 1) {
+        finalText += " ";
+      }
     });
+    finalText += "***** ";
 
     // iterates through every token in the right context
     sentence.rightContext.split("\xa0\xa0\xa0").forEach((token) => {
@@ -29,7 +34,44 @@ exports.getResultsStringRepresentation = (organizedResults) => {
   return finalText;
 };
 
-exports.parseResultsToCSV = (organizedResults, shownProps) => {};
+exports.parseResultsToCSV = (organizedResults) => {
+  let finalText = "Left Context,Match,Right Context\n";
+  // iterates through every sentence
+  organizedResults.forEach((sentence) => {
+    // iterates through every token in the left context
+    finalText += `"`;
+    const leftContextTokens = sentence.leftContext.split("\xa0\xa0\xa0");
+    leftContextTokens.forEach((token, index) => {
+      finalText += getContextTokenText(token);
+      if (index != leftContextTokens.length - 1) {
+        finalText += " ";
+      }
+    });
+    finalText += `","`;
+
+    // iterates through every token in the match
+    const matchTokens = sentence.match.split("\xa0\xa0\xa0");
+    matchTokens.forEach((token, index) => {
+      finalText += getContextTokenText(token);
+      if (index != matchTokens.length - 1) {
+        finalText += " ";
+      }
+    });
+    finalText += `","`;
+
+    // iterates through every token in the right context
+    const rightContextTokens = sentence.rightContext.split("\xa0\xa0\xa0");
+    rightContextTokens.forEach((token, index) => {
+      finalText += getContextTokenText(token);
+      if (index != rightContextTokens.length - 1) {
+        finalText += " ";
+      }
+    });
+    finalText += `"\n`;
+  });
+
+  return finalText;
+};
 
 exports.parseObjectToConllu = async (sentences) => {
   let conlluText = "";

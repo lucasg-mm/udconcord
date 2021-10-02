@@ -12,14 +12,10 @@ exports.apiResultsToCSV = async (req, res, next) => {
     // parses the results to text
     let resultsText;
     if (fileExtension === "csv") {
-      resultsText = await treebanksService.parseResultsToCSV(
-        organizedResults,
-        shownProps
-      );
+      resultsText = await treebanksService.parseResultsToCSV(organizedResults);
     } else {
       resultsText = await treebanksService.getResultsStringRepresentation(
-        organizedResults,
-        shownProps
+        organizedResults
       );
     }
 
