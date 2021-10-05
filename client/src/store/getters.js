@@ -17,4 +17,7 @@ export default {
   getLastSearchParams(state) {
     return state.lastSearchParams;
   },
+  getMadeChanges(state) {
+    return state.madeChanges;
+  },
 };

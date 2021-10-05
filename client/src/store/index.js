@@ -27,6 +27,9 @@ const store = createStore({
       // tells if the app is loading something (when it is, it shows a progress bar at the
       // top of the page)
       isLoading: false,
+
+      // tells if the user made changes to conllu before exiting the edit page
+      madeChanges: false,
     };
   },
   mutations: rootMutations,

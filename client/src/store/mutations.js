@@ -39,6 +39,12 @@ export default {
 
   //-----------------------------
 
+  setMadeChanges(state, { changesBool }) {
+    state.madeChanges = changesBool;
+  },
+
+  //-----------------------------
+
   showLoadingBar(state) {
     state.isLoading = true;
   },

@@ -109,6 +109,7 @@ export default {
 
     // -- DESCRIPTION:
     // Makes a search in the treebank.
+    // TODO: delete this and make this in the parent component
     async search() {
       this.showLoadingBar();
 
@@ -116,7 +117,6 @@ export default {
       const treebanksSearchRouteUrl =
         process.env.VUE_APP_URL + "api/treebanks/search";
 
-      // console.log(">>> definindo corpo da requisição...");
       // defining the request's body
       let requestBody = {
         sentences: this.getConlluData,
@@ -127,7 +127,6 @@ export default {
 
       requestBody = JSON.stringify(requestBody);
 
-      // console.log(">>> fazendo requisição...");
       // makes the request
       const response = await fetch(treebanksSearchRouteUrl, {
         method: "POST",
@@ -140,8 +139,6 @@ export default {
 
       // parses results to javascript object
       const searchResults = await response.json();
-
-      // console.log("searchResults", searchResults);
 
       // sets results and searched property on the store
       this.setSearchResults({ searchResults });

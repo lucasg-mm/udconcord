@@ -173,7 +173,11 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component
      */
-    ...mapActions(["updateConlluDataEl", "pushEditedRowsIndexes"]),
+    ...mapActions([
+      "updateConlluDataEl",
+      "pushEditedRowsIndexes",
+      "setMadeChanges",
+    ]),
 
     /*
     -- DESCRIPTION:
@@ -196,9 +200,16 @@ export default {
         index: this.getDoubleClickedSentenceIndexes.conlluDataIndex,
       });
 
+      this.setMadeChanges({ changesBool: true });
+
+      let sent_id = this.editingSentence.metadata.filter(
+        (e) => e.key === "sent_id"
+      );
+      sent_id = sent_id[0]["value"];
+
       // updates the ids of edited sentences
       this.pushEditedRowsIndexes({
-        el: this.getDoubleClickedSentenceIndexes.searchResultsIndex,
+        el: sent_id,
       });
     },
 

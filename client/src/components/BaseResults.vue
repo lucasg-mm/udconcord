@@ -22,7 +22,6 @@
         :autoLayout="true"
         :rowHover="true"
         breakpoint="425px"
-        :rowClass="rowClass"
         :totalRecords="totalRecords"
         @row-dblclick="editSentence"
         @page="onPage($event)"
@@ -103,10 +102,26 @@ export default {
   },
 
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(async (vm) => {
       if (from.path === "/edit") {
+        if (this.getMadeChanges) {
+          this.setMadeChanges({ changesBool: false });
+
+          // redo search
+          await this.search({
+            sentences: this.getConlluData,
+            propertyToSearch: this.getLastSearchParams.searchedProperty,
+            valueToSearch: this.getLastSearchParams.searchTerm,
+            caseWay: this.getLastSearchParams.caseWay,
+          });
+
+          // rebuilds table
+          this.resultsReceiver();
+        }
         // scroll to matches column
-        vm.restoreScrollState();
+        setTimeout(() => {
+          vm.restoreScrollState();
+        }, 500);
       }
     });
   },
@@ -121,6 +136,7 @@ export default {
       "getEditedRowsIndexes",
       "getSearchResults",
       "getLastSearchParams",
+      "getMadeChanges",
     ]),
 
     // number of results returned by a search
@@ -159,13 +175,11 @@ export default {
           command: () => {
             // downloads every sentence in the results
             // as .conllu
-            const sentencesToDownload = [];
+            const sentencesToDownload = new Set();
             this.getSearchResults.forEach((result) => {
-              sentencesToDownload.push(
-                this.getConlluData[result.sentenceIndex]
-              );
+              sentencesToDownload.add(this.getConlluData[result.sentenceIndex]);
             });
-            this.exportTreebank(sentencesToDownload);
+            this.exportTreebank(Array.from(sentencesToDownload));
           },
         },
         {
@@ -190,10 +204,40 @@ export default {
      * Maps store's actions to this component
      */
     ...mapActions([
+      "setSearchResults",
+      "setMadeChanges",
       "setDoubleClickedSentenceIndexes",
       "showLoadingBar",
       "hideLoadingBar",
     ]),
+
+    async search(requestBody) {
+      this.showLoadingBar();
+
+      // gets the backend treebanks route URL
+      const treebanksSearchRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/search";
+
+      requestBody = JSON.stringify(requestBody);
+
+      // makes the request
+      const response = await fetch(treebanksSearchRouteUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      // parses results to javascript object
+      const searchResults = await response.json();
+
+      // sets results and searched property on the store
+      this.setSearchResults({ searchResults });
+
+      this.hideLoadingBar();
+    },
 
     resultsReceiver() {
       this.processedData = {};
@@ -257,8 +301,6 @@ export default {
     numberOfRows: number of rows to be rendered in the table's page.
     */
     loadLazyData(pageToGo, numberOfRows) {
-      // console.log(">> Loading lazy data...");
-
       // gets the results array and the string
       // indicating which property is being searched
       const results = this.getSearchResults;
@@ -275,12 +317,6 @@ export default {
 
       // scroll to the matches after updates the DOM
       this.$nextTick(() => this.scrollToMatches());
-    },
-
-    // -- DESCRIPTION:
-    // Applies the 'edited' class to edited sentences' rows.
-    rowClass(data) {
-      return this.getEditedRowsIndexes.includes(data.index) ? "edited" : null;
     },
 
     // -- DESCRIPTION:
@@ -474,6 +510,11 @@ export default {
           // gets the matched sentence
           const resultSentence = this.getConlluData[result.sentenceIndex];
 
+          let sent_id = resultSentence.metadata.filter(
+            (e) => e.key === "sent_id"
+          );
+          sent_id = sent_id[0]["value"];
+
           // stores heads
           const heads = [];
           // gets the match
@@ -511,6 +552,7 @@ export default {
           // organizes the data and stores it in an array
           this.organizedResults.push({
             index: index + (pageToGo - 1) * this.recordsPerPage,
+            sent_id,
             leftContext,
             match,
             rightContext,

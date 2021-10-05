@@ -40,6 +40,11 @@ export default {
   },
 
   //-----------------------------
+  setMadeChanges(context, { changesBool }) {
+    context.commit("setMadeChanges", { changesBool });
+  },
+
+  //-----------------------------
   showLoadingBar(context) {
     context.commit("showLoadingBar");
   },
