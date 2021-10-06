@@ -187,21 +187,13 @@ export default {
 }
 
 .p-inputtext {
+  // vertical-align: bottom;
   padding: 10px 32px 10px 10px;
   font-size: 18px;
-  margin-top: 10px;
-  border-width: 2px;
   border-radius: 5px 0 0 5px;
   border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
   font-family: "Roboto", sans-serif;
   color: black;
-}
-
-.p-multiselect {
-  padding: 4px 0 4px 4px;
-  border-width: 2px;
-  border-radius: 5px;
-  border-color: #e4e5e8;
 }
 
 .p-dropdown::v-deep .p-dropdown-label,
@@ -213,7 +205,7 @@ export default {
 }
 
 .p-dropdown {
-  border-width: 2px;
+  vertical-align: bottom;
   border-radius: 5px;
   border-color: #e4e5e8;
 }
@@ -226,7 +218,6 @@ export default {
 .search-btn.p-button {
   padding: 10px 32px;
   font-size: 18px;
-  border-width: 2px;
   font-family: "Roboto", sans-serif;
   border-radius: 0 5px 5px 0;
 }
