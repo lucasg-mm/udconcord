@@ -17,6 +17,7 @@
         :autoLayout="true"
         :rowHover="true"
         breakpoint="425px"
+        :rowClass="rowClass"
         :totalRecords="totalRecords"
         @row-dblclick="editSentence"
         @page="onPage($event)"
@@ -555,6 +556,12 @@ export default {
         });
         this.processedData[pageToGo] = this.organizedResults;
       }
+    },
+
+    // -- DESCRIPTION:
+    // Applies the 'edited' class to edited sentences' rows.
+    rowClass(data) {
+      return this.getEditedRowsIndexes.includes(data.sent_id) ? "edited" : null;
     },
 
     // -- DESCRIPTION:
