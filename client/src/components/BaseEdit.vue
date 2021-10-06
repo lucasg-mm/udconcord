@@ -552,47 +552,19 @@ export default {
   padding: 10px 32px;
   font-size: 18px;
   border-width: 2px;
-  border-color: #000099;
-  background: #000099;
   font-family: "Roboto", sans-serif;
   border-radius: 0 5px 5px 0;
-}
-
-.p-button.save-button:hover {
-  background: #000066 !important;
-  color: #ffffff !important;
-  border-color: #000066 !important;
-}
-
-.p-button.save-button:active {
-  background: #0000e6 !important;
-  color: #ffffff !important;
-  border-color: #0000e6 !important;
-}
-
-.p-button.back-button:hover {
-  border-color: #000066 !important;
-  color: #000066 !important;
-}
-
-.p-button.back-button:active {
-  border-color: #0000e6 !important;
-  color: #0000e6 !important;
 }
 
 .p-button.back-button {
   margin-top: 20px;
   margin-right: 10px;
-  border-color: #000099;
-  color: #000099;
   font-family: "Roboto", sans-serif;
   border-radius: 5px;
 }
 
 .p-button.save-button {
   margin-top: 20px;
-  border-color: #000099;
-  background: #000099;
   font-family: "Roboto", sans-serif;
   border-radius: 5px;
 }

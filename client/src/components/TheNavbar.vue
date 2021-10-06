@@ -55,10 +55,6 @@ export default {
   height: 5px;
 }
 
-.p-progressbar::v-deep .p-progressbar-value {
-  background: #000099;
-}
-
 .navbar {
   height: 50px;
   border-radius: 0;

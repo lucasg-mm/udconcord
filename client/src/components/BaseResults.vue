@@ -1,10 +1,5 @@
 <template>
   <div class="centered-content" :scrollable="true">
-    <!-- <h1 class="heading">Here are your results!</h1>
-    <p class="description">
-      Double-click a sentence to edit its CoNLL-U, or search for another
-      property.
-    </p> -->
     <div class="top-set">
       <SearchInput @search-results-received="resultsReceiver"></SearchInput>
     </div>
@@ -48,7 +43,7 @@
             <span
               class="match-highlight"
               style="
-                background-color: #6666ff;
+                background-color: #2196f3;
                 color: white;
                 padding: 5px;
                 border-radius: 3px;
@@ -473,7 +468,7 @@ export default {
 
         // sets tag style if it is a head
         if (heads.includes(e.id)) {
-          openingSpanTag = `<span style="background-color: #46a8f5; color: white;padding: 5px; border-radius: 3px;">`;
+          openingSpanTag = `<span style="background-color: #6bb9f7; color: white;padding: 5px; border-radius: 3px;">`;
           closingSpanTag = "</span>";
         }
 

@@ -79,21 +79,7 @@ export default {
 .p-fileupload::v-deep .p-button {
   padding: 10px 32px;
   font-size: 20px;
-  border-color: #000099;
-  background: #000099;
   border-radius: 5px;
-}
-
-.p-fileupload::v-deep .p-button:hover {
-  background: #000066 !important;
-  color: #ffffff !important;
-  border-color: #000066 !important;
-}
-
-.p-fileupload::v-deep .p-button:active {
-  background: #0000e6 !important;
-  color: #ffffff !important;
-  border-color: #0000e6 !important;
 }
 
 .heading {
