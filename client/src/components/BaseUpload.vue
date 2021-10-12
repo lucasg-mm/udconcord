@@ -1,6 +1,5 @@
 <template>
   <div class="centered-content">
-    <!-- <p class="heading">Please, submit your treebank!</p> -->
     <h1 class="heading">Please, submit your treebank!</h1>
     <p class="description">
       Remember, your file must be in the CoNLL-U format.

@@ -8,6 +8,7 @@ import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
 import BaseEdit from "./components/BaseEdit.vue";
+import BaseHelp from "./components/BaseHelp.vue";
 import ToastService from "primevue/toastservice";
 
 // imports PrimeVue Styles
@@ -36,6 +37,10 @@ const router = createRouter({
     {
       path: "/edit",
       component: BaseEdit,
+    },
+    {
+      path: "/help",
+      component: BaseHelp,
     },
   ],
 });
