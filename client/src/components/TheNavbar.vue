@@ -32,7 +32,11 @@ export default {
   data() {
     return {
       // items in the navbar's menu
-      items: [],
+      items: [
+        { label: "Home", icon: "pi pi-fw pi-home", to: "/" },
+        { label: "Tool", icon: "pi pi-fw pi-search", to: "/tool" },
+        { label: "Help", icon: "pi pi-fw pi-question-circle", to: "/help" },
+      ],
     };
   },
 };
@@ -61,7 +65,7 @@ export default {
   border-width: 0 0 1px 0;
   border-color: #e4e5e8;
   background-color: white;
-  font-family: "Vidaloka", serif;
   color: black;
+  font-size: 14px;
 }
 </style>
