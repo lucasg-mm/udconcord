@@ -34,7 +34,6 @@ export default {
       // items in the navbar's menu
       items: [
         { label: "Home", icon: "pi pi-fw pi-home", to: "/" },
-        { label: "Tool", icon: "pi pi-fw pi-search", to: "/tool" },
         { label: "Help", icon: "pi pi-fw pi-question-circle", to: "/help" },
       ],
     };

@@ -4,19 +4,19 @@
     <img class="help" src="../assets/help.svg" />
     <div class="description">
       <p>
-        If you are an user who is looking for some reference in order to learn
-        how to use the UDConcord, you are in the right place. Please, check out
-        the tabs below for topics of interest.
+        If you are a user who is looking for some reference to learn how to use
+        the UDConcord, you are in the right place. Please, check out the tabs
+        below for topics of interest.
       </p>
     </div>
     <TabView class="pages">
       <TabPanel header="Uploading a File">
         The first step to use UDConcord is to upload a .conllu file, which
-        should be the treebank to be processed. Users can do this in this page,
-        which should have a blue button which says "Choose file". The user,
-        then, must click on that button to open a new window in which he/she
-        will have to choose a file in their file system. This file (the
-        treebank) must be in a valid .conllu format.
+        should be the treebank to be processed. Users can do this on this page,
+        which should have a blue button that says "Choose file". The user must
+        click on that button to open a new window in which he/she will have to
+        choose a file in their file system. This file (the treebank) must be in
+        a valid .conllu format.
       </TabPanel>
       <TabPanel header="Searching Sententences">
         <figure class="fig">
@@ -50,7 +50,7 @@
         highlighted in yellow.
         <br />
         <br />
-        To search for a n-gram, the user should insert the searched values
+        To search for an n-gram, the user should insert the searched values
         separated by spaces. For example, to search for a 3-gram with the
         part-of-speech tags of PROPN VERB and NOUN, in that specific order, the
         user must enter "PROPN VERB NOUN" in the yellow input field and click
@@ -82,8 +82,8 @@
         </ul>
         If the user clicks on the button highlighted in
         <span class="purple-word">purple</span> in figure 1, the app presents a
-        few visualization options. The user can check the showed boxes if he/she
-        wants the indicated property to be showed in the search results.
+        few visualization options. The user can check the displayed boxes if
+        he/she wants the indicated property to be shown in the search results.
         <br />
         <br />
         For example, by checking the "dependency relations" box before clicking
@@ -97,10 +97,10 @@
           </figcaption>
         </figure>
         The darker blue highlights the matched token/n-gram in a search and the
-        dependent in the dependency relation. The number between parenthesis is
-        the token's head's id. Before the parenthesis, there is also the label
-        of the dependency relation. The lighter blue highlights the head of the
-        dependency relation
+        dependent in the dependency relation. The number between parentheses is
+        the token's head's id. Before the left parenthesis, there is also the
+        label of the dependency relation. The lighter blue highlights the head
+        of the dependency relation
         <br />
         <br />
         So, Figure 2 is indicating that there is a dependency relation of type
@@ -109,13 +109,13 @@
       </TabPanel>
       <TabPanel header="Editing Sentence's CoNLL-U">
         After clicking on the "Search" button, the user should wait a little bit
-        in order for the search to be completed. After that, the found sentences
-        will be displayed, with the matched tokens/n-grams highlighted in blue.
+        for the search to be completed. After that, the found sentences will be
+        displayed, with the matched tokens/n-grams highlighted in blue.
         <br />
         <br />
         The user can navigate freely through the found sentences. Once the user
-        spots a sentence that demands editing, he/she can double click on it,
-        and the app will open the CoNLL-U editor.
+        spots a sentence that demands changes in its CoNLL-U, he/she can double
+        click on it, and the app will open the CoNLL-U editor.
         <br />
         <br />
         The CoNLL-U editor is displayed in a table format. Users can edit cells
@@ -126,7 +126,7 @@
         a row above or below the one clicked.
         <br />
         <br />
-        It's important to note that when deleting/adding a token, the ids and
+        It's important to note that when deleting/adding a token, the ids, and
         the head column values are automatically adjusted to the change.
       </TabPanel>
       <TabPanel header="Downloading Sentences">
