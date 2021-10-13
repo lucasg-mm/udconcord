@@ -45,8 +45,8 @@
         The input field highlighted in
         <span class="yellow-word">yellow</span> is where users should put their
         search terms. For example, if the user wants to look for tokens with the
-        lemma "walk" in a treebank, he should select the lemma property in the
-        selector highlighted in red and insert "walk" in the input field
+        lemma "walk" in a treebank, he/she should select the lemma property in
+        the selector highlighted in red and insert "walk" in the input field
         highlighted in yellow.
         <br />
         <br />
@@ -57,10 +57,11 @@
         the search button.
         <br />
         <br />
-        To search for other properties (like dependency relationships and forms)
-        the user must follow very similar steps as the ones described above.
-        However, to search for features, the user must enter their search term
-        in a special format. This format is clarified with the examples below:
+        To search for other properties (like dependency relationships and
+        forms), the user must follow very similar steps as the ones described
+        above. However, to search for features, the user must enter their search
+        term in a special format. This format is clarified with the examples
+        below:
         <ul>
           <li>
             "Gender=Fem": searches for tokens with the "Gender=Fem" feature;
@@ -77,7 +78,12 @@
           <li>
             "Gender": searches for a token with a "Gender" feature, no matter
             its value (the app returns tokens with "Gender=Masc" or "Gender=Fem"
-            features).
+            features);
+          </li>
+          <li>
+            “Masc”: searches for a token with a feature with the value “Masc”,
+            no matter its key (the app returns tokens with the features
+            “Gender=Masc” or “Sing=Masc”, for example).
           </li>
         </ul>
         If the user clicks on the button highlighted in
@@ -131,14 +137,12 @@
       </TabPanel>
       <TabPanel header="Downloading Sentences">
         On the results screen, there is a "Download" button at the bottom right.
-        Clicking on it starts the download of the uploaded corpus, with every
-        modification made by the user. Clicking on the arrow inside the button
-        shows a pop-up with the following options:
+        Clicking on the arrow inside the button shows a pop-up with the
+        following options:
         <ul>
           <li>
             "Download treebank (.conllu)": clicking on it starts the download of
-            the uploaded corpus (it's the same as clicking outside of the
-            arrow);
+            the uploaded corpus;
           </li>
           <li>
             "Download search results (.conllu)": clicking on it starts the
@@ -149,12 +153,12 @@
           <li>
             "Download search results (.csv)": clicking on it starts the download
             of the search results in a .csv format (not the CoNLL-U, just the
-            sentence itself);
+            sentences themselves);
           </li>
           <li>
             "Download search results (.txt)": clicking on it starts the download
             of the search results in a .txt format (not the CoNLL-U, just the
-            sentence itself);
+            sentences themselves);
           </li>
         </ul>
       </TabPanel>
