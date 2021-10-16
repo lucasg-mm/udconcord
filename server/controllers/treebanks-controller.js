@@ -95,13 +95,24 @@ exports.apiParseTreebank = async (req, res, next) => {
 exports.apiSearchTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { sentences, propertyToSearch, valueToSearch, caseWay } = req.fields;
+    const { sentences, logicalAndConditions, caseWay } = req.fields;
+
+    // should hold the number of tokens in the searched n-gram
+    let n;
+
+    // spliting the query string per token
+    logicalAndConditions.forEach((logicalAndCondition) => {
+      logicalAndCondition.queryString =
+        logicalAndCondition.queryString.split(" ");
+    });
+    n = logicalAndConditions[0].queryString.length;
+    console.log(logicalAndConditions);
 
     // makes the search
     const searchResults = await treebanksService.searchTreebank(
       sentences,
-      propertyToSearch,
-      valueToSearch,
+      logicalAndConditions,
+      n,
       caseWay
     );
 

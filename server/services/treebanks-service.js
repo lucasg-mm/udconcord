@@ -146,15 +146,24 @@ exports.parseConlluToObject = async (conlluData) => {
  */
 exports.searchTreebank = async (
   sentences,
-  propertyToSearch,
-  valueToSearch,
+  logicalAndConditions,
+  n,
   caseWay
 ) => {
   // variable to store search results
   const searchResults = [];
 
-  // separate words forming the n-gram
-  const nGramToSearch = valueToSearch.split(" ");
+  // separate words forming the n-gram and its searched properties
+  const nGramToSearch = [];
+  for (let i = 0; i < n; i++) {
+    nGramToSearch.push({});
+    logicalAndConditions.forEach((logicalAndCondition) => {
+      nGramToSearch[i][logicalAndCondition.propertyToSearch] =
+        logicalAndCondition.queryString[i];
+    });
+  }
+
+  console.log(nGramToSearch);
 
   // iterates through the sentences array
   for (const [index, sentence] of sentences.entries()) {
@@ -165,15 +174,7 @@ exports.searchTreebank = async (
       i++
     ) {
       // checks the n-gram equality of the form
-      if (
-        nGramEquality(
-          nGramToSearch,
-          sentence["tokens"],
-          i,
-          propertyToSearch,
-          caseWay
-        )
-      ) {
+      if (nGramEquality(nGramToSearch, sentence["tokens"], i, caseWay)) {
         // gets the ids of the matched tokens
         const matchesIds = getMatchesIds(i, nGramToSearch.length);
 
@@ -245,37 +246,46 @@ function featsComparison(tokenFeats, featsToCompare, caseWay) {
 //
 // -- RETURNS:
 // a boolean indicating wheter there was a match (true) or no (false).
-function nGramEquality(nGram, sequence, start, propertyToSearch, caseWay) {
+function nGramEquality(nGram, sequence, start, caseWay) {
   let numberOfMatches = 0;
+  let propertiesToSearch;
   for (let i = 0; i < nGram.length; i++) {
-    if (propertyToSearch !== "feats") {
-      if (caseWay === "insensitive") {
+    propertiesToSearch = Object.keys(nGram[i]);
+    propertiesToSearch.forEach((propertyToSearch) => {
+      if (propertyToSearch !== "feats") {
+        if (caseWay === "insensitive") {
+          if (
+            nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
+            nGram[i][propertyToSearch].toLowerCase() ===
+              sequence[start + i][propertyToSearch].toLowerCase()
+          ) {
+            numberOfMatches++;
+          }
+        } else {
+          if (
+            nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
+            nGram[i][propertyToSearch] === sequence[start + i][propertyToSearch]
+          ) {
+            numberOfMatches++;
+          }
+        }
+      } else {
+        // comparison of 'feats'
         if (
-          nGram[i].toLowerCase() ===
-          sequence[start + i][propertyToSearch].toLowerCase()
+          nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
+          featsComparison(
+            sequence[start + i][propertyToSearch],
+            nGram[i][propertyToSearch],
+            caseWay
+          )
         ) {
           numberOfMatches++;
         }
-      } else {
-        if (nGram[i] === sequence[start + i][propertyToSearch]) {
-          numberOfMatches++;
-        }
       }
-    } else {
-      // comparison of 'feats'
-      if (
-        featsComparison(
-          sequence[start + i][propertyToSearch],
-          nGram[i],
-          caseWay
-        )
-      ) {
-        numberOfMatches++;
-      }
-    }
+    });
   }
 
-  return nGram.length === numberOfMatches;
+  return propertiesToSearch.length * nGram.length === numberOfMatches;
 }
 
 // -- DESCRIPTION:

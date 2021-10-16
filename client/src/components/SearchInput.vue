@@ -1,27 +1,46 @@
 <template>
   <div class="input-set">
-    I want to look for
-    <Dropdown
-      v-model="propertyToSearch"
-      :options="availableProperties"
-      optionLabel="humanReadableName"
-      optionValue="propName"
-    />
-    in a
+    I want to search in a
     <Dropdown
       v-model="caseWay"
       :options="availableCases"
       optionLabel="humanReadableName"
       optionValue="caseName"
     />
-    way:
-    <InputText class="search-input" type="text" v-model="queryString" />
-    <Button class="search-btn" label="Search" @click="search" />
+    way
+    <Button
+      @click="addLogicalAndCondition"
+      icon="pi pi-plus"
+      class="options-btn p-button-rounded"
+    />
     <Button
       @click="showOptions = !showOptions"
       icon="pi pi-cog"
       class="options-btn p-button-rounded"
     />
+    <br />
+    <br />
+    <ul>
+      <li
+        v-for="logicalAndCondition in logicalAndConditions"
+        :key="logicalAndCondition.id"
+      >
+        <Dropdown
+          v-model="logicalAndCondition.propertyToSearch"
+          :options="availableProperties"
+          optionLabel="humanReadableName"
+          optionValue="propName"
+        />
+        <InputText
+          class="search-input"
+          type="text"
+          v-model="logicalAndCondition.queryString"
+        />
+      </li>
+    </ul>
+    <br />
+    <br />
+    <Button class="search-btn" label="Search" @click="search" />
     <transition name="fade">
       <div v-if="showOptions" class="visualization-options">
         Show in the results:
@@ -67,10 +86,15 @@ export default {
 
   data() {
     return {
+      logicalAndConditions: [
+        {
+          propertyToSearch: "form",
+          queryString: "",
+          id: 0,
+        },
+      ],
       shownProps: [],
       showOptions: false,
-      queryString: "",
-      propertyToSearch: "form",
       caseWay: "sensitive",
       availableCases: [
         { humanReadableName: "case sensitive", caseName: "sensitive" },
@@ -107,6 +131,14 @@ export default {
       "hideLoadingBar",
     ]),
 
+    // add an AND condition to the array of AND conditions
+    addLogicalAndCondition() {
+      this.logicalAndConditions.push({
+        propertyToSearch: "form",
+        queryString: "",
+      });
+    },
+
     // -- DESCRIPTION:
     // Makes a search in the treebank.
     // TODO: delete this and make this in the parent component
@@ -120,8 +152,7 @@ export default {
       // defining the request's body
       let requestBody = {
         sentences: this.getConlluData,
-        propertyToSearch: this.propertyToSearch,
-        valueToSearch: this.queryString,
+        logicalAndConditions: this.logicalAndConditions,
         caseWay: this.caseWay,
       };
 

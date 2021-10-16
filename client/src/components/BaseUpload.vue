@@ -63,8 +63,6 @@ export default {
       // defines the conlluData in the store
       this.setConlluData({ conlluData });
 
-      // console.log(conlluData);
-
       // hides loading bar
       this.hideLoadingBar();
 
