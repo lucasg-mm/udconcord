@@ -142,7 +142,7 @@
         <ul>
           <li>
             "Download treebank (.conllu)": clicking on it starts the download of
-            the uploaded corpus;
+            the uploaded corpus, with every change made by the user;
           </li>
           <li>
             "Download search results (.conllu)": clicking on it starts the
