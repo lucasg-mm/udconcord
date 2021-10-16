@@ -100,13 +100,36 @@ exports.apiSearchTreebank = async (req, res, next) => {
     // should hold the number of tokens in the searched n-gram
     let n;
 
+    // validation set
+    let valSet = new Set();
+
     // spliting the query string per token
     logicalAndConditions.forEach((logicalAndCondition) => {
       logicalAndCondition.queryString =
         logicalAndCondition.queryString.split(" ");
+
+      if (
+        logicalAndCondition.queryString.length === 1 &&
+        logicalAndCondition.queryString[0] === ""
+      ) {
+        logicalAndCondition.queryString = [];
+      }
+
+      valSet.add(logicalAndCondition.queryString.length);
     });
+
+    // validates inputs
+    if (valSet.size !== 1) {
+      res
+        .status(400)
+        .json({ message: "Please, specify every token's properties." });
+    }
+
     n = logicalAndConditions[0].queryString.length;
-    console.log(logicalAndConditions);
+
+    if (n === 0) {
+      res.status(400).json({ message: "You have to search for something." });
+    }
 
     // makes the search
     const searchResults = await treebanksService.searchTreebank(
