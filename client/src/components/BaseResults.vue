@@ -106,8 +106,7 @@ export default {
           // redo search
           await this.search({
             sentences: this.getConlluData,
-            propertyToSearch: this.getLastSearchParams.searchedProperty,
-            valueToSearch: this.getLastSearchParams.searchTerm,
+            logicalAndConditions: this.getLastSearchParams.logicalAndConditions,
             caseWay: this.getLastSearchParams.caseWay,
           });
 

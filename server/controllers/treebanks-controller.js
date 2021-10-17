@@ -122,7 +122,7 @@ exports.apiSearchTreebank = async (req, res, next) => {
     if (valSet.size !== 1) {
       res
         .status(400)
-        .json({ message: "Please, specify every token's properties." });
+        .json({ message: "Please, insert property values for every token." });
     }
 
     n = logicalAndConditions[0].queryString.length;

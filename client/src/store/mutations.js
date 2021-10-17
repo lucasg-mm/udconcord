@@ -25,14 +25,10 @@ export default {
   },
   //----------------------------
 
-  setLastSearchParams(
-    state,
-    { searchedProperty, caseWay, searchTerm, shownProps }
-  ) {
+  setLastSearchParams(state, { logicalAndConditions, caseWay, shownProps }) {
     state.lastSearchParams = {
-      searchedProperty,
+      logicalAndConditions,
       caseWay,
-      searchTerm,
       shownProps,
     };
   },

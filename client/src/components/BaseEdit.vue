@@ -223,7 +223,7 @@ export default {
 
       // shows message
       this.$toast.add({
-        severity: "success",
+        severity: "info",
         summary: "Saved",
         detail: "Your changes have been successfully saved!",
         life: 3000,

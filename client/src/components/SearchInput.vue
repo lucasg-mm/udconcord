@@ -1,5 +1,6 @@
 <template>
   <div class="input-set">
+    <Toast></Toast>
     <div class="top-row">
       I want to search in a
       <Dropdown
@@ -77,7 +78,7 @@
       <Button
         icon="pi pi-cog"
         class="search-btn show-options p-button-outlined"
-        label="Show options"
+        :label="showOptions ? 'Hide options' : 'Show options'"
         @click="showOptions = !showOptions"
       />
     </div>
@@ -91,6 +92,7 @@ import Dropdown from "primevue/dropdown";
 import Checkbox from "primevue/checkbox";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import Toast from "primevue/toast";
 
 export default {
   emits: ["search-results-received"],
@@ -100,6 +102,7 @@ export default {
     Button,
     Dropdown,
     Checkbox,
+    Toast,
   },
 
   data() {
@@ -196,22 +199,32 @@ export default {
       // parses results to javascript object
       const searchResults = await response.json();
 
-      // sets results and searched property on the store
-      this.setSearchResults({ searchResults });
-      this.setLastSearchParams({
-        searchedProperty: this.propertyToSearch,
-        caseWay: this.caseWay,
-        searchTerm: this.queryString,
-        shownProps: this.shownProps,
-      });
+      if (response.status === 200) {
+        // sets results and searched property on the store
+        this.setSearchResults({ searchResults });
+        this.setLastSearchParams({
+          logicalAndConditions: this.logicalAndConditions,
+          caseWay: this.caseWay,
+          shownProps: this.shownProps,
+        });
 
-      // sets the indexes of edited sentences in the store
-      this.setEditedRowsIndexes({ editedRowsIndexes: [] });
+        // sets the indexes of edited sentences in the store
+        this.setEditedRowsIndexes({ editedRowsIndexes: [] });
 
-      this.$emit("search-results-received");
+        this.$emit("search-results-received");
 
-      // go to the results route
-      this.$router.push("/results");
+        // go to the results route
+        this.$router.push("/results");
+      } else {
+        // shows message
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: searchResults.message,
+          life: 4000,
+        });
+      }
+
       this.hideLoadingBar();
     },
   },

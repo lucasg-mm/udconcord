@@ -27,14 +27,10 @@ export default {
   },
   //----------------------------
 
-  setLastSearchParams(
-    context,
-    { searchedProperty, caseWay, searchTerm, shownProps }
-  ) {
+  setLastSearchParams(context, { logicalAndConditions, caseWay, shownProps }) {
     context.commit("setLastSearchParams", {
-      searchedProperty,
+      logicalAndConditions,
       caseWay,
-      searchTerm,
       shownProps,
     });
   },
