@@ -286,7 +286,7 @@ export default {
 
 .p-dropdown::v-deep .p-dropdown-label,
 .p-dropdown-item {
-  padding: 10px 32px 10px 5px;
+  padding: 10px 32px 10px 10px;
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   color: black;
@@ -295,6 +295,7 @@ export default {
 .p-dropdown {
   vertical-align: middle;
   border-radius: 5px;
+  text-align: left;
 }
 
 .p-dropdown.case-dropdown {

@@ -37,9 +37,6 @@ exports.apiResultsToCSV = async (req, res, next) => {
   }
 };
 
-/**
- * TODO
- */
 exports.apiParseTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
@@ -105,8 +102,10 @@ exports.apiSearchTreebank = async (req, res, next) => {
 
     // spliting the query string per token
     logicalAndConditions.forEach((logicalAndCondition) => {
+      logicalAndCondition.queryString = logicalAndCondition.queryString.trim();
+
       logicalAndCondition.queryString =
-        logicalAndCondition.queryString.split(" ");
+        logicalAndCondition.queryString.split(/[ ]+/g);
 
       if (
         logicalAndCondition.queryString.length === 1 &&
