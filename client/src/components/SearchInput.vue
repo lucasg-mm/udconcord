@@ -1,28 +1,25 @@
 <template>
   <div class="input-set">
-    I want to search in a
-    <Dropdown
-      v-model="caseWay"
-      :options="availableCases"
-      optionLabel="humanReadableName"
-      optionValue="caseName"
-    />
-    way
-    <Button
-      @click="addLogicalAndCondition"
-      icon="pi pi-plus"
-      class="options-btn p-button-rounded"
-    />
-    <Button
-      @click="showOptions = !showOptions"
-      icon="pi pi-cog"
-      class="options-btn p-button-rounded"
-    />
-    <br />
-    <br />
-    <ul>
+    <div class="top-row">
+      I want to search in a
+      <Dropdown
+        v-model="caseWay"
+        :options="availableCases"
+        optionLabel="humanReadableName"
+        optionValue="caseName"
+        class="case-dropdown"
+      />
+      way
+      <Button
+        icon="pi pi-plus"
+        class="options-btn p-button-rounded p-button-success p-button-text"
+        @click="addLogicalAndCondition"
+        v-tooltip="'Add logical AND condition'"
+      />
+    </div>
+    <ul class="conditions">
       <li
-        v-for="logicalAndCondition in logicalAndConditions"
+        v-for="(logicalAndCondition, index) in logicalAndConditions"
         :key="logicalAndCondition.id"
       >
         <Dropdown
@@ -30,17 +27,23 @@
           :options="availableProperties"
           optionLabel="humanReadableName"
           optionValue="propName"
+          class="prop-dropdown"
         />
         <InputText
           class="search-input"
           type="text"
+          v-bind:class="{ 'first-condition': index === 0 }"
           v-model="logicalAndCondition.queryString"
+        />
+        <Button
+          v-show="index !== 0"
+          icon="pi pi-times"
+          class="options-btn p-button-rounded p-button-danger p-button-text"
+          v-tooltip="'Remove logical AND condition'"
+          @click="removeLogicalAndCondition(index)"
         />
       </li>
     </ul>
-    <br />
-    <br />
-    <Button class="search-btn" label="Search" @click="search" />
     <transition name="fade">
       <div v-if="showOptions" class="visualization-options">
         Show in the results:
@@ -63,6 +66,20 @@
         </span>
       </div>
     </transition>
+    <div class="bottom-row">
+      <Button
+        icon="pi pi-search"
+        class="search-btn"
+        label="Search treebank"
+        @click="search"
+      />
+      <Button
+        icon="pi pi-cog"
+        class="search-btn show-options p-button-outlined"
+        label="Show options"
+        @click="showOptions = !showOptions"
+      />
+    </div>
   </div>
 </template>
 
@@ -131,11 +148,18 @@ export default {
       "hideLoadingBar",
     ]),
 
+    // removes one element from the array of logical and conditions
+    removeLogicalAndCondition(index) {
+      this.logicalAndConditions.splice(index, 1);
+    },
+
     // add an AND condition to the array of AND conditions
     addLogicalAndCondition() {
+      const id = this.logicalAndConditions.at(-1) + 1;
       this.logicalAndConditions.push({
         propertyToSearch: "form",
         queryString: "",
+        id: id,
       });
     },
 
@@ -194,6 +218,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.first-condition {
+  margin-right: 46px;
+}
+
+.conditions {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.conditions li {
+  margin-top: 25px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
@@ -205,7 +243,11 @@ export default {
 }
 
 .visualization-options {
-  margin-top: 30px;
+  margin-top: 40px;
+}
+
+.bottom-row {
+  margin-top: 40px;
 }
 
 .option-prop {
@@ -215,42 +257,54 @@ export default {
 .input-set {
   font-family: "Roboto", sans-serif;
   font-size: 18px;
+  display: inline-block;
 }
 
 .p-inputtext {
-  // vertical-align: bottom;
+  vertical-align: bottom;
   padding: 10px 32px 10px 10px;
+  margin-left: 15px;
   font-size: 18px;
-  border-radius: 5px 0 0 5px;
-  border-color: #e4e5e8 white #e4e5e8 #e4e5e8;
+  border-radius: 5px;
   font-family: "Roboto", sans-serif;
   color: black;
 }
 
 .p-dropdown::v-deep .p-dropdown-label,
 .p-dropdown-item {
-  padding: 10px 32px 10px 10px;
+  padding: 10px 32px 10px 5px;
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   color: black;
 }
 
 .p-dropdown {
-  vertical-align: bottom;
+  vertical-align: middle;
   border-radius: 5px;
-  border-color: #e4e5e8;
+}
+
+.p-dropdown.case-dropdown {
+  width: 223px;
+}
+
+.p-dropdown.prop-dropdown {
+  width: 146px;
 }
 
 .options-btn::v-deep {
-  margin-left: 25px;
+  margin-left: 5px;
   padding: 21px !important;
 }
 
 .search-btn.p-button {
-  padding: 10px 32px;
+  padding: 10px 32px 10px 15px;
   font-size: 18px;
   font-family: "Roboto", sans-serif;
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
+}
+
+.show-options.p-button {
+  margin-left: 25px;
 }
 
 @media screen and (max-width: 768px) {

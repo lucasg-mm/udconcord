@@ -10,6 +10,7 @@ import BaseResults from "./components/BaseResults.vue";
 import BaseEdit from "./components/BaseEdit.vue";
 import BaseHelp from "./components/BaseHelp.vue";
 import ToastService from "primevue/toastservice";
+import Tooltip from "primevue/tooltip";
 
 // imports PrimeVue Styles
 import "primevue/resources/themes/saga-blue/theme.css";
@@ -50,6 +51,7 @@ app.use(PrimeVue);
 app.use(store);
 app.use(router);
 app.use(ToastService);
+app.directive("tooltip", Tooltip);
 
 // mounts app
 app.mount("#app");
