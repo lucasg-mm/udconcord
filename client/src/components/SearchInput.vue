@@ -15,6 +15,7 @@
         class="options-btn p-button-rounded p-button-success p-button-text"
         @click="addLogicalAndCondition"
         v-tooltip="'Add logical AND condition'"
+        :disabled="logicalAndConditions.length >= availableProperties.length"
       />
     </div>
     <ul class="conditions">
