@@ -114,9 +114,10 @@ export default {
           this.resultsReceiver();
         }
         // scroll to matches column
-        setTimeout(() => {
-          vm.restoreScrollState();
-        }, 500);
+        vm.restoreScrollState();
+        // setTimeout(() => {
+        //   vm.restoreScrollState();
+        // }, 500);
       }
     });
   },
