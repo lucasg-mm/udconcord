@@ -124,32 +124,8 @@ exports.parseConlluToObject = async (conlluData) => {
   return conlluObject.sentences;
 };
 
-/**
- * -- DESCRIPTION:
- * Searches for a FORM (for now) in a array of sentences.
- *
- * -- PARAMETERS:
- * sentences: array of UD sentences (must be like the one in the
- *            response of the POST endpoint at /treebanks);
- * propertyToSearch: the property that should be searched: like form or lemma;
- * valueToSearch: FORM's (for now) value to be searched (can be a n-gram);
- * caseWay: indicates if the comparisson will be made in case sensitive or
- *          insensitive way. Can be "sensitive" or "insensitive".
- *
- * -- RETURNS:
- * Array of objects. Each one represents a sentence in the CoNLL-U file.
- * Each object has the form
- * {
- *    foundNGram (the found n-gram in the sentence)
- *    sentenceIndex (the index of the found sentence in the 'sentences' array)
- * }
- */
-exports.searchTreebank = async (
-  sentences,
-  logicalAndConditions,
-  n,
-  caseWay
-) => {
+// Searched treebank
+exports.searchTreebank = async (sentences, logicalConditions, n) => {
   // variable to store search results
   const searchResults = [];
 
@@ -157,13 +133,13 @@ exports.searchTreebank = async (
   const nGramToSearch = [];
   for (let i = 0; i < n; i++) {
     nGramToSearch.push({});
-    logicalAndConditions.forEach((logicalAndCondition) => {
-      nGramToSearch[i][logicalAndCondition.propertyToSearch] =
-        logicalAndCondition.queryString[i];
+    logicalConditions.forEach((logicalCondition) => {
+      nGramToSearch[i][logicalCondition.propertyToSearch] = {
+        value: logicalCondition.queryString[i],
+        caseWay: logicalCondition.caseWay,
+      };
     });
   }
-
-  console.log(nGramToSearch);
 
   // iterates through the sentences array
   for (const [index, sentence] of sentences.entries()) {
@@ -174,7 +150,7 @@ exports.searchTreebank = async (
       i++
     ) {
       // checks the n-gram equality of the form
-      if (nGramEquality(nGramToSearch, sentence["tokens"], i, caseWay)) {
+      if (nGramEquality(nGramToSearch, sentence["tokens"], i)) {
         // gets the ids of the matched tokens
         const matchesIds = getMatchesIds(i, nGramToSearch.length);
 
@@ -201,10 +177,6 @@ function getContextTokenText(token, shownProps) {
 
   return token;
 }
-
-// returns the text of a matched token, as it should be
-// displayed in the export .txt and .csv files
-function getMatchedTokenText(token, shownProps) {}
 
 function featsComparison(tokenFeats, featsToCompare, caseWay) {
   let numberOfMatchs = 0;
@@ -233,38 +205,29 @@ function featsComparison(tokenFeats, featsToCompare, caseWay) {
   return featsToCompare.length === numberOfMatchs;
 }
 
-// -- DESCRIPTION:
-// Checks for n-gram equality in a given sequence, in a given start.
-//
-// -- PARAMETERS:
-// nGram: n-gram to be looked in the first n tokens of sequence;
-// sequence: sequence of tokens (like a sentence);
-// start: index of token in sequence to start the search;
-// propertyToSearch: the property that should be searched: like form or lemma.
-// caseWay: indicates if the comparisson will be made in case sensitive or
-//          insensitive way. Can be "sensitive" or "insensitive".
-//
-// -- RETURNS:
-// a boolean indicating wheter there was a match (true) or no (false).
-function nGramEquality(nGram, sequence, start, caseWay) {
+// Checks n-gram equality
+function nGramEquality(nGram, sequence, start) {
   let numberOfMatches = 0;
   let propertiesToSearch;
   for (let i = 0; i < nGram.length; i++) {
     propertiesToSearch = Object.keys(nGram[i]);
     propertiesToSearch.forEach((propertyToSearch) => {
+      const propVal = nGram[i][propertyToSearch].value;
+      const caseWay = nGram[i][propertyToSearch].caseWay;
+
       if (propertyToSearch !== "feats") {
         if (caseWay === "insensitive") {
           if (
-            nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
-            nGram[i][propertyToSearch].toLowerCase() ===
+            propVal.toLowerCase() === "[any]" ||
+            propVal.toLowerCase() ===
               sequence[start + i][propertyToSearch].toLowerCase()
           ) {
             numberOfMatches++;
           }
         } else {
           if (
-            nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
-            nGram[i][propertyToSearch] === sequence[start + i][propertyToSearch]
+            propVal.toLowerCase() === "[any]" ||
+            propVal === sequence[start + i][propertyToSearch]
           ) {
             numberOfMatches++;
           }
@@ -272,10 +235,10 @@ function nGramEquality(nGram, sequence, start, caseWay) {
       } else {
         // comparison of 'feats'
         if (
-          nGram[i][propertyToSearch].toLowerCase() === "[any]" ||
+          propVal.toLowerCase() === "[any]" ||
           featsComparison(
             sequence[start + i][propertyToSearch],
-            nGram[i][propertyToSearch],
+            propVal,
             caseWay
           )
         ) {

@@ -64,35 +64,11 @@ exports.apiParseTreebank = async (req, res, next) => {
   }
 };
 
-/**
- * -- DESCRIPTION:
- * Searches in a treebank.
- *
- * -- REQUEST'S BODY:
- * sentences: array of UD sentences (must be like the one in the
- *            response of the POST endpoint at the /treebanks route);
- * propertyToSearch: the property to be searched;
- * valueToSearch: FORM's (for now) value to be searched.
- * caseWay: indicates if the comparisson will be made in case sensitive or
- *          insensitive way. Can be "sensitive" or "insensitive".
- *
- * -- RESPONSE:
- * HTTP response with the appropriate response code and a JSON.
- * The JSON can be:
- *     - In case of success:
- *        Array of objects. Each one represents a sentence in the CoNLL-U file.
- *        Each object has the form
- *        {
- *           foundNGram (the found n-gram in the sentence)
- *           sentenceIndex (the index of the found sentence in the 'sentences' array)
- *        }
- *
- *     - In case of error: object with a message and a nested error object.
- */
+// receives request to search the treebank
 exports.apiSearchTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { sentences, logicalAndConditions, caseWay } = req.fields;
+    const { sentences, logicalConditions } = req.fields;
 
     // should hold the number of tokens in the searched n-gram
     let n;
@@ -101,20 +77,20 @@ exports.apiSearchTreebank = async (req, res, next) => {
     let valSet = new Set();
 
     // spliting the query string per token
-    logicalAndConditions.forEach((logicalAndCondition) => {
-      logicalAndCondition.queryString = logicalAndCondition.queryString.trim();
+    logicalConditions.forEach((logicalCondition) => {
+      logicalCondition.queryString = logicalCondition.queryString.trim();
 
-      logicalAndCondition.queryString =
-        logicalAndCondition.queryString.split(/[ ]+/g);
+      logicalCondition.queryString =
+        logicalCondition.queryString.split(/[ ]+/g);
 
       if (
-        logicalAndCondition.queryString.length === 1 &&
-        logicalAndCondition.queryString[0] === ""
+        logicalCondition.queryString.length === 1 &&
+        logicalCondition.queryString[0] === ""
       ) {
-        logicalAndCondition.queryString = [];
+        logicalCondition.queryString = [];
       }
 
-      valSet.add(logicalAndCondition.queryString.length);
+      valSet.add(logicalCondition.queryString.length);
     });
 
     // validates inputs
@@ -124,7 +100,7 @@ exports.apiSearchTreebank = async (req, res, next) => {
         .json({ message: "Please, insert property values for every token." });
     }
 
-    n = logicalAndConditions[0].queryString.length;
+    n = logicalConditions[0].queryString.length;
 
     if (n === 0) {
       res.status(400).json({ message: "You have to search for something." });
@@ -133,9 +109,8 @@ exports.apiSearchTreebank = async (req, res, next) => {
     // makes the search
     const searchResults = await treebanksService.searchTreebank(
       sentences,
-      logicalAndConditions,
-      n,
-      caseWay
+      logicalConditions,
+      n
     );
 
     // returns search results

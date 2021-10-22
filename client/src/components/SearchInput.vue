@@ -34,14 +34,14 @@
         <Button
           v-show="index === 0"
           class="logical-btn"
-          label="And"
+          label="AND"
           v-tooltip="'Add logical AND condition'"
           @click="addLogicalCondition('and')"
         />
         <Button
           v-show="index === 0"
           class="logical-btn"
-          label="Or"
+          label="OR"
           v-tooltip="'Add logical OR condition'"
           @click="addLogicalCondition('or')"
         />
@@ -191,7 +191,7 @@ export default {
       // defining the request's body
       let requestBody = {
         sentences: this.getConlluData,
-        logicalAndConditions: this.logicalAndConditions,
+        logicalConditions: this.logicalConditions,
         caseWay: this.caseWay,
       };
 
