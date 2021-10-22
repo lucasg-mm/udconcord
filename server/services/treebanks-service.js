@@ -132,27 +132,16 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
   // separate words forming the n-gram and its searched properties
   const nGramToSearch = [];
   for (let i = 0; i < n; i++) {
-    nGramToSearch.push({});
+    nGramToSearch.push([]);
     logicalConditions.forEach((logicalCondition) => {
-      if (nGramToSearch[i][logicalCondition.propertyToSearch]) {
-        nGramToSearch[i][logicalCondition.propertyToSearch].push({
-          logType: logicalCondition.type,
-          value: logicalCondition.queryString[i],
-          caseWay: logicalCondition.caseWay,
-        });
-      } else {
-        nGramToSearch[i][logicalCondition.propertyToSearch] = [
-          {
-            logType: logicalCondition.type,
-            value: logicalCondition.queryString[i],
-            caseWay: logicalCondition.caseWay,
-          },
-        ];
-      }
+      nGramToSearch[i].push({
+        prop: logicalCondition.propertyToSearch,
+        logType: logicalCondition.type,
+        value: logicalCondition.queryString[i],
+        caseWay: logicalCondition.caseWay,
+      });
     });
   }
-
-  console.log(JSON.stringify(nGramToSearch, null, 2));
 
   // iterates through the sentences array
   for (const [index, sentence] of sentences.entries()) {
@@ -214,7 +203,7 @@ function featsComparison(tokenFeats, featsToCompare) {
 
 // check a value in the logical expression
 // provided by the user
-function checkLogConditions(conds, val, propToSearch) {
+function checkLogConditions(conds, props) {
   let logStr = conds.reduce((prev, curr, index) => {
     // getting the right operator
     let op = curr["logType"] || "";
@@ -228,6 +217,7 @@ function checkLogConditions(conds, val, propToSearch) {
         : curr["value"].toLowerCase();
 
     // getting the compared value (the one in the treebank)
+    let val = props[curr["prop"]];
     const compVal =
       curr["caseWay"] === "sensitive"
         ? val
@@ -235,7 +225,7 @@ function checkLogConditions(conds, val, propToSearch) {
         ? val.toLowerCase()
         : "";
 
-    if (propToSearch === "feats") {
+    if (curr["prop"] === "feats") {
       return `${prev} ${op} (${featsComparison(
         compVal,
         searchedVal
@@ -251,26 +241,14 @@ function checkLogConditions(conds, val, propToSearch) {
 // Checks n-gram equality
 function nGramEquality(nGram, sequence, start) {
   let numberOfMatches = 0;
-  let propertiesToSearch;
 
   //iterates through tokens in the n-gram
   for (let i = 0; i < nGram.length; i++) {
-    // iterates trough token's props
-    propertiesToSearch = Object.keys(nGram[i]);
-    propertiesToSearch.forEach((propertyToSearch) => {
-      // compara por propriedades
-      if (
-        checkLogConditions(
-          nGram[i][propertyToSearch],
-          sequence[start + i][propertyToSearch],
-          propertyToSearch
-        )
-      ) {
-        numberOfMatches++;
-      }
-    });
+    if (checkLogConditions(nGram[i], sequence[start + i])) {
+      numberOfMatches++;
+    }
   }
-  return propertiesToSearch.length * nGram.length === numberOfMatches;
+  return nGram.length === numberOfMatches;
 }
 
 // -- DESCRIPTION:
