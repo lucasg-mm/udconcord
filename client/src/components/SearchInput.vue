@@ -1,48 +1,56 @@
 <template>
   <div class="input-set">
     <Toast></Toast>
-    <div class="top-row">
-      I want to search in a
-      <Dropdown
-        v-model="caseWay"
-        :options="availableCases"
-        optionLabel="humanReadableName"
-        optionValue="caseName"
-        class="case-dropdown"
-      />
-      way
-      <Button
-        icon="pi pi-plus"
-        class="options-btn p-button-rounded p-button-success p-button-text"
-        @click="addLogicalAndCondition"
-        v-tooltip="'Add logical AND condition'"
-        :disabled="logicalAndConditions.length >= availableProperties.length"
-      />
-    </div>
     <ul class="conditions">
       <li
-        v-for="(logicalAndCondition, index) in logicalAndConditions"
-        :key="logicalAndCondition.id"
+        v-for="(logicalCondition, index) in logicalConditions"
+        :key="logicalCondition.id"
       >
+        <div class="condition-name" v-if="index !== 0">
+          {{ logicalCondition.type.toUpperCase() }}
+        </div>
+        I want to look for
         <Dropdown
-          v-model="logicalAndCondition.propertyToSearch"
+          v-model="logicalCondition.propertyToSearch"
           :options="availableProperties"
           optionLabel="humanReadableName"
           optionValue="propName"
           class="prop-dropdown"
         />
+        in a
+        <Dropdown
+          v-model="logicalCondition.caseWay"
+          :options="availableCases"
+          optionLabel="humanReadableName"
+          optionValue="caseName"
+          class="case-dropdown"
+        />
+        way:
         <InputText
           class="search-input"
           type="text"
-          v-bind:class="{ 'first-condition': index === 0 }"
-          v-model="logicalAndCondition.queryString"
+          v-model="logicalCondition.queryString"
+        />
+        <Button
+          v-show="index === 0"
+          class="logical-btn"
+          label="And"
+          v-tooltip="'Add logical AND condition'"
+          @click="addLogicalCondition('and')"
+        />
+        <Button
+          v-show="index === 0"
+          class="logical-btn"
+          label="Or"
+          v-tooltip="'Add logical OR condition'"
+          @click="addLogicalCondition('or')"
         />
         <Button
           v-show="index !== 0"
-          icon="pi pi-times"
-          class="options-btn p-button-rounded p-button-danger p-button-text"
+          class="remove-btn p-button-danger"
+          label="Remove"
           v-tooltip="'Remove logical AND condition'"
-          @click="removeLogicalAndCondition(index)"
+          @click="removeLogicalCondition(index)"
         />
       </li>
     </ul>
@@ -107,8 +115,9 @@ export default {
 
   data() {
     return {
-      logicalAndConditions: [
+      logicalConditions: [
         {
+          caseWay: "sensitive",
           propertyToSearch: "form",
           queryString: "",
           id: 0,
@@ -153,14 +162,16 @@ export default {
     ]),
 
     // removes one element from the array of logical and conditions
-    removeLogicalAndCondition(index) {
-      this.logicalAndConditions.splice(index, 1);
+    removeLogicalCondition(index) {
+      this.logicalConditions.splice(index, 1);
     },
 
     // add an AND condition to the array of AND conditions
-    addLogicalAndCondition() {
-      const id = this.logicalAndConditions.at(-1) + 1;
-      this.logicalAndConditions.push({
+    addLogicalCondition(type) {
+      const id = this.logicalConditions.at(-1) + 1;
+      this.logicalConditions.push({
+        type,
+        caseWay: "sensitive",
         propertyToSearch: "form",
         queryString: "",
         id: id,
@@ -232,8 +243,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.first-condition {
-  margin-right: 46px;
+.condition-name {
+  margin-bottom: 25px;
 }
 
 .conditions {
@@ -277,7 +288,7 @@ export default {
 .p-inputtext {
   vertical-align: bottom;
   padding: 10px 32px 10px 10px;
-  margin-left: 15px;
+  margin: 0;
   font-size: 18px;
   border-radius: 5px;
   font-family: "Roboto", sans-serif;
@@ -313,6 +324,24 @@ export default {
 
 .search-btn.p-button {
   padding: 10px 32px 10px 15px;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
+  border-radius: 5px;
+}
+
+.logical-btn.p-button {
+  width: 60px;
+  margin-left: 10px;
+  padding: 10px;
+  font-size: 18px;
+  font-family: "Roboto", sans-serif;
+  border-radius: 5px;
+}
+
+.remove-btn.p-button {
+  width: 130px;
+  margin-left: 10px;
+  padding: 10px;
   font-size: 18px;
   font-family: "Roboto", sans-serif;
   border-radius: 5px;
