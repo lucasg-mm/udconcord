@@ -134,12 +134,25 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
   for (let i = 0; i < n; i++) {
     nGramToSearch.push({});
     logicalConditions.forEach((logicalCondition) => {
-      nGramToSearch[i][logicalCondition.propertyToSearch] = {
-        value: logicalCondition.queryString[i],
-        caseWay: logicalCondition.caseWay,
-      };
+      if (nGramToSearch[i][logicalCondition.propertyToSearch]) {
+        nGramToSearch[i][logicalCondition.propertyToSearch].push({
+          logType: logicalCondition.type,
+          value: logicalCondition.queryString[i],
+          caseWay: logicalCondition.caseWay,
+        });
+      } else {
+        nGramToSearch[i][logicalCondition.propertyToSearch] = [
+          {
+            logType: logicalCondition.type,
+            value: logicalCondition.queryString[i],
+            caseWay: logicalCondition.caseWay,
+          },
+        ];
+      }
     });
   }
+
+  console.log(JSON.stringify(nGramToSearch, null, 2));
 
   // iterates through the sentences array
   for (const [index, sentence] of sentences.entries()) {
@@ -149,7 +162,7 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
       i < sentence["tokens"].length - nGramToSearch.length + 1;
       i++
     ) {
-      // checks the n-gram equality of the form
+      // checks the n-gram equality
       if (nGramEquality(nGramToSearch, sentence["tokens"], i)) {
         // gets the ids of the matched tokens
         const matchesIds = getMatchesIds(i, nGramToSearch.length);
@@ -178,22 +191,16 @@ function getContextTokenText(token, shownProps) {
   return token;
 }
 
-function featsComparison(tokenFeats, featsToCompare, caseWay) {
+function featsComparison(tokenFeats, featsToCompare) {
   let numberOfMatchs = 0;
   let sensitivityFlag = "";
 
   // splits the feats that should be searched
   featsToCompare = featsToCompare.split("|");
 
-  // determines the sensitivity flag (empty if the search should be case sensitive)
-  if (caseWay === "insensitive") {
-    // case insensitive search
-    sensitivityFlag = "i";
-  }
-
   for (let i = 0; i < featsToCompare.length; i++) {
     // mounts the regex
-    const re = new RegExp(featsToCompare[i], sensitivityFlag);
+    const re = new RegExp(featsToCompare[i]);
 
     // determines if the feat is present in the analyzed token
     if (re.test(tokenFeats)) {
@@ -205,49 +212,64 @@ function featsComparison(tokenFeats, featsToCompare, caseWay) {
   return featsToCompare.length === numberOfMatchs;
 }
 
+// check a value in the logical expression
+// provided by the user
+function checkLogConditions(conds, val, propToSearch) {
+  let logStr = conds.reduce((prev, curr, index) => {
+    // getting the right operator
+    let op = curr["logType"] || "";
+    op = op === "and" ? "&&" : op === "or" ? "||" : "";
+    op = index === 0 ? "" : op;
+
+    // getting the searched value
+    const searchedVal =
+      curr["caseWay"] === "sensitive"
+        ? curr["value"]
+        : curr["value"].toLowerCase();
+
+    // getting the compared value (the one in the treebank)
+    const compVal =
+      curr["caseWay"] === "sensitive"
+        ? val
+        : curr["caseWay"] === "insensitive"
+        ? val.toLowerCase()
+        : "";
+
+    if (propToSearch === "feats") {
+      return `${prev} ${op} (${featsComparison(
+        compVal,
+        searchedVal
+      )} || "${searchedVal}" === "[any]")`;
+    } else {
+      return `${prev} ${op} ("${searchedVal}" === "${compVal}" || "${searchedVal}" === "[any]")`;
+    }
+  }, "");
+
+  return eval(logStr);
+}
+
 // Checks n-gram equality
 function nGramEquality(nGram, sequence, start) {
   let numberOfMatches = 0;
   let propertiesToSearch;
+
+  //iterates through tokens in the n-gram
   for (let i = 0; i < nGram.length; i++) {
+    // iterates trough token's props
     propertiesToSearch = Object.keys(nGram[i]);
     propertiesToSearch.forEach((propertyToSearch) => {
-      const propVal = nGram[i][propertyToSearch].value;
-      const caseWay = nGram[i][propertyToSearch].caseWay;
-
-      if (propertyToSearch !== "feats") {
-        if (caseWay === "insensitive") {
-          if (
-            propVal.toLowerCase() === "[any]" ||
-            propVal.toLowerCase() ===
-              sequence[start + i][propertyToSearch].toLowerCase()
-          ) {
-            numberOfMatches++;
-          }
-        } else {
-          if (
-            propVal.toLowerCase() === "[any]" ||
-            propVal === sequence[start + i][propertyToSearch]
-          ) {
-            numberOfMatches++;
-          }
-        }
-      } else {
-        // comparison of 'feats'
-        if (
-          propVal.toLowerCase() === "[any]" ||
-          featsComparison(
-            sequence[start + i][propertyToSearch],
-            propVal,
-            caseWay
-          )
-        ) {
-          numberOfMatches++;
-        }
+      // compara por propriedades
+      if (
+        checkLogConditions(
+          nGram[i][propertyToSearch],
+          sequence[start + i][propertyToSearch],
+          propertyToSearch
+        )
+      ) {
+        numberOfMatches++;
       }
     });
   }
-
   return propertiesToSearch.length * nGram.length === numberOfMatches;
 }
 

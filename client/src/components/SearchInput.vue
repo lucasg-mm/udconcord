@@ -49,7 +49,7 @@
           v-show="index !== 0"
           class="remove-btn p-button-danger"
           label="Remove"
-          v-tooltip="'Remove logical AND condition'"
+          v-tooltip="'Remove logical condition'"
           @click="removeLogicalCondition(index)"
         />
       </li>
