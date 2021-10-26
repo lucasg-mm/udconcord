@@ -160,6 +160,13 @@ export default {
     );
   },
 
+  beforeRouteLeave(to) {
+    if (to.path === "/") {
+      // resets keep-alive component
+      this.resetsEverything();
+    }
+  },
+
   computed: {
     /**
      * -- DESCRIPTION:
@@ -177,6 +184,7 @@ export default {
       "updateConlluDataEl",
       "pushEditedRowsIndexes",
       "setMadeChanges",
+      "resetsEverything",
     ]),
 
     /*

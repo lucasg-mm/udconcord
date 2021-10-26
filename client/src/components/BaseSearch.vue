@@ -14,10 +14,21 @@
 
 <script>
 import SearchInput from "./SearchInput.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
     SearchInput,
+  },
+  beforeRouteLeave(to) {
+    if (to.path === "/") {
+      // resets keep-alive component
+      this.resetsEverything();
+    }
+  },
+  methods: {
+    //Maps store's actions to this component
+    ...mapActions(["resetsEverything"]),
   },
 };
 </script>

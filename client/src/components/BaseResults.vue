@@ -96,10 +96,6 @@ export default {
     SplitButton,
   },
 
-  beforeMount() {
-    this.loadLazyData(1, this.recordsPerPage);
-  },
-
   beforeRouteLeave(to) {
     if (to.path === "/") {
       // resets keep-alive component
@@ -110,20 +106,22 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(async (vm) => {
       if (from.path === "/edit") {
-        if (this.getMadeChanges) {
-          this.setMadeChanges({ changesBool: false });
+        if (vm.getMadeChanges) {
+          vm.setMadeChanges({ changesBool: false });
 
           // redo search
-          await this.search({
-            sentences: this.getConlluData,
-            logicalConditions: this.getLastSearchParams.logicalConditions,
+          await vm.search({
+            sentences: vm.getConlluData,
+            logicalConditions: vm.getLastSearchParams.logicalConditions,
           });
 
           // rebuilds table
-          this.resultsReceiver();
+          vm.resultsReceiver();
         }
         // scroll to matches column
         vm.restoreScrollState();
+      } else if (from.path === "/search") {
+        vm.resultsReceiver();
       }
     });
   },

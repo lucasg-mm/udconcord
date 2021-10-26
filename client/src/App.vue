@@ -2,20 +2,26 @@
   <div class="main-view">
     <TheNavbar></TheNavbar>
     <router-view class="showed-content" v-slot="{ Component }">
-      <keep-alive>
+      <keep-alive v-if="getConlluData">
         <component :is="Component" />
       </keep-alive>
+      <component v-else :is="Component" />
     </router-view>
   </div>
 </template>
 
 <script>
 import TheNavbar from "./components/TheNavbar.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
   components: {
     TheNavbar,
+  },
+  computed: {
+    //store's getters
+    ...mapGetters(["getConlluData"]),
   },
 };
 </script>
