@@ -100,6 +100,13 @@ export default {
     this.loadLazyData(1, this.recordsPerPage);
   },
 
+  beforeRouteLeave(to) {
+    if (to.path === "/") {
+      // resets keep-alive component
+      this.resetsEverything();
+    }
+  },
+
   beforeRouteEnter(to, from, next) {
     next(async (vm) => {
       if (from.path === "/edit") {
@@ -117,9 +124,6 @@ export default {
         }
         // scroll to matches column
         vm.restoreScrollState();
-        // setTimeout(() => {
-        //   vm.restoreScrollState();
-        // }, 500);
       }
     });
   },
@@ -207,8 +211,9 @@ export default {
       "setDoubleClickedSentenceIndexes",
       "showLoadingBar",
       "hideLoadingBar",
+      "resetsEverything",
     ]),
-
+    // searches in the treebank
     async search(requestBody) {
       this.showLoadingBar();
 

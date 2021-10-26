@@ -47,4 +47,15 @@ export default {
   hideLoadingBar(state) {
     state.isLoading = false;
   },
+
+  // resets everything to the initial state
+  resetsEverything(state) {
+    state.conlluData = null;
+    state.doubleClickedSentenceIndexes = {};
+    state.searchResults = [];
+    state.editedRowsIndexes = [];
+    state.lastSearchParams = {};
+    state.isLoading = false;
+    state.madeChanges = false;
+  },
 };

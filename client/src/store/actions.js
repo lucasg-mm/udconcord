@@ -47,4 +47,9 @@ export default {
   hideLoadingBar(context) {
     context.commit("hideLoadingBar");
   },
+
+  // resets everything
+  resetsEverything(context) {
+    context.commit("resetsEverything");
+  },
 };
