@@ -1,7 +1,10 @@
 <template>
   <div class="centered-content" :scrollable="true">
     <div class="top-set">
-      <SearchInput @search-results-received="resultsReceiver"></SearchInput>
+      <SearchInput
+        :searchParams="getLastSearchParams"
+        @search-results-received="resultsReceiver"
+      ></SearchInput>
     </div>
 
     <div class="results-set">

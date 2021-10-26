@@ -105,6 +105,10 @@ import Toast from "primevue/toast";
 export default {
   emits: ["search-results-received"],
 
+  props: {
+    searchParams: Object,
+  },
+
   components: {
     InputText,
     Button,
@@ -145,6 +149,13 @@ export default {
      * Maps store's getters to this component.
      */
     ...mapGetters(["getConlluData"]),
+  },
+
+  mounted() {
+    if (this.searchParams) {
+      this.logicalConditions = this.searchParams.logicalConditions;
+      this.shownProps = this.searchParams.logicalConditions;
+    }
   },
 
   methods: {
