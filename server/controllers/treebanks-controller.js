@@ -70,6 +70,8 @@ exports.apiSearchTreebank = async (req, res, next) => {
     // gets the request's properties
     const { sentences, logicalConditions } = req.fields;
 
+    console.log(logicalConditions);
+
     // should hold the number of tokens in the searched n-gram
     let n;
 

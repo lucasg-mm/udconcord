@@ -106,8 +106,7 @@ export default {
           // redo search
           await this.search({
             sentences: this.getConlluData,
-            logicalAndConditions: this.getLastSearchParams.logicalAndConditions,
-            caseWay: this.getLastSearchParams.caseWay,
+            logicalConditions: this.getLastSearchParams.logicalConditions,
           });
 
           // rebuilds table

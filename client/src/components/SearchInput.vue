@@ -125,7 +125,6 @@ export default {
       ],
       shownProps: [],
       showOptions: false,
-      caseWay: "sensitive",
       availableCases: [
         { humanReadableName: "case sensitive", caseName: "sensitive" },
         { humanReadableName: "case insensitive", caseName: "insensitive" },
@@ -168,7 +167,8 @@ export default {
 
     // add an AND condition to the array of AND conditions
     addLogicalCondition(type) {
-      const id = this.logicalConditions.at(-1) + 1;
+      const id =
+        this.logicalConditions[this.logicalConditions.length - 1].id + 1;
       this.logicalConditions.push({
         type,
         caseWay: "sensitive",
@@ -192,7 +192,6 @@ export default {
       let requestBody = {
         sentences: this.getConlluData,
         logicalConditions: this.logicalConditions,
-        caseWay: this.caseWay,
       };
 
       requestBody = JSON.stringify(requestBody);
@@ -214,8 +213,7 @@ export default {
         // sets results and searched property on the store
         this.setSearchResults({ searchResults });
         this.setLastSearchParams({
-          logicalAndConditions: this.logicalAndConditions,
-          caseWay: this.caseWay,
+          logicalConditions: this.logicalConditions,
           shownProps: this.shownProps,
         });
 
