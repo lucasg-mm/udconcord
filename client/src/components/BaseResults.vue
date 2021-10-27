@@ -9,6 +9,7 @@
 
     <div class="results-set">
       <DataTable
+        v-if="totalRecords"
         ref="datatable"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[10, 25, 50, 100]"
@@ -70,7 +71,12 @@
         </Column>
       </DataTable>
     </div>
-    <div class="bottom-set">
+    <div v-if="!totalRecords" class="nothing-found">
+      Your search did not find any result!
+      <br />
+      <img class="empty-data-art" src="../assets/nothing-found.svg" />
+    </div>
+    <div v-if="totalRecords" class="bottom-set">
       <SplitButton
         class="export-button"
         @click="exportTreebank(this.getConlluData)"
@@ -248,9 +254,14 @@ export default {
     },
 
     resultsReceiver(page = 0, scroll = true) {
-      this.processedData = {};
-      this.loadLazyData(page + 1, this.recPerPage, scroll);
-      this.goToPage(page);
+      // process results if there are any
+      this.$nextTick(() => {
+        if (this.totalRecords) {
+          this.processedData = {};
+          this.loadLazyData(page + 1, this.recPerPage, scroll);
+          this.goToPage(page);
+        }
+      });
     },
 
     async exportTreebank(conlluData) {
@@ -388,7 +399,6 @@ export default {
       const container = document.querySelector(".p-datatable-wrapper");
       container.scrollTop = this.scrollState.scrollTop;
 
-      // scrolls horizontally
       const checkIfScrollIsFinished = setInterval(() => {
         if (container.scrollTop === this.scrollState.scrollTop) {
           container.scrollLeft = this.scrollState.scrollLeft;
@@ -616,6 +626,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.empty-data-art {
+  height: 350px;
+  margin-top: 80px;
+}
+
+.nothing-found {
+  font-size: 20px;
+  margin-top: 30px;
+  margin-bottom: 70px;
+}
+
 .p-datatable {
   font-family: "Roboto", sans-serif;
   white-space: nowrap;
