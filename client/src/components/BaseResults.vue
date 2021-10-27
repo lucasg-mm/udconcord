@@ -423,8 +423,6 @@ export default {
       // gets the results array and the string
       // indicating which property is being searched
       // organizes all the results at once
-      // const results = this.getSearchResults;
-      // this.organizesResults(results, 1, true);
 
       // gets the backend export results route URL
       const exportResultsRouteUrl =
