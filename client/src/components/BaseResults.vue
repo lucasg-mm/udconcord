@@ -367,12 +367,18 @@ export default {
       const matchColumn = document.querySelector(".match-column");
       const container = document.querySelector(".p-datatable-wrapper");
       const matchHighlight = document.querySelector(".match-highlight");
+      container.scrollTop = 0;
 
-      // scrolls container to centralize it to the matched word
-      container.scrollLeft =
-        matchHighlight.offsetWidth +
-        matchColumn.offsetLeft -
-        container.offsetWidth / 2;
+      const checkIfScrollIsFinished = setInterval(() => {
+        if (container.scrollTop === 0) {
+          // scrolls container to centralize it to the matched word
+          container.scrollLeft =
+            matchHighlight.offsetWidth +
+            matchColumn.offsetLeft -
+            container.offsetWidth / 2;
+          clearInterval(checkIfScrollIsFinished);
+        }
+      }, 20);
     },
 
     // -- DESCRIPTION
