@@ -3,18 +3,19 @@
     <div class="top-set">
       <SearchInput
         :searchParams="getLastSearchParams"
-        @search-results-received="resultsReceiver"
+        @search-results-received="resultsReceiver()"
       ></SearchInput>
     </div>
 
     <div class="results-set">
       <DataTable
+        ref="datatable"
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         :rowsPerPageOptions="[10, 25, 50, 100]"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} results"
         :lazy="true"
         :paginator="true"
-        :rows="recordsPerPage"
+        :rows="initialRowNum"
         class="tabela"
         :value="organizedResults"
         :autoLayout="true"
@@ -115,8 +116,8 @@ export default {
             logicalConditions: vm.getLastSearchParams.logicalConditions,
           });
 
-          // rebuilds table
-          vm.resultsReceiver();
+          // rebuilds table from last page
+          vm.resultsReceiver(this.currPage - 1, false);
         }
         // scroll to matches column
         vm.restoreScrollState();
@@ -143,10 +144,16 @@ export default {
     totalRecords() {
       return this.getSearchResults.length;
     },
+
+    recPerPage() {
+      return this.$refs.datatable.d_rows;
+    },
   },
 
   data() {
     return {
+      currPage: 1,
+
       // already loaded data
       processedData: {},
 
@@ -156,8 +163,8 @@ export default {
       // results after some pre-processing
       organizedResults: [],
 
-      // number os records that should be rendered per page
-      recordsPerPage: 100,
+      // initial number os records that should be rendered per page
+      initialRowNum: 100,
 
       // stores the scroll state of the results' container
       scrollState: {},
@@ -240,9 +247,10 @@ export default {
       this.hideLoadingBar();
     },
 
-    resultsReceiver() {
+    resultsReceiver(page = 0, scroll = true) {
       this.processedData = {};
-      this.loadLazyData(1, this.recordsPerPage);
+      this.loadLazyData(page + 1, this.recPerPage, scroll);
+      this.goToPage(page);
     },
 
     async exportTreebank(conlluData) {
@@ -276,6 +284,10 @@ export default {
       this.hideLoadingBar();
     },
 
+    goToPage(page) {
+      this.$refs.datatable.d_first = page * this.recPerPage;
+    },
+
     /*
     -- DESCRIPTION:
     Handles the page event, emitted by the DataTable.
@@ -285,6 +297,8 @@ export default {
       // gets the page number we're going to
       // (sums 1 because event.page is 0-indexed)
       const pageToGo = event.page + 1;
+
+      this.currPage = pageToGo;
 
       // number of rows rendered in pageToGo
       const numberOfRows = event.rows;
@@ -301,7 +315,7 @@ export default {
     pageToGo: table's page in which the table should be rendered.
     numberOfRows: number of rows to be rendered in the table's page.
     */
-    loadLazyData(pageToGo, numberOfRows) {
+    loadLazyData(pageToGo, numberOfRows, scroll = true) {
       // gets the results array and the string
       // indicating which property is being searched
       const results = this.getSearchResults;
@@ -317,7 +331,9 @@ export default {
       this.organizesResults(dataInCurrPage, pageToGo);
 
       // scroll to the matches after updates the DOM
-      this.$nextTick(() => this.scrollToMatches());
+      if (scroll) {
+        this.$nextTick(() => this.scrollToMatches());
+      }
     },
 
     // -- DESCRIPTION:
@@ -365,6 +381,8 @@ export default {
     restoreScrollState() {
       const container = document.querySelector(".p-datatable-wrapper");
       container.scrollTop = this.scrollState.scrollTop;
+
+      // scrolls horizontally
       const checkIfScrollIsFinished = setInterval(() => {
         if (container.scrollTop === this.scrollState.scrollTop) {
           container.scrollLeft = this.scrollState.scrollLeft;
@@ -552,7 +570,7 @@ export default {
 
           // organizes the data and stores it in an array
           this.organizedResults.push({
-            index: index + (pageToGo - 1) * this.recordsPerPage,
+            index: index + (pageToGo - 1) * this.recPerPage,
             sent_id,
             leftContext,
             match,
