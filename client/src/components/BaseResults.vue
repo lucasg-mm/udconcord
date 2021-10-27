@@ -423,15 +423,15 @@ export default {
       // gets the results array and the string
       // indicating which property is being searched
       // organizes all the results at once
-      const results = this.getSearchResults;
-      this.organizesResults(results, 1, true);
+      // const results = this.getSearchResults;
+      // this.organizesResults(results, 1, true);
 
       // gets the backend export results route URL
       const exportResultsRouteUrl =
         process.env.VUE_APP_URL + "api/treebanks/export-results";
 
       const requestBody = JSON.stringify({
-        organizedResults: this.organizedResults,
+        organizedResults: this.getEveryResult(),
         fileExtension,
       });
 
@@ -595,6 +595,64 @@ export default {
         });
         this.processedData[pageToGo] = this.organizedResults;
       }
+    },
+
+    getEveryResult() {
+      const allResults = [];
+      this.getSearchResults.forEach((result) => {
+        // for each match in this result...
+
+        // gets the matched sentence
+        const resultSentence = this.getConlluData[result.sentenceIndex];
+
+        let sent_id = resultSentence.metadata.filter(
+          (e) => e.key === "sent_id"
+        );
+        sent_id = sent_id[0]["value"];
+
+        // stores heads
+        const heads = [];
+        // gets the match
+        const match = result["foundNGram"]
+          .map((tokenId) => {
+            // stores match's head
+            heads.push(Number(resultSentence.tokens[tokenId].head));
+
+            // returns matched token's mark up to render in the table rows
+            return this.getMatchedTokenMarkUp(resultSentence, tokenId);
+          })
+          .join("\xa0\xa0\xa0");
+
+        // gets the left context (string)
+        const leftContext = resultSentence.tokens
+          .slice(0, result["foundNGram"][0])
+          .map((e) => {
+            // returns context token's mark up to render in the table rows
+            return this.getContextTokenMarkUp(e, heads);
+          })
+          .join("\xa0\xa0\xa0");
+
+        // gets the right context (string)
+        const rightContext = resultSentence.tokens
+          .slice(
+            result["foundNGram"][result["foundNGram"].length - 1] + 1,
+            resultSentence.tokens.length
+          )
+          .map((e) => {
+            // returns context token's mark up to render in the table rows
+            return this.getContextTokenMarkUp(e, heads);
+          })
+          .join("\xa0\xa0\xa0");
+
+        // organizes the data and stores it in an array
+        allResults.push({
+          sent_id,
+          leftContext,
+          match,
+          rightContext,
+        });
+      });
+      return allResults;
     },
 
     // -- DESCRIPTION:
