@@ -32,23 +32,21 @@
           v-model="logicalCondition.queryString"
         />
         <Button
-          v-show="index === 0"
           class="logical-btn"
           label="AND"
-          v-tooltip="'Add logical AND condition'"
-          @click="addLogicalCondition('and')"
+          v-tooltip="'Add logical AND condition below'"
+          @click="addLogicalConditionBelow('and', index)"
         />
         <Button
-          v-show="index === 0"
           class="logical-btn"
           label="OR"
-          v-tooltip="'Add logical OR condition'"
-          @click="addLogicalCondition('or')"
+          v-tooltip="'Add logical OR condition below'"
+          @click="addLogicalConditionBelow('or', index)"
         />
         <Button
           v-show="index !== 0"
-          class="remove-btn p-button-danger"
-          label="Remove"
+          class="logical-btn p-button-danger"
+          icon="pi pi-times"
           v-tooltip="'Remove logical condition'"
           @click="removeLogicalCondition(index)"
         />
@@ -177,16 +175,21 @@ export default {
     },
 
     // add an AND condition to the array of AND conditions
-    addLogicalCondition(type) {
+    addLogicalConditionBelow(type, index) {
+      // calculates new id
       const id =
         this.logicalConditions[this.logicalConditions.length - 1].id + 1;
-      this.logicalConditions.push({
+
+      const cond = {
         type,
         caseWay: "sensitive",
         propertyToSearch: "form",
         queryString: "",
         id: id,
-      });
+      };
+
+      // inserts element in the array (at position index+1)
+      this.logicalConditions.splice(index + 1, 0, cond);
     },
 
     // -- DESCRIPTION:
