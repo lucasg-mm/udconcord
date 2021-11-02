@@ -119,11 +119,17 @@
     <div class="bottom-set">
       <div class="buttons">
         <Button
+          icon="pi pi-arrow-left"
           class="back-button p-button-outlined"
           label="Go Back"
           @click="goToSearchResults"
         />
-        <Button class="save-button" label="Save Changes" @click="saveChanges" />
+        <Button
+          icon="pi pi-save"
+          class="save-button"
+          label="Save Changes"
+          @click="saveChanges"
+        />
       </div>
     </div>
   </div>
@@ -556,25 +562,13 @@ export default {
   display: table-row;
 }
 
-.p-button {
-  padding: 10px 32px;
-  font-size: 18px;
-  border-width: 2px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 0 5px 5px 0;
-}
-
 .p-button.back-button {
   margin-top: 20px;
   margin-right: 10px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
 }
 
 .p-button.save-button {
   margin-top: 20px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
 }
 
 .bottom-set {

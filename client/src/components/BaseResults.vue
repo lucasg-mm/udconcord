@@ -78,6 +78,7 @@
     </div>
     <div v-if="totalRecords" class="bottom-set">
       <SplitButton
+        icon="pi pi-download"
         class="export-button"
         @click="exportTreebank(this.getConlluData)"
         label="Download"
@@ -736,11 +737,6 @@ export default {
   position: absolute;
   right: 0;
   top: 0;
-}
-
-.export-button::v-deep .p-button {
-  padding: 10px 32px 10px 20px;
-  font-size: 18px;
 }
 
 @media screen and (max-width: 768px) {
