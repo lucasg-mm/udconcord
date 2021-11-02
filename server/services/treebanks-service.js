@@ -135,6 +135,7 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
     nGramToSearch.push([]);
     logicalConditions.forEach((logicalCondition) => {
       nGramToSearch[i].push({
+        negate: logicalCondition.negate,
         prop: logicalCondition.propertyToSearch,
         logType: logicalCondition.type,
         value: logicalCondition.queryString[i],
@@ -210,6 +211,9 @@ function checkLogConditions(conds, props) {
     op = op === "and" ? "&&" : op === "or" ? "||" : "";
     op = index === 0 ? "" : op;
 
+    // gets the comparison sign
+    const compSign = curr["negate"] ? "!==" : "===";
+
     // getting the searched value
     const searchedVal =
       curr["caseWay"] === "sensitive"
@@ -229,9 +233,9 @@ function checkLogConditions(conds, props) {
       return `${prev} ${op} (${featsComparison(
         compVal,
         searchedVal
-      )} || "${searchedVal}" === "[any]")`;
+      )} ${compSign} true || "${searchedVal}" === "[any]")`;
     } else {
-      return `${prev} ${op} ("${searchedVal}" === "${compVal}" || "${searchedVal}" === "[any]")`;
+      return `${prev} ${op} ("${searchedVal}" ${compSign} "${compVal}" || "${searchedVal}" === "[any]")`;
     }
   }, "");
 
@@ -251,15 +255,7 @@ function nGramEquality(nGram, sequence, start) {
   return nGram.length === numberOfMatches;
 }
 
-// -- DESCRIPTION:
 // Get 'n' ids starting at 'start'.
-//
-// -- PARAMETERS:
-// start: start of the id interval.
-// n: interval size
-//
-// -- RETURNS:
-// an array in the closed interval [start, start + 1, ..., start + n - 1]
 function getMatchesIds(start, n) {
   const matchesIds = [];
 
