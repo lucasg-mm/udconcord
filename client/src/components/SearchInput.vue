@@ -9,7 +9,15 @@
         <div class="condition-name" v-if="index !== 0">
           {{ logicalCondition.type.toUpperCase() }}
         </div>
-        I want to look for
+        I
+        <Dropdown
+          v-model="logicalCondition.negate"
+          :options="availableNegs"
+          optionLabel="humanReadableName"
+          optionValue="bool"
+          class="prop-dropdown"
+        />
+        to look for
         <Dropdown
           v-model="logicalCondition.propertyToSearch"
           :options="availableProperties"
@@ -119,6 +127,7 @@ export default {
     return {
       logicalConditions: [
         {
+          negate: false,
           caseWay: "sensitive",
           propertyToSearch: "form",
           queryString: "",
@@ -130,6 +139,10 @@ export default {
       availableCases: [
         { humanReadableName: "case sensitive", caseName: "sensitive" },
         { humanReadableName: "case insensitive", caseName: "insensitive" },
+      ],
+      availableNegs: [
+        { humanReadableName: "don't want", bool: true },
+        { humanReadableName: "want", bool: false },
       ],
       availableProperties: [
         { humanReadableName: "lemmas", propName: "lemma" },
@@ -181,6 +194,7 @@ export default {
         this.logicalConditions[this.logicalConditions.length - 1].id + 1;
 
       const cond = {
+        negate: false,
         type,
         caseWay: "sensitive",
         propertyToSearch: "form",
