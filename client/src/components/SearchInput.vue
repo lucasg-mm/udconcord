@@ -11,42 +11,44 @@
         </div>
         I
         <Dropdown
+          class="dpd negate-dpd"
           v-model="logicalCondition.negate"
           :options="availableNegs"
           optionLabel="humanReadableName"
           optionValue="bool"
-          class="prop-dropdown"
         />
         to look for
         <Dropdown
+          class="prop-dpd dpd"
           v-model="logicalCondition.propertyToSearch"
           :options="availableProperties"
           optionLabel="humanReadableName"
           optionValue="propName"
-          class="prop-dropdown"
         />
         in a
         <Dropdown
+          class="case-dpd dpd"
           v-model="logicalCondition.caseWay"
           :options="availableCases"
           optionLabel="humanReadableName"
           optionValue="caseName"
-          class="case-dropdown"
         />
         way:
-        <InputText
-          class="search-input"
-          type="text"
-          v-model="logicalCondition.queryString"
-        />
+        <InputText type="text" v-model="logicalCondition.queryString" />
         <Button
-          class="logical-btn"
+          v-bind:class="{
+            'logical-btn': index !== 0,
+            'logical-btn-first': index === 0,
+          }"
           label="AND"
           v-tooltip="'Add logical AND condition below'"
           @click="addLogicalConditionBelow('and', index)"
         />
         <Button
-          class="logical-btn"
+          v-bind:class="{
+            'logical-btn': index !== 0,
+            'logical-btn-first': index === 0,
+          }"
           label="OR"
           v-tooltip="'Add logical OR condition below'"
           @click="addLogicalConditionBelow('or', index)"
@@ -307,74 +309,38 @@ export default {
 
 .input-set {
   font-family: "Roboto", sans-serif;
-  font-size: 18px;
+  font-size: 1rem;
   display: inline-block;
 }
 
-.p-inputtext {
-  vertical-align: bottom;
-  padding: 10px 32px 10px 10px;
-  margin: 0;
-  font-size: 18px;
-  border-radius: 5px;
-  font-family: "Roboto", sans-serif;
-  color: black;
-}
-
-.p-dropdown::v-deep .p-dropdown-label,
-.p-dropdown-item {
-  padding: 10px 32px 10px 10px;
-  font-size: 18px;
-  font-family: "Roboto", sans-serif;
-  color: black;
-}
-
-.p-dropdown {
-  vertical-align: middle;
-  border-radius: 5px;
-  text-align: left;
-}
-
-.p-dropdown.case-dropdown {
-  width: 223px;
-}
-
-.p-dropdown.prop-dropdown {
-  width: 146px;
-}
-
-.options-btn::v-deep {
-  margin-left: 5px;
-  padding: 21px !important;
-}
-
-.search-btn.p-button {
-  padding: 10px 32px 10px 15px;
-  font-size: 18px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
+.logical-btn-first.p-button {
+  margin-left: 10px;
+  width: 105px;
 }
 
 .logical-btn.p-button {
-  width: 60px;
   margin-left: 10px;
-  padding: 10px;
-  font-size: 18px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
-}
-
-.remove-btn.p-button {
-  width: 130px;
-  margin-left: 10px;
-  padding: 10px;
-  font-size: 18px;
-  font-family: "Roboto", sans-serif;
-  border-radius: 5px;
+  width: 65px;
 }
 
 .show-options.p-button {
   margin-left: 25px;
+}
+
+.dpd {
+  text-align: left;
+}
+
+.negate-dpd {
+  width: 130px;
+}
+
+.prop-dpd {
+  width: 120px;
+}
+
+.case-dpd {
+  width: 170px;
 }
 
 @media screen and (max-width: 768px) {
