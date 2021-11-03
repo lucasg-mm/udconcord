@@ -343,6 +343,10 @@ export default {
   width: 170px;
 }
 
+.p-dropdown {
+  vertical-align: bottom;
+}
+
 @media screen and (max-width: 768px) {
   .search-input {
     width: 135px;

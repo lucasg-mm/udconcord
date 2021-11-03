@@ -5,8 +5,8 @@
     <div class="description">
       <p>
         If you are a user who is looking for some reference to learn how to use
-        the UDConcord, you are in the right place. Please, check out the tabs
-        below for topics of interest.
+        UDConcord, you are in the right place. Please, check out the tabs below
+        for topics of interest.
       </p>
     </div>
     <TabView class="pages">
@@ -117,10 +117,36 @@
       </TabPanel>
       <TabPanel header="Logical Conditions">
         <figure class="fig">
-          <img src="../assets/search-input.png" alt="" />
-          <figcaption>Figure 1 - Search input</figcaption>
+          <img src="../assets/cond.png" alt="" />
+          <figcaption>
+            Figure 3 - Search input with logical conditions
+          </figcaption>
         </figure>
-        hey mama
+        Users can make complex searches through the addition of logical
+        conditions OR, AND or NOT.
+        <br />
+        <br />
+        To add a logical OR or AND, the users must click on one of the buttons
+        labeled "AND" or "OR" highlighted in
+        <span class="pink-word bold">pink</span>. If the user clicks on the "OR"
+        button located at the second row, an OR condition will be added below
+        the second row. The same procedure is valid for the every "AND" and "OR"
+        button in every other row.
+        <br />
+        <br />
+        To add a logical NOT, users must click on the drop-down menu at the
+        beginning of each line and select the option “don’t want” instead of
+        “want”, which is the default option.
+        <br />
+        <br />
+        To make the use of this feature clearer, let's examine the search in
+        figure 3, which is composed by three rows of input:
+        <ul>
+          <li>
+            The first row defines that the searched n-gram has two tokens with
+            the forms of "de" and "novo", respectivelly;
+          </li>
+        </ul>
       </TabPanel>
       <TabPanel header="Editing Sentence's CoNLL-U">
         After clicking on the "Search" button, the user should wait a little bit
@@ -190,6 +216,14 @@ export default {
 <style scoped>
 .bold {
   font-weight: bold;
+}
+
+.black-word {
+  color: black;
+}
+
+.pink-word {
+  color: #ff0080;
 }
 
 .purple-word {
