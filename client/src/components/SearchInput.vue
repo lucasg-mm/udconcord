@@ -315,7 +315,7 @@ export default {
 
 .logical-btn-first.p-button {
   margin-left: 10px;
-  width: 105px;
+  width: 103px;
 }
 
 .logical-btn.p-button {
