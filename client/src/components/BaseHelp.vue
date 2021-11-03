@@ -18,7 +18,7 @@
         choose a file in their file system. This file (the treebank) must be in
         a valid .conllu format.
       </TabPanel>
-      <TabPanel header="Searching Sententences">
+      <TabPanel header="Searching Sentences">
         <figure class="fig">
           <img src="../assets/search-input.png" alt="" />
           <figcaption>Figure 1 - Search input</figcaption>
@@ -33,28 +33,29 @@
           <li>Features (feats).</li>
         </ul>
         The searched property can be selected with the selector highlighted in
-        <span class="red-word">red</span> in figure 1.
+        <span class="red-word bold">red</span> in figure 1.
         <br />
         <br />
         The search's case sensitivity can be selected with the selector
-        highlighted in <span class="green-word">green</span>. Case sensitive
-        searches differentiate between uppercase and lowercase text, while case
-        insensitive searches do not.
+        highlighted in <span class="green-word bold">green</span>. Case
+        sensitive searches differentiate between uppercase and lowercase text,
+        while case insensitive searches do not.
         <br />
         <br />
         The input field highlighted in
-        <span class="yellow-word">yellow</span> is where users should put their
-        search terms. For example, if the user wants to look for tokens with the
-        lemma "walk" in a treebank, he/she should select the lemma property in
-        the selector highlighted in red and insert "walk" in the input field
-        highlighted in yellow.
+        <span class="orange-word bold">orange</span> is where users should put
+        their search terms. For example, if the user wants to look for tokens
+        with the lemma "walk" in a treebank, he/she should select the lemma
+        property in the selector highlighted in red and insert "walk" in the
+        input field highlighted in yellow.
         <br />
         <br />
         To search for an n-gram, the user should insert the searched values
         separated by spaces. For example, to search for a 3-gram with the
         part-of-speech tags of PROPN VERB and NOUN, in that specific order, the
-        user must enter "PROPN VERB NOUN" in the yellow input field and click
-        the search button.
+        user must enter "PROPN VERB NOUN" in the
+        <span class="orange-word bold">orange</span> input field and click the
+        search button.
         <br />
         <br />
         To search for other properties (like dependency relationships and
@@ -87,9 +88,10 @@
           </li>
         </ul>
         If the user clicks on the button highlighted in
-        <span class="purple-word">purple</span> in figure 1, the app presents a
-        few visualization options. The user can check the displayed boxes if
-        he/she wants the indicated property to be shown in the search results.
+        <span class="purple-word bold">purple</span> in figure 1, the app
+        presents a few visualization options. The user can check the displayed
+        boxes if he/she wants the indicated property to be shown in the search
+        results.
         <br />
         <br />
         For example, by checking the "dependency relations" box before clicking
@@ -112,6 +114,13 @@
         So, Figure 2 is indicating that there is a dependency relation of type
         "mark" between "tinha" (dependent) and "porque" (head). Also, note that
         each token has its id subscripted next to it.
+      </TabPanel>
+      <TabPanel header="Logical Conditions">
+        <figure class="fig">
+          <img src="../assets/search-input.png" alt="" />
+          <figcaption>Figure 1 - Search input</figcaption>
+        </figure>
+        hey mama
       </TabPanel>
       <TabPanel header="Editing Sentence's CoNLL-U">
         After clicking on the "Search" button, the user should wait a little bit
@@ -179,12 +188,16 @@ export default {
 </script>
 
 <style scoped>
+.bold {
+  font-weight: bold;
+}
+
 .purple-word {
   color: purple;
 }
 
-.yellow-word {
-  color: #cccc00;
+.orange-word {
+  color: orangered;
 }
 
 .green-word {
