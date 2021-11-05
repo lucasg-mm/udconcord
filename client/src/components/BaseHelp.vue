@@ -119,34 +119,64 @@
         <figure class="fig">
           <img src="../assets/cond.png" alt="" />
           <figcaption>
-            Figure 3 - Search input with logical conditions
+            Figure 3 - A search made with logical conditions
           </figcaption>
         </figure>
-        Users can make complex searches through the addition of logical
-        conditions OR, AND or NOT.
+        Users can make complex searches through the addition OR, AND, or NOT of
+        logical conditions.
         <br />
         <br />
         To add a logical OR or AND, the users must click on one of the buttons
         labeled "AND" or "OR" highlighted in
-        <span class="pink-word bold">pink</span>. If the user clicks on the "OR"
-        button located at the second row, an OR condition will be added below
-        the second row. The same procedure is valid for the every "AND" and "OR"
-        button in every other row.
+        <span class="pink-word bold">pink</span>. For example, if the user
+        clicks on the "OR" button located in the second row, an OR condition
+        will be added below the second row. The same procedure is valid for
+        every "AND" and "OR" button in every other row.
         <br />
         <br />
         To add a logical NOT, users must click on the drop-down menu at the
-        beginning of each line and select the option “don’t want” instead of
-        “want”, which is the default option.
+        beginning of each line (highlighted in
+        <span class="bold black-word">black</span> in Figure 3) and select the
+        option “don’t want” instead of “want”, which is the default option.
         <br />
         <br />
         To make the use of this feature clearer, let's examine the search in
-        figure 3, which is composed by three rows of input:
+        figure 3, which is composed of three rows of input:
         <ul>
           <li>
             The first row defines that the searched n-gram has two tokens with
-            the forms of "de" and "novo", respectivelly;
+            the forms of "de" and "novo", respectively;
+          </li>
+          <li>
+            The second row is an AND logical condition being negated with NOT.
+            It defines that the second token in the n-gram must not (because of
+            the "don't want" in the first drop-down menu in the row) have the
+            part-of-speech tag of "ADJ". The "[any]" indicates that the first
+            token can have any part-of-speech tag. Note that the "[any]" is not
+            affected by the "don't want".
+          </li>
+          <li>
+            The third row is an OR logical condition. It defines that the first
+            token in the n-gram must have a part-of-speech tag of "ADP" and that
+            the second token must have a part-of-speech tag of "DET".
           </li>
         </ul>
+        So, in other words, Figure 3 represents a search for a two-gram. The
+        first token must have a form of "de",
+        <span class="bold">and</span> a part-of-speech tag of "ADP". The second
+        token must have a form of "novo" and a part-of-speech tag
+        <span class="bold">different than</span>
+        "ADJ".
+        <br />
+        <br />
+        Alternatively, thanks to the OR condition, The first token can also just
+        have a part-of-speech tag of "ADP", and the second one, a part-of-speech
+        tag of "DET".
+        <br />
+        <br />
+        Note that there is a specific order of precedence in the evaluation of
+        the logical conditions. First, NOT logical conditions are evaluated,
+        then AND, then OR.
       </TabPanel>
       <TabPanel header="Editing Sentence's CoNLL-U">
         After clicking on the "Search" button, the user should wait a little bit
