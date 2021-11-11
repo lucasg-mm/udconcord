@@ -55,7 +55,7 @@ export default {
 }
 
 .p-progressbar {
-  height: 5px;
+  height: 3px;
 }
 
 .navbar {

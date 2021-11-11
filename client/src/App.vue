@@ -7,17 +7,20 @@
       </keep-alive>
       <component v-else :is="Component" />
     </router-view>
+    <TheFooter></TheFooter>
   </div>
 </template>
 
 <script>
 import TheNavbar from "./components/TheNavbar.vue";
+import TheFooter from "./components/TheFooter.vue";
 import { mapGetters } from "vuex";
 
 export default {
   name: "App",
   components: {
     TheNavbar,
+    TheFooter,
   },
   computed: {
     //store's getters
@@ -39,14 +42,8 @@ body,
   background-color: #fff;
 }
 
-body {
-  padding-bottom: 70px;
-}
-
 .showed-content {
   width: 40%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 80px;
+  margin: 80px auto 80px auto;
 }
 </style>
