@@ -11,7 +11,6 @@
     <br />
     <FileUpload
       chooseLabel="Choose file"
-      class="p-fileupload-lg"
       mode="basic"
       accept=".conllu"
       :maxFileSize="100000000"
@@ -73,12 +72,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.p-fileupload::v-deep .p-button {
-  padding: 10px 32px;
-  font-size: 20px;
-  border-radius: 5px;
-}
-
 .heading {
   font-size: 40px;
   font-weight: 700;
@@ -100,5 +93,44 @@ export default {
 
 .trees {
   height: 350px;
+}
+
+@media (max-width: 300px) {
+  .trees {
+    height: 60px;
+  }
+
+  .description {
+    color: #495057;
+    font-size: 15px;
+  }
+
+  .heading {
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 400px) {
+  .trees {
+    height: 80px;
+  }
+
+  .heading {
+    font-size: 30px;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 500px) {
+  .trees {
+    height: 100px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 800px) {
+  .trees {
+    height: 150px;
+  }
 }
 </style>
