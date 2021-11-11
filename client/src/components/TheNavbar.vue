@@ -5,7 +5,9 @@
     <div class="with-divisor">
       <Menubar :model="items" class="navbar">
         <template #start>
-          <img alt="logo" height="35" src="../assets/logo.svg" />
+          <router-link to="/">
+            <img alt="logo" height="35" src="../assets/logo.svg" />
+          </router-link>
         </template>
       </Menubar>
     </div>
