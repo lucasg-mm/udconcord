@@ -7,6 +7,7 @@ import PrimeVue from "primevue/config";
 import BaseUpload from "./components/BaseUpload.vue";
 import BaseSearch from "./components/BaseSearch.vue";
 import BaseResults from "./components/BaseResults.vue";
+import PageNotFound from "./components/PageNotFound.vue";
 import BaseEdit from "./components/BaseEdit.vue";
 import BaseHelp from "./components/BaseHelp.vue";
 import ToastService from "primevue/toastservice";
@@ -43,6 +44,7 @@ const router = createRouter({
       path: "/help",
       component: BaseHelp,
     },
+    { path: "/:pathMatch(.*)*", component: PageNotFound },
   ],
 });
 
