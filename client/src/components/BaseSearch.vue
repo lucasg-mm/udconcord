@@ -56,4 +56,43 @@ export default {
 .search-art {
   height: 350px;
 }
+
+@media (max-width: 300px) {
+  .search-art {
+    height: 60px;
+  }
+
+  .description {
+    color: #495057;
+    font-size: 15px;
+  }
+
+  .heading {
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 400px) {
+  .search-art {
+    height: 80px;
+  }
+
+  .heading {
+    font-size: 30px;
+    font-weight: 700;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 500px) {
+  .search-art {
+    height: 100px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 800px) {
+  .search-art {
+    height: 150px;
+  }
+}
 </style>
