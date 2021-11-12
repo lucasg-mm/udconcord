@@ -20,7 +20,7 @@
       </TabPanel>
       <TabPanel header="Searching Sentences">
         <figure class="fig">
-          <img src="../assets/search-input.png" alt="" />
+          <img class="fig-img" src="../assets/search-input.png" alt="" />
           <figcaption>Figure 1 - Search input</figcaption>
         </figure>
         After uploading the treebank, users can search for five different
@@ -99,7 +99,7 @@
         the matched tokens/n-grams' dependency relations in the search results.
         The app displays dependency relations in the following way:
         <figure class="fig">
-          <img src="../assets/deprels.png" alt="" />
+          <img class="fig-img" src="../assets/deprels.png" alt="" />
           <figcaption>
             Figure 2 - An example of a dependency relation
           </figcaption>
@@ -117,7 +117,7 @@
       </TabPanel>
       <TabPanel header="Logical Conditions">
         <figure class="fig">
-          <img src="../assets/cond.png" alt="" />
+          <img class="fig-img" src="../assets/cond.png" alt="" />
           <figcaption>
             Figure 3 - A search made with logical conditions
           </figcaption>
@@ -244,6 +244,10 @@ export default {
 </script>
 
 <style scoped>
+.fig-img {
+  width: 900px;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -305,5 +309,55 @@ export default {
 .heading {
   font-size: 40px;
   font-weight: 700;
+}
+
+@media (max-width: 300px) {
+  .help {
+    height: 60px;
+  }
+
+  .fig-img {
+    width: 100px;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 400px) {
+  .fig-img {
+    width: 200px;
+  }
+
+  .help {
+    height: 80px;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 500px) {
+  .fig-img {
+    width: 250px;
+  }
+
+  .help {
+    height: 100px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 800px) {
+  .fig-img {
+    width: 300px;
+  }
+
+  .help {
+    height: 150px;
+  }
+}
+
+@media (min-width: 800px) and (max-width: 1200px) {
+  .fig-img {
+    width: 500px;
+  }
+
+  .help {
+    height: 150px;
+  }
 }
 </style>
