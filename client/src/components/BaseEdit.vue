@@ -186,7 +186,11 @@ export default {
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters(["getConlluData", "getDoubleClickedSentenceIndexes"]),
+    ...mapGetters([
+      "getConlluData",
+      "getDoubleClickedSentenceIndexes",
+      "getSearchResults",
+    ]),
   },
 
   methods: {
