@@ -378,15 +378,15 @@ export default {
       // gets the body of the column with the match results
       const matchColumn = document.querySelector(".match-column");
       const container = document.querySelector(".p-datatable-wrapper");
-      const matchHighlight = document.querySelector(".match-highlight");
+      // const matchHighlight = document.querySelector(".match-highlight");
       container.scrollTop = 0;
 
       const checkIfScrollIsFinished = setInterval(() => {
         if (container.scrollTop === 0) {
           // scrolls container to centralize it to the matched word
           container.scrollLeft =
-            matchHighlight.offsetWidth +
-            matchColumn.offsetLeft -
+            matchColumn.offsetLeft +
+            matchColumn.offsetWidth / 2 -
             container.offsetWidth / 2;
           clearInterval(checkIfScrollIsFinished);
         }
