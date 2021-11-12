@@ -15,16 +15,29 @@
 <script>
 import SearchInput from "./SearchInput.vue";
 import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     SearchInput,
+  },
+  created() {
+    if (!this.getConlluData) {
+      window.location.href = "/";
+    }
   },
   beforeRouteLeave(to) {
     if (to.path === "/") {
       // resets keep-alive component
       this.resetsEverything();
     }
+  },
+  computed: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's getters to this component.
+     */
+    ...mapGetters(["getConlluData"]),
   },
   methods: {
     //Maps store's actions to this component

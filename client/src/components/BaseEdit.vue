@@ -166,6 +166,14 @@ export default {
     );
   },
 
+  created() {
+    if (!this.getConlluData) {
+      window.location.href = "/";
+    } else if (!this.getSearchResults) {
+      window.location.href = "/search";
+    }
+  },
+
   beforeRouteLeave(to) {
     if (to.path === "/") {
       // resets keep-alive component
