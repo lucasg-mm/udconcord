@@ -65,10 +65,12 @@
     <transition name="fade">
       <div v-if="showOptions" class="visualization-options">
         Show in the results:
+        <br class="br-responsive" />
         <span class="option-prop">
           <Checkbox id="prop1" name="prop" value="upos" v-model="shownProps" />
           <label for="prop1"> POS tags</label>
         </span>
+        <br class="br-responsive" />
         <span class="option-prop">
           <Checkbox
             id="prop2"
@@ -78,6 +80,7 @@
           />
           <label for="prop2"> Depedency relations</label>
         </span>
+        <br class="br-responsive" />
         <span class="option-prop">
           <Checkbox id="prop3" name="prop" value="feats" v-model="shownProps" />
           <label for="prop3"> Features</label>
@@ -271,6 +274,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.br-responsive {
+  display: none;
+}
+
 .condition-name {
   margin-bottom: 25px;
 }
@@ -347,15 +354,41 @@ export default {
   vertical-align: bottom;
 }
 
-@media screen and (max-width: 768px) {
-  .search-input {
-    width: 135px;
+@media (max-width: 500px) {
+  .input-set {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .dpd,
+  .p-inputtext,
+  .p-button {
+    margin-top: 10px;
+  }
+
+  .logical-btn.p-button,
+  .logical-btn-first.p-button {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+
+  .show-options.p-button {
+    margin-left: 0;
+  }
+
+  .br-responsive {
+    display: inline;
+  }
+
+  .option-prop {
+    padding-left: 0;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .search-input {
-    width: 100px;
+@media (min-width: 500px) and (max-width: 1200px) {
+  .logical-btn.p-button,
+  .logical-btn-first.p-button {
+    margin-top: 10px;
   }
 }
 </style>

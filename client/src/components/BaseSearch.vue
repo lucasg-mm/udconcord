@@ -71,9 +71,17 @@ export default {
     font-size: 20px;
     font-weight: 700;
   }
+
+  .centered-content {
+    padding: 20px;
+  }
 }
 
 @media (min-width: 300px) and (max-width: 400px) {
+  .centered-content {
+    padding: 20px;
+  }
+
   .search-art {
     height: 80px;
   }
