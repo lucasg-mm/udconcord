@@ -593,6 +593,8 @@ export default {
   padding: 50px 50px 90px 50px;
   background-color: #eff4f8;
   border-radius: 5px;
+  display: block;
+  overflow: auto;
 }
 
 .description {
