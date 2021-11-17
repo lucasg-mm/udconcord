@@ -12,7 +12,7 @@ services:
       - client
     restart: always
   server:
-    image: lucasgmm20/udconcord-server-dev
+    image: lucasgmm20/udconcord-server
     build:
       dockerfile: Dockerfile
       context: "./server"
@@ -23,7 +23,7 @@ services:
       - "5000"
     restart: always
   client:
-    image: lucasgmm20/udconcord-client-dev
+    image: lucasgmm20/udconcord-client
     build:
       dockerfile: Dockerfile
       context: "./client"
