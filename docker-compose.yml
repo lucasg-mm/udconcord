@@ -14,7 +14,7 @@ services:
   server:
     image: lucasgmm20/udconcord-server-dev
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: "./server"
     volumes:
       - "./server:/app"
@@ -25,7 +25,7 @@ services:
   client:
     image: lucasgmm20/udconcord-client-dev
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: "./client"
     volumes:
       - "./client:/app"
