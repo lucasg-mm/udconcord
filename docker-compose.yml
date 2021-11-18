@@ -5,8 +5,11 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./nginx
+    volumes:
+      - ./nginx/my-site.com.crt:/etc/nginx/my-site.com.crt # certificate
+      - ./nginx/my-site.com.key:/etc/nginx/my-site.com.key # key
     ports:
-      - "3000:80"
+      - "3000:443"
     depends_on:
       - server
       - client
