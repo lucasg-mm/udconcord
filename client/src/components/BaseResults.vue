@@ -742,7 +742,7 @@ export default {
 }
 
 .export-button {
-  position: absolute;
+  position: absolute !important;
   right: 0;
   top: 0;
 }

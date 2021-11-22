@@ -1,8 +1,8 @@
 <template>
   <div class="nav">
     <div class="with-divisor">
-      v1.0.0 – made with 💙 at
-      <a href="http://www.nilc.icmc.usp.br/nilc/index.php">NILC</a>
+      v1.0.0 – made with 💙 by
+      <a href="https://www.linkedin.com/in/lucasgmm/">Lucas Miranda</a>
     </div>
   </div>
 </template>
