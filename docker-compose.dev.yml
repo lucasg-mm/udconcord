@@ -1,13 +1,13 @@
 version: "3"
 services:
-  apache:
+  nginx:
     image: "lucasgmm20/udconcord-proxy"
     build:
       dockerfile: Dockerfile
-      context: ./apache
+      context: ./nginx
     volumes:
-      - ./apache/my-site.com.crt:/usr/my-site.com.crt # certificate
-      - ./apache/my-site.com.key:/usr/my-site.com.key # key
+      - ./nginx/my-site.com.crt:/etc/nginx/my-site.com.crt # certificate
+      - ./nginx/my-site.com.key:/etc/nginx/my-site.com.key # key
     ports:
       - "3000:443"
   server:
