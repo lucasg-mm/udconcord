@@ -136,7 +136,6 @@ exports.apiSearchTreebank = async (req, res, next) => {
  */
 exports.apiCreateTreebank = async (req, res, next) => {
   try {
-    console.log("RECEBI A REQUISIÇÃO!!!1");
     // we're using a middleware that stores temporarely
     // the uploaded conllu file in our file system
     // the variable below holds the path to this temp file
@@ -155,7 +154,6 @@ exports.apiCreateTreebank = async (req, res, next) => {
     );
 
     // send to the client the object representing the treebank
-    console.log("VOU RESPONDER AGORA!!!");
     res.json(createdTreebank);
   } catch (error) {
     // in case of error, send a message and the error object
