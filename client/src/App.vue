@@ -15,6 +15,8 @@
 import TheNavbar from "./components/TheNavbar.vue";
 import TheFooter from "./components/TheFooter.vue";
 import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "App",
@@ -24,7 +26,19 @@ export default {
   },
   computed: {
     //store's getters
-    ...mapGetters(["getConlluData"]),
+    ...mapGetters(["getConlluData", "getUserId"]),
+  },
+  mounted() {
+    // generates user id and stores it
+    const userId = uuidv4();
+    this.setUserId({ userId });
+  },
+  methods: {
+    /**
+     * -- DESCRIPTION:
+     * Maps store's actions to this component.
+     */
+    ...mapActions(["setUserId"]),
   },
 };
 </script>

@@ -20,4 +20,7 @@ export default {
   getMadeChanges(state) {
     return state.madeChanges;
   },
+  getUserId(state) {
+    return state.userId;
+  },
 };

@@ -48,6 +48,16 @@ export default {
     context.commit("hideLoadingBar");
   },
 
+  // ----------------------------------
+
+  setUserId(context, { userId }) {
+    context.commit("setUserId", {
+      userId,
+    });
+  },
+
+  // ----------------------------------
+
   // resets everything
   resetsEverything(context) {
     context.commit("resetsEverything");

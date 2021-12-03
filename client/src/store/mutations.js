@@ -48,6 +48,14 @@ export default {
     state.isLoading = false;
   },
 
+  //------------------------------
+
+  setUserId(state, { userId }) {
+    state.userId = userId;
+  },
+
+  //------------------------------
+
   // resets everything to the initial state
   resetsEverything(state) {
     state.conlluData = null;

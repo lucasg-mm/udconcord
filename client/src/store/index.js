@@ -7,6 +7,9 @@ import rootActions from "./actions.js";
 const store = createStore({
   state() {
     return {
+      // holds the user's id (generated with uuid package)
+      userId: "",
+
       // holds the data of the uploaded conllu file in the form
       // of an object
       conlluData: null,
