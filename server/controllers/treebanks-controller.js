@@ -121,19 +121,7 @@ exports.apiSearchTreebank = async (req, res, next) => {
   }
 };
 
-/**
- * -- DESCRIPTION:
- * Creates a new treebank.
- *
- * -- REQUEST'S BODY:
- * conlluFile: a CoNLL-U file.
- *
- * -- RESPONSE:
- * HTTP response with the appropriate response code and a JSON.
- * The JSON can be:
- *     - In case of success: array of objects, each one representing a sentence in the treebank.
- *     - In case of error: object with a message and a nested error object.
- */
+// Creates a new treebank.
 exports.apiCreateTreebank = async (req, res, next) => {
   try {
     // we're using a middleware that stores temporarely
@@ -144,6 +132,9 @@ exports.apiCreateTreebank = async (req, res, next) => {
     // data from the uploaded conllu file (its text)
     const conlluData = fs.readFileSync(conlluTempFilePath, "utf8");
 
+    // gets the user's id
+    const { userId } = req.fields;
+
     // remove the temporary file
     fs.unlinkSync(conlluTempFilePath);
 
@@ -153,8 +144,11 @@ exports.apiCreateTreebank = async (req, res, next) => {
       conlluData
     );
 
+    // stores treebank and user in the db
+    await treebanksService.storeUser(userId, createdTreebank);
+
     // send to the client the object representing the treebank
-    res.json(createdTreebank);
+    res.json({ message: "Success!" });
   } catch (error) {
     // in case of error, send a message and the error object
     res.status(500).json({ message: "Internal error", error: error });

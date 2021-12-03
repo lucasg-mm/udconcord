@@ -21,11 +21,17 @@
 </template>
 <script>
 import FileUpload from "primevue/fileupload";
+import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
   components: {
     FileUpload,
+  },
+
+  computed: {
+    //store's getters
+    ...mapGetters(["getUserId"]),
   },
 
   methods: {
@@ -49,6 +55,7 @@ export default {
 
       // adds file to FormData
       formData.append("conlluFile", event.files[0]);
+      formData.append("userId", this.getUserId);
 
       // makes request to backend
       const response = await fetch(treebanksRouteUrl, {
