@@ -1,4 +1,5 @@
 const conlluJsLibrary = require("conllujs");
+const fs = require("fs");
 
 // called when user wants to export search results as .txt
 exports.getResultsStringRepresentation = (organizedResults) => {
@@ -73,6 +74,13 @@ exports.parseResultsToCSV = (organizedResults) => {
   return finalText;
 };
 
+// saves a conllu object as json named userId.json
+exports.saveConlluObj = async (conlluObj, userId) => {
+  fs.writeFileSync(`/uploads/${userId}.json`, JSON.stringify(conlluObj));
+  return;
+};
+
+// converts an object to .conllu text
 exports.parseObjectToConllu = async (sentences) => {
   let conlluText = "";
 
