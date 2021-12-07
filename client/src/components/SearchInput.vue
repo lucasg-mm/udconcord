@@ -257,6 +257,9 @@ export default {
 
         // go to the results route
         this.$router.push("/results");
+
+        // emit event to indicate received the results
+        this.$emit("search-results-received");
       } else {
         // shows message
         this.$toast.add({
