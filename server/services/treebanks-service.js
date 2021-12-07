@@ -143,6 +143,16 @@ exports.parseConlluToObject = async (conlluData) => {
   return conlluObject.sentences;
 };
 
+exports.updateSentence = async (sentenceObj, userId, treebank) => {
+  for (let i = 0; i < treebank.length; i++) {
+    if ((treebank[i].metadata.sent_id = sentenceObj.metadata.sent_id)) {
+      treebank[i] = sentenceObj;
+    }
+  }
+
+  return treebank;
+};
+
 // Searched treebank
 exports.searchTreebank = async (
   sentences,

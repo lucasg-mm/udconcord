@@ -64,6 +64,31 @@ exports.apiParseTreebank = async (req, res, next) => {
   }
 };
 
+// receives a request to update a sentence in a user's treebank
+exports.apiUpdateSentence = async (req, res, next) => {
+  try {
+    // gets the request's properties
+    const { sentenceObj, userId } = req.fields;
+
+    // gets the right treebank to update
+    const oldTreebank = await treebanksService.getConlluObj(userId);
+
+    const newTreebank = await treebanksService.updateSentence(
+      sentenceObj,
+      userId,
+      oldTreebank
+    );
+
+    // saves the updates treebank in the file system
+    await treebanksService.saveConlluObj(newTreebank, userId);
+
+    res.json({ message: "Your changes have been successfully saved!" });
+  } catch (error) {
+    // in case of error, send a message and the error object
+    res.status(500).json({ message: "Internal error", error: error });
+  }
+};
+
 // receives request to search the treebank
 exports.apiSearchTreebank = async (req, res, next) => {
   try {

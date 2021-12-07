@@ -14,19 +14,16 @@
           :value="editingSentence.metadata"
           contextMenu
           @rowContextmenu="onRowContextMenuMetadata"
+          @cell-edit-complete="onCellEditComplete"
         >
           <Column header="Key" field="key">
             <template #editor="slotProps">
-              <InputText
-                v-model="slotProps.data[slotProps.column.props.field]"
-              />
+              <InputText v-model="slotProps.data[slotProps.field]" />
             </template>
           </Column>
           <Column header="Value" field="value">
             <template #editor="slotProps">
-              <InputText
-                v-model="slotProps.data[slotProps.column.props.field]"
-              />
+              <InputText v-model="slotProps.data[slotProps.field]" />
             </template>
           </Column>
         </DataTable>
@@ -38,6 +35,7 @@
           :value="editingSentence.tokens"
           contextMenu
           @rowContextmenu="onRowContextMenuSentence"
+          @cell-edit-complete="onCellEditComplete"
         >
           <Column field="id" header="Id">
             <template #editor="slotProps">
@@ -157,18 +155,6 @@ export default {
 
   emits: ["edited-sentence", "to-results"],
 
-  // mounted() {
-  //   console.log(this.getDoubleClickedSentenceIndexes.searchResultsIndex);
-  //   // makes a deep copy of the sentence the user requested to edit
-  //   this.editingSentence = JSON.parse(
-  //     JSON.stringify(
-  //       this.getSearchResults[
-  //         this.getDoubleClickedSentenceIndexes.searchResultsIndex
-  //       ].foundSentence
-  //     )
-  //   );
-  // },
-
   activated() {
     // makes a deep copy of the sentence the user requested to edit
     this.editingSentence = JSON.parse(
@@ -201,9 +187,9 @@ export default {
      * Maps store's getters to this component.
      */
     ...mapGetters([
-      "getConlluData",
       "getDoubleClickedSentenceIndexes",
       "getSearchResults",
+      "getUserId",
     ]),
   },
 
@@ -217,7 +203,14 @@ export default {
       "pushEditedRowsIndexes",
       "setMadeChanges",
       "resetsEverything",
+      "showLoadingBar",
+      "hideLoadingBar",
     ]),
+
+    onCellEditComplete(event) {
+      let { data, newValue, field } = event;
+      data[field] = newValue;
+    },
 
     /*
     -- DESCRIPTION:
@@ -228,18 +221,9 @@ export default {
       this.$router.back();
     },
 
-    /**
-     * -- DESCRIPTION:
-     * Update conllu, search results and editedRowsIndexes
-     * at the global store.
-     */
+    // Update conllu, search results and editedRowsIndexes
+    // at the global store.
     updateStore() {
-      // updates the conlluData Vuex array
-      this.updateConlluDataEl({
-        el: this.editingSentence,
-        index: this.getDoubleClickedSentenceIndexes.conlluDataIndex,
-      });
-
       this.setMadeChanges({ changesBool: true });
 
       let sent_id = this.editingSentence.metadata.filter(
@@ -258,16 +242,55 @@ export default {
     Saves the modifications in the sentence's conllu.
     */
     async saveChanges() {
-      // saves modifications in store
-      this.updateStore();
+      this.showLoadingBar();
 
-      // shows message
-      this.$toast.add({
-        severity: "info",
-        summary: "Saved",
-        detail: "Your changes have been successfully saved!",
-        life: 3000,
+      // gets the backend treebanks route URL
+      const treebanksSearchRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/update";
+
+      // defining the request's body
+      let requestBody = {
+        sentenceObj: this.editingSentence,
+        userId: this.getUserId,
+      };
+
+      requestBody = JSON.stringify(requestBody);
+
+      // makes the request
+      const response = await fetch(treebanksSearchRouteUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
       });
+
+      // parses results to javascript object
+      const responseJson = await response.json();
+
+      if (response.status === 200) {
+        // saves modifications in store
+        this.updateStore();
+
+        // shows message
+        this.$toast.add({
+          severity: "info",
+          summary: "Saved",
+          detail: responseJson.message,
+          life: 3000,
+        });
+      } else {
+        // shows message
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: responseJson.message,
+          life: 4000,
+        });
+      }
+
+      this.hideLoadingBar();
     },
 
     /**
