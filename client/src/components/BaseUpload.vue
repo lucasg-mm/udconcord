@@ -63,11 +63,7 @@ export default {
         body: formData,
       });
 
-      // parses the conllu data in the response to JSON
-      const conlluData = await response.json();
-
-      // defines the conlluData in the store
-      this.setConlluData({ conlluData });
+      console.log(response);
 
       // hides loading bar
       this.hideLoadingBar();

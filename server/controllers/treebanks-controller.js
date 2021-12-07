@@ -68,7 +68,10 @@ exports.apiParseTreebank = async (req, res, next) => {
 exports.apiSearchTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { sentences, logicalConditions } = req.fields;
+    const { logicalConditions, userId, page } = req.fields;
+
+    // gets the right treebank to search in
+    const sentences = await treebanksService.getConlluObj(userId);
 
     // should hold the number of tokens in the searched n-gram
     let n;
@@ -110,7 +113,8 @@ exports.apiSearchTreebank = async (req, res, next) => {
     const searchResults = await treebanksService.searchTreebank(
       sentences,
       logicalConditions,
-      n
+      n,
+      page
     );
 
     // returns search results
@@ -121,19 +125,10 @@ exports.apiSearchTreebank = async (req, res, next) => {
   }
 };
 
-/**
- * -- DESCRIPTION:
- * Creates a new treebank.
- *
- * -- REQUEST'S BODY:
- * conlluFile: a CoNLL-U file.
- *
- * -- RESPONSE:
- * HTTP response with the appropriate response code and a JSON.
- * The JSON can be:
- *     - In case of success: array of objects, each one representing a sentence in the treebank.
- *     - In case of error: object with a message and a nested error object.
- */
+// Creates a new treebank.
+// Parses uploaded .conllu to object.
+// Parses object to json.
+// Saves the .json version in the file system.
 exports.apiCreateTreebank = async (req, res, next) => {
   try {
     // we're using a middleware that stores temporarely
@@ -158,7 +153,6 @@ exports.apiCreateTreebank = async (req, res, next) => {
     await treebanksService.saveConlluObj(createdTreebank, userId);
 
     // send to the client the object representing the treebank
-    console.log("oi?");
     res.json({ message: "Uploaded successfully!" });
   } catch (error) {
     // in case of error, send a message and the error object

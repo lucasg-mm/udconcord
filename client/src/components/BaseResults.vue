@@ -104,13 +104,13 @@ export default {
     SplitButton,
   },
 
-  created() {
-    if (!this.getConlluData) {
-      window.location.href = "/";
-    } else if (!this.getSearchResults) {
-      window.location.href = "/search";
-    }
-  },
+  // created() {
+  //   if (!this.getConlluData) {
+  //     window.location.href = "/";
+  //   } else if (!this.getSearchResults) {
+  //     window.location.href = "/search";
+  //   }
+  // },
 
   beforeRouteLeave(to) {
     if (to.path === "/") {
@@ -157,7 +157,7 @@ export default {
 
     // number of results returned by a search
     totalRecords() {
-      return this.getSearchResults.length;
+      return this.getLastSearchParams.numResults;
     },
 
     recPerPage() {
@@ -550,7 +550,7 @@ export default {
           // for each match in this result...
 
           // gets the matched sentence
-          const resultSentence = this.getConlluData[result.sentenceIndex];
+          const resultSentence = result.foundSentence;
 
           let sent_id = resultSentence.metadata.filter(
             (e) => e.key === "sent_id"

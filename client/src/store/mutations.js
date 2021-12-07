@@ -25,10 +25,11 @@ export default {
   },
   //----------------------------
 
-  setLastSearchParams(state, { logicalConditions, shownProps }) {
+  setLastSearchParams(state, { logicalConditions, shownProps, numResults }) {
     state.lastSearchParams = {
       logicalConditions,
       shownProps,
+      numResults,
     };
   },
 

@@ -21,11 +21,11 @@ export default {
   components: {
     SearchInput,
   },
-  created() {
-    if (!this.getConlluData) {
-      window.location.href = "/";
-    }
-  },
+  // created() {
+  //   if (!this.getConlluData) {
+  //     window.location.href = "/";
+  //   }
+  // },
   beforeRouteLeave(to) {
     if (to.path === "/") {
       // resets keep-alive component

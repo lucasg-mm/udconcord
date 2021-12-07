@@ -27,10 +27,11 @@ export default {
   },
   //----------------------------
 
-  setLastSearchParams(context, { logicalConditions, shownProps }) {
+  setLastSearchParams(context, { logicalConditions, shownProps, numResults }) {
     context.commit("setLastSearchParams", {
       logicalConditions,
       shownProps,
+      numResults,
     });
   },
 

@@ -80,6 +80,17 @@ exports.saveConlluObj = async (conlluObj, userId) => {
   return;
 };
 
+// gets conllu object according to user id
+exports.getConlluObj = async (userId) => {
+  // gets json string
+  let conlluObj = fs.readFileSync(`/uploads/${userId}.json`);
+
+  // parses json to object
+  conlluObj = JSON.parse(conlluObj);
+
+  return conlluObj;
+};
+
 // converts an object to .conllu text
 exports.parseObjectToConllu = async (sentences) => {
   let conlluText = "";
@@ -133,7 +144,7 @@ exports.parseConlluToObject = async (conlluData) => {
 };
 
 // Searched treebank
-exports.searchTreebank = async (sentences, logicalConditions, n) => {
+exports.searchTreebank = async (sentences, logicalConditions, n, page) => {
   // variable to store search results
   const searchResults = [];
 
@@ -153,7 +164,9 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
   }
 
   // iterates through the sentences array
-  for (const [index, sentence] of sentences.entries()) {
+  let firstItem = (page - 1) * 100;
+  let lastItem = page * 100;
+  for (const sentence of sentences) {
     // iterates through the tokens of a sentence
     for (
       let i = 0;
@@ -167,13 +180,18 @@ exports.searchTreebank = async (sentences, logicalConditions, n) => {
 
         // creates the sentence's corresponding entry
         // in the array and pushes the found token's id in it
-        searchResults.push({ foundNGram: matchesIds, sentenceIndex: index });
+        searchResults.push({ foundNGram: matchesIds, foundSentence: sentence });
       }
     }
   }
 
+  const numResults = searchResults.length;
+
   // returns the search results
-  return searchResults;
+  return {
+    searchResults: searchResults.slice(firstItem, lastItem),
+    numResults,
+  };
 };
 
 // -- AUX FUNCTIONS

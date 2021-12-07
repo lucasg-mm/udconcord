@@ -114,8 +114,6 @@ import { mapGetters } from "vuex";
 import Toast from "primevue/toast";
 
 export default {
-  emits: ["search-results-received"],
-
   props: {
     searchParams: Object,
   },
@@ -164,7 +162,7 @@ export default {
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters(["getConlluData"]),
+    ...mapGetters(["getConlluData", "getUserId"]),
   },
 
   mounted() {
@@ -223,8 +221,9 @@ export default {
 
       // defining the request's body
       let requestBody = {
-        sentences: this.getConlluData,
         logicalConditions: this.logicalConditions,
+        userId: this.getUserId,
+        page: 1,
       };
 
       requestBody = JSON.stringify(requestBody);
@@ -244,16 +243,17 @@ export default {
 
       if (response.status === 200) {
         // sets results and searched property on the store
-        this.setSearchResults({ searchResults });
+
+        let results = searchResults["searchResults"];
+        this.setSearchResults({ searchResults: results });
         this.setLastSearchParams({
+          numResults: searchResults["numResults"],
           logicalConditions: this.logicalConditions,
           shownProps: this.shownProps,
         });
 
         // sets the indexes of edited sentences in the store
         this.setEditedRowsIndexes({ editedRowsIndexes: [] });
-
-        this.$emit("search-results-received");
 
         // go to the results route
         this.$router.push("/results");
