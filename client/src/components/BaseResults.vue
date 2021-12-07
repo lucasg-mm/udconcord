@@ -24,6 +24,7 @@
         breakpoint="425px"
         :rowClass="rowClass"
         :totalRecords="totalRecords"
+        :loading="loading"
         @row-dblclick="editSentence"
         @page="onPage($event)"
       >
@@ -153,6 +154,7 @@ export default {
       "getSearchResults",
       "getLastSearchParams",
       "getMadeChanges",
+      "getUserId",
     ]),
 
     // number of results returned by a search
@@ -167,10 +169,11 @@ export default {
 
   data() {
     return {
-      currPage: 1,
+      // tells if datatable is loading or not
+      loading: false,
 
-      // already loaded data
-      processedData: {},
+      // stores the current datatable page
+      currPage: 1,
 
       // stores the previous route
       previousRoute: "",
@@ -262,12 +265,13 @@ export default {
       this.hideLoadingBar();
     },
 
+    // this is supposed to be called right after making a search
+    // (first 100 results)
     resultsReceiver(page = 0, scroll = true) {
       // process results if there are any
       this.$nextTick(() => {
         if (this.totalRecords) {
-          this.processedData = {};
-          this.loadLazyData(page + 1, this.recPerPage, scroll);
+          this.loadLazyData(this.getSearchResults, scroll);
           this.goToPage(page);
         }
       });
@@ -304,51 +308,63 @@ export default {
       this.hideLoadingBar();
     },
 
+    // programatically goes to a certain page
     goToPage(page) {
       this.$refs.datatable.d_first = page * this.recPerPage;
     },
 
-    /*
-    -- DESCRIPTION:
-    Handles the page event, emitted by the DataTable.
-    It just loads the next batch of data in the next page.
-    */
-    onPage(event) {
+    // get data from search
+    // more specifically, in a certain page
+    async getDataFromPage(page = 1) {
+      // gets the backend treebanks route URL
+      const treebanksSearchRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/search";
+
+      // defining the request's body
+      let requestBody = {
+        logicalConditions: this.getLastSearchParams.logicalConditions,
+        userId: this.getUserId,
+        page,
+      };
+
+      requestBody = JSON.stringify(requestBody);
+
+      const response = await fetch(treebanksSearchRouteUrl, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      // parses results to javascript object
+      const searchResults = await response.json();
+
+      return searchResults["searchResults"];
+    },
+
+    // Handles the page event, emitted by the DataTable.
+    // It just loads the next batch of data in the next page.
+    async onPage(event) {
       // gets the page number we're going to
       // (sums 1 because event.page is 0-indexed)
       const pageToGo = event.page + 1;
 
       this.currPage = pageToGo;
 
-      // number of rows rendered in pageToGo
-      const numberOfRows = event.rows;
+      this.loading = true;
+      const data = await this.getDataFromPage(pageToGo);
 
-      this.loadLazyData(pageToGo, numberOfRows);
+      this.loadLazyData(data);
+      this.loading = false;
     },
 
-    /*
-    -- DESCRIPTION:
-    Loads a certain amount of data (from the totality of the results)
-    in the table.
-
-    -- PARAMETERS:
-    pageToGo: table's page in which the table should be rendered.
-    numberOfRows: number of rows to be rendered in the table's page.
-    */
-    loadLazyData(pageToGo, numberOfRows, scroll = true) {
-      // gets the results array and the string
-      // indicating which property is being searched
-      const results = this.getSearchResults;
-
-      // gets the data that should be displayed in
-      // pageToGo
-      const dataInCurrPage = results.slice(
-        pageToGo * numberOfRows - numberOfRows,
-        pageToGo * numberOfRows
-      );
-
+    // formats data
+    // centralizes matches
+    loadLazyData(results, scroll = true) {
       // formats the data in the DataTable component
-      this.organizesResults(dataInCurrPage, pageToGo);
+      this.organizesResults(results);
 
       // scroll to the matches after updates the DOM
       if (scroll) {
@@ -541,67 +557,61 @@ export default {
     // this component uses a table to render the results
     // the algorithm bellow pre-process the results in order
     // for them to be usable in the table.
-    organizesResults(results, pageToGo = 1, exporting = false) {
-      if (pageToGo in this.processedData && exporting === false) {
-        this.organizedResults = this.processedData[pageToGo];
-      } else {
-        this.organizedResults = [];
-        results.forEach((result, index) => {
-          // for each match in this result...
+    organizesResults(results) {
+      this.organizedResults = [];
+      results.forEach((result) => {
+        // for each match in this result...
 
-          // gets the matched sentence
-          const resultSentence = result.foundSentence;
+        // gets the matched sentence
+        const resultSentence = result.foundSentence;
 
-          let sent_id = resultSentence.metadata.filter(
-            (e) => e.key === "sent_id"
-          );
-          sent_id = sent_id[0]["value"];
+        let sent_id = resultSentence.metadata.filter(
+          (e) => e.key === "sent_id"
+        );
+        sent_id = sent_id[0]["value"];
 
-          // stores heads
-          const heads = [];
-          // gets the match
-          const match = result["foundNGram"]
-            .map((tokenId) => {
-              // stores match's head
-              heads.push(Number(resultSentence.tokens[tokenId].head));
+        // stores heads
+        const heads = [];
+        // gets the match
+        const match = result["foundNGram"]
+          .map((tokenId) => {
+            // stores match's head
+            heads.push(Number(resultSentence.tokens[tokenId].head));
 
-              // returns matched token's mark up to render in the table rows
-              return this.getMatchedTokenMarkUp(resultSentence, tokenId);
-            })
-            .join("\xa0\xa0\xa0");
+            // returns matched token's mark up to render in the table rows
+            return this.getMatchedTokenMarkUp(resultSentence, tokenId);
+          })
+          .join("\xa0\xa0\xa0");
 
-          // gets the left context (string)
-          const leftContext = resultSentence.tokens
-            .slice(0, result["foundNGram"][0])
-            .map((e) => {
-              // returns context token's mark up to render in the table rows
-              return this.getContextTokenMarkUp(e, heads);
-            })
-            .join("\xa0\xa0\xa0");
+        // gets the left context (string)
+        const leftContext = resultSentence.tokens
+          .slice(0, result["foundNGram"][0])
+          .map((e) => {
+            // returns context token's mark up to render in the table rows
+            return this.getContextTokenMarkUp(e, heads);
+          })
+          .join("\xa0\xa0\xa0");
 
-          // gets the right context (string)
-          const rightContext = resultSentence.tokens
-            .slice(
-              result["foundNGram"][result["foundNGram"].length - 1] + 1,
-              resultSentence.tokens.length
-            )
-            .map((e) => {
-              // returns context token's mark up to render in the table rows
-              return this.getContextTokenMarkUp(e, heads);
-            })
-            .join("\xa0\xa0\xa0");
+        // gets the right context (string)
+        const rightContext = resultSentence.tokens
+          .slice(
+            result["foundNGram"][result["foundNGram"].length - 1] + 1,
+            resultSentence.tokens.length
+          )
+          .map((e) => {
+            // returns context token's mark up to render in the table rows
+            return this.getContextTokenMarkUp(e, heads);
+          })
+          .join("\xa0\xa0\xa0");
 
-          // organizes the data and stores it in an array
-          this.organizedResults.push({
-            index: index + (pageToGo - 1) * this.recPerPage,
-            sent_id,
-            leftContext,
-            match,
-            rightContext,
-          });
+        // organizes the data and stores it in an array
+        this.organizedResults.push({
+          sent_id,
+          leftContext,
+          match,
+          rightContext,
         });
-        this.processedData[pageToGo] = this.organizedResults;
-      }
+      });
     },
 
     getEveryResult() {
