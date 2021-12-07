@@ -14,7 +14,6 @@
           :value="editingSentence.metadata"
           contextMenu
           @rowContextmenu="onRowContextMenuMetadata"
-          @cell-edit-complete="onCellEditComplete"
         >
           <Column header="Key" field="key">
             <template #editor="slotProps">
@@ -35,7 +34,6 @@
           :value="editingSentence.tokens"
           contextMenu
           @rowContextmenu="onRowContextMenuSentence"
-          @cell-edit-complete="onCellEditComplete"
         >
           <Column field="id" header="Id">
             <template #editor="slotProps">
@@ -206,11 +204,6 @@ export default {
       "showLoadingBar",
       "hideLoadingBar",
     ]),
-
-    onCellEditComplete(event) {
-      let { data, newValue, field } = event;
-      data[field] = newValue;
-    },
 
     /*
     -- DESCRIPTION:

@@ -75,7 +75,6 @@ exports.apiUpdateSentence = async (req, res, next) => {
 
     const newTreebank = await treebanksService.updateSentence(
       sentenceObj,
-      userId,
       oldTreebank
     );
 

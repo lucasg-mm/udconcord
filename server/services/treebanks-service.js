@@ -143,10 +143,18 @@ exports.parseConlluToObject = async (conlluData) => {
   return conlluObject.sentences;
 };
 
-exports.updateSentence = async (sentenceObj, userId, treebank) => {
+// updates a sentence in the treebank
+exports.updateSentence = async (sentenceObj, treebank) => {
+  const sentenceObjSentId = getSentId(sentenceObj.metadata);
+  let treebankSentenceSentId;
+
   for (let i = 0; i < treebank.length; i++) {
-    if ((treebank[i].metadata.sent_id = sentenceObj.metadata.sent_id)) {
-      treebank[i] = sentenceObj;
+    if (treebank[i].metadata.length !== 0) {
+      treebankSentenceSentId = getSentId(treebank[i].metadata);
+      if (sentenceObjSentId === treebankSentenceSentId) {
+        treebank[i] = sentenceObj;
+        break;
+      }
     }
   }
 
@@ -306,4 +314,9 @@ function getMatchesIds(start, n) {
   }
 
   return matchesIds;
+}
+
+// get the sent_id from a sentence's metadata
+function getSentId(metadata) {
+  return metadata.find((meta) => meta.key === "sent_id").value;
 }
