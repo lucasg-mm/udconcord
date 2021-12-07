@@ -68,7 +68,7 @@ exports.apiParseTreebank = async (req, res, next) => {
 exports.apiSearchTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { logicalConditions, userId, page } = req.fields;
+    const { logicalConditions, userId, page, rowsNum } = req.fields;
 
     // gets the right treebank to search in
     const sentences = await treebanksService.getConlluObj(userId);
@@ -114,7 +114,8 @@ exports.apiSearchTreebank = async (req, res, next) => {
       sentences,
       logicalConditions,
       n,
-      page
+      page,
+      rowsNum
     );
 
     // returns search results

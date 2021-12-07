@@ -16,7 +16,7 @@
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} results"
         :lazy="true"
         :paginator="true"
-        :rows="initialRowNum"
+        v-model:rows="initialRowNum"
         class="tabela"
         :value="organizedResults"
         :autoLayout="true"
@@ -325,6 +325,7 @@ export default {
         logicalConditions: this.getLastSearchParams.logicalConditions,
         userId: this.getUserId,
         page,
+        rowsNum: this.initialRowNum,
       };
 
       requestBody = JSON.stringify(requestBody);

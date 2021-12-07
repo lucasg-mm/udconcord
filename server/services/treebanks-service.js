@@ -144,7 +144,13 @@ exports.parseConlluToObject = async (conlluData) => {
 };
 
 // Searched treebank
-exports.searchTreebank = async (sentences, logicalConditions, n, page) => {
+exports.searchTreebank = async (
+  sentences,
+  logicalConditions,
+  n,
+  page,
+  rowsNum
+) => {
   // variable to store search results
   const searchResults = [];
 
@@ -164,8 +170,8 @@ exports.searchTreebank = async (sentences, logicalConditions, n, page) => {
   }
 
   // iterates through the sentences array
-  let firstItem = (page - 1) * 100;
-  let lastItem = page * 100;
+  let firstItem = (page - 1) * rowsNum;
+  let lastItem = page * rowsNum;
   for (const sentence of sentences) {
     // iterates through the tokens of a sentence
     for (

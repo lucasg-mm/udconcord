@@ -224,6 +224,7 @@ export default {
         logicalConditions: this.logicalConditions,
         userId: this.getUserId,
         page: 1,
+        rowsNum: 100,
       };
 
       requestBody = JSON.stringify(requestBody);
