@@ -1,5 +1,4 @@
 const conlluJsLibrary = require("conllujs");
-const User = require("../models/user-model");
 
 // called when user wants to export search results as .txt
 exports.getResultsStringRepresentation = (organizedResults) => {
@@ -33,31 +32,6 @@ exports.getResultsStringRepresentation = (organizedResults) => {
   });
 
   return finalText;
-};
-
-// stores user in the database
-exports.storeUser = async (userId, conlluObj) => {
-  try {
-    // creates new user with its treebank
-    console.log("HEEEEEEY");
-    console.log(userId);
-    const newUser = new User({
-      userId: userId,
-      treebank: conlluObj,
-    });
-
-    // saves the new user
-    await newUser.save();
-
-    // returns successfully
-    return;
-  } catch (error) {
-    // in case of error...
-    console.log("DATABASE ERROR! Could not create post");
-    console.log(error);
-
-    throw error;
-  }
 };
 
 exports.parseResultsToCSV = (organizedResults) => {

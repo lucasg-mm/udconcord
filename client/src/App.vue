@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     //store's getters
-    ...mapGetters(["getConlluData"]),
+    ...mapGetters(["getConlluData", "getUserId"]),
   },
   mounted() {
     // generates user id and stores it
