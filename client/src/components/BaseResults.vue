@@ -127,10 +127,7 @@ export default {
           vm.setMadeChanges({ changesBool: false });
 
           // redo search
-          await vm.search({
-            sentences: vm.getConlluData,
-            logicalConditions: vm.getLastSearchParams.logicalConditions,
-          });
+          await vm.getDataFromPage(this.currPage);
 
           // rebuilds table from last page
           vm.resultsReceiver(this.currPage - 1, false);
@@ -236,34 +233,6 @@ export default {
       "hideLoadingBar",
       "resetsEverything",
     ]),
-    // searches in the treebank
-    async search(requestBody) {
-      this.showLoadingBar();
-
-      // gets the backend treebanks route URL
-      const treebanksSearchRouteUrl =
-        process.env.VUE_APP_URL + "api/treebanks/search";
-
-      requestBody = JSON.stringify(requestBody);
-
-      // makes the request
-      const response = await fetch(treebanksSearchRouteUrl, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: requestBody,
-      });
-
-      // parses results to javascript object
-      const searchResults = await response.json();
-
-      // sets results and searched property on the store
-      this.setSearchResults({ searchResults });
-
-      this.hideLoadingBar();
-    },
 
     // this is supposed to be called right after making a search
     // (first 100 results)
