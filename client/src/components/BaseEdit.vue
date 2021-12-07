@@ -157,11 +157,25 @@ export default {
 
   emits: ["edited-sentence", "to-results"],
 
+  // mounted() {
+  //   console.log(this.getDoubleClickedSentenceIndexes.searchResultsIndex);
+  //   // makes a deep copy of the sentence the user requested to edit
+  //   this.editingSentence = JSON.parse(
+  //     JSON.stringify(
+  //       this.getSearchResults[
+  //         this.getDoubleClickedSentenceIndexes.searchResultsIndex
+  //       ].foundSentence
+  //     )
+  //   );
+  // },
+
   activated() {
     // makes a deep copy of the sentence the user requested to edit
     this.editingSentence = JSON.parse(
       JSON.stringify(
-        this.getConlluData[this.getDoubleClickedSentenceIndexes.conlluDataIndex]
+        this.getSearchResults[
+          this.getDoubleClickedSentenceIndexes.searchResultsIndex
+        ].foundSentence
       )
     );
   },

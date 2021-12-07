@@ -2,10 +2,9 @@
   <div class="main-view">
     <TheNavbar></TheNavbar>
     <router-view class="showed-content" v-slot="{ Component }">
-      <keep-alive v-if="getConlluData">
+      <keep-alive>
         <component :is="Component" />
       </keep-alive>
-      <component v-else :is="Component" />
     </router-view>
     <TheFooter></TheFooter>
   </div>

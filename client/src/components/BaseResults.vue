@@ -341,8 +341,11 @@ export default {
 
       // parses results to javascript object
       const searchResults = await response.json();
+      let results = searchResults["searchResults"];
 
-      return searchResults["searchResults"];
+      this.setSearchResults({ searchResults: results });
+
+      return results;
     },
 
     // Handles the page event, emitted by the DataTable.
@@ -373,7 +376,6 @@ export default {
       }
     },
 
-    // -- DESCRIPTION:
     // handles the double click on a sentence, emiting
     // an event and passing the sentence to the parent component.
     editSentence(event) {
@@ -381,14 +383,11 @@ export default {
       this.saveScrollState(container);
 
       // retrieves the sentence's index to be edited in the conlluData vuex store
-      const searchResultsArrayIndex = event.data.index;
-      const conlluDataArrayIndex =
-        this.getSearchResults[searchResultsArrayIndex].sentenceIndex;
+      const searchResultsArrayIndex = event.index;
 
       // sets the double clicked sentence in the global store
       this.setDoubleClickedSentenceIndexes({
         doubleClickedSentenceIndexes: {
-          conlluDataIndex: conlluDataArrayIndex,
           searchResultsIndex: searchResultsArrayIndex,
         },
       });
