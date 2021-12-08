@@ -78,7 +78,7 @@
             value="deprel"
             v-model="shownProps"
           />
-          <label for="prop2"> Depedency relations</label>
+          <label for="prop2"> Dependency relations</label>
         </span>
         <br class="br-responsive" />
         <span class="option-prop">
