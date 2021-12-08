@@ -1,10 +1,11 @@
 const treebanksService = require("../services/treebanks-service");
 const fs = require("fs");
-const Readable = require("stream").Readable;
 
 // --- POST REQUESTS ---
 
-exports.apiStreamResults = async (req, res, next) => {
+// create a temp file with the search results in the format passed by the client format
+// sends back the url to download the file
+exports.apiCreateExportedResults = async (req, res, next) => {
   try {
     const { userId, logicalConditions, format } = req.fields;
 
@@ -43,6 +44,7 @@ exports.apiStreamResults = async (req, res, next) => {
 
     n = logicalConditions[0].queryString.length;
 
+    // get all search results
     let searchResults = await treebanksService.searchTreebank(
       sentences,
       logicalConditions,
@@ -52,32 +54,61 @@ exports.apiStreamResults = async (req, res, next) => {
       format
     );
 
+    // get file's text
     if (format === "conllu") {
       searchResults = await treebanksService.parseObjectToConllu(searchResults);
     } else {
       searchResults = searchResults.join("\n");
     }
 
-    // returns the text file
-    let fileContents = Buffer.from(searchResults, "utf-8");
+    // saves text as temp file
+    const fileName = await treebanksService.saveTempFile(
+      searchResults,
+      format,
+      userId
+    );
 
-    let readStream = new Readable();
-    readStream.push(fileContents);
-    readStream.push(null);
-
-    res.set({
-      "Content-Disposition": "attachment; filename=edited-treebank.conllu",
-      "Content-Type": "text/plain",
-    });
-
-    readStream.pipe(res);
+    // sends back the file's name to build the download url
+    res.json({ fileName: fileName });
   } catch (error) {
     // in case of error, send a message and the error object
     res.status(500).json({ message: "Internal error", error: error });
   }
 };
 
-exports.apiStreamTreebank = async (req, res, next) => {
+// download a file (through get request)
+exports.downloadFile = async (req, res, next) => {
+  try {
+    // gets file's directory
+    const fileName = req.params.fileName;
+    const fileDir = "/uploads/" + fileName;
+
+    // read file through stream
+    let filestream = fs.createReadStream(fileDir);
+
+    // delete file after read
+    filestream.on("end", function () {
+      fs.unlink(fileDir, function () {
+        // file deleted
+      });
+    });
+
+    // send file back to client as download
+    res.set({
+      "Content-Disposition": `attachment; filename=${fileName}`,
+      "Content-Type": "text/plain",
+    });
+
+    filestream.pipe(res);
+  } catch (error) {
+    // in case of error, send a message and the error object
+    res.status(500).json({ message: "Internal error", error: error });
+  }
+};
+
+// create a temp file with the treebank in conllu format
+// sends back the url to download the file
+exports.apiCreateExportedTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
     const { userId } = req.fields;
@@ -86,19 +117,15 @@ exports.apiStreamTreebank = async (req, res, next) => {
     const sentences = await treebanksService.getConlluObj(userId);
     const conlluText = await treebanksService.parseObjectToConllu(sentences);
 
-    // returns the text file
-    let fileContents = Buffer.from(conlluText, "utf-8");
+    // saves as temp file
+    const fileName = await treebanksService.saveTempFile(
+      conlluText,
+      "conllu",
+      userId
+    );
 
-    let readStream = new Readable();
-    readStream.push(fileContents);
-    readStream.push(null);
-
-    res.set({
-      "Content-Disposition": "attachment; filename=edited-treebank.conllu",
-      "Content-Type": "text/plain",
-    });
-
-    readStream.pipe(res);
+    // sends url
+    res.json({ fileName: fileName });
   } catch (error) {
     // in case of error, send a message and the error object
     res.status(500).json({ message: "Internal error", error: error });

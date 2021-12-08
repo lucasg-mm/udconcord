@@ -12,10 +12,16 @@ router.post("/search", treebanksController.apiSearchTreebank);
 // route to update a sentence in a treebank
 router.post("/update", treebanksController.apiUpdateSentence);
 
-// route to stream treebank in order for the user to download it
-router.post("/download-treebank", treebanksController.apiStreamTreebank);
+// route to get a url to download a treebank
+router.post(
+  "/download-treebank",
+  treebanksController.apiCreateExportedTreebank
+);
 
-// route to stream the search results in order for the user to download it
-router.post("/download-results", treebanksController.apiStreamResults);
+// route to get a url to download search results
+router.post("/download-results", treebanksController.apiCreateExportedResults);
+
+// route to download a file
+router.get("/download/:fileName", treebanksController.downloadFile);
 
 module.exports = router;

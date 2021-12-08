@@ -262,8 +262,9 @@ export default {
         body: reqBody,
       });
 
-      const conlluText = await response.text();
-      this.exportFile(conlluText, "edited-treebank.conllu");
+      if (response.status === 200) {
+        await this.downloadFile(response);
+      }
 
       // shows loading bar
       this.hideLoadingBar();
@@ -429,8 +430,9 @@ export default {
         body: requestBody,
       });
 
-      const text = await response.text();
-      this.exportFile(text, `results.${fileExtension}`);
+      if (response.status === 200) {
+        await this.downloadFile(response);
+      }
 
       this.hideLoadingBar();
     },
@@ -640,22 +642,14 @@ export default {
     },
 
     // -- DESCRIPTION:
-    // exports a text file
-    exportFile(text, fileName) {
-      // exports it to the user
-      var element = document.createElement("a");
-      element.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURIComponent(text)
-      );
-      element.setAttribute("download", fileName);
-
-      element.style.display = "none";
-      document.body.appendChild(element);
-
-      element.click();
-
-      document.body.removeChild(element);
+    // downloads file with the response with the download link
+    async downloadFile(response) {
+      const responseJson = await response.json();
+      const downloadUrl =
+        process.env.VUE_APP_URL +
+        "api/treebanks/download/" +
+        responseJson.fileName;
+      window.open(downloadUrl, "_blank");
     },
   },
 };

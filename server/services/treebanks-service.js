@@ -7,6 +7,13 @@ exports.saveConlluObj = async (conlluObj, userId) => {
   return;
 };
 
+// saves a temp exported text file
+exports.saveTempFile = async (text, extension, userId) => {
+  const fileName = `export-${userId}.${extension}`;
+  fs.writeFileSync(`/uploads/${fileName}`, text);
+  return fileName;
+};
+
 // gets conllu object according to user id
 exports.getConlluObj = async (userId) => {
   // gets json string
