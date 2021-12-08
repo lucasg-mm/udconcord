@@ -1,6 +1,6 @@
 const treebanksService = require("../services/treebanks-service");
 const fs = require("fs");
-const stream = require("stream");
+const Readable = require("stream").Readable;
 
 // --- POST REQUESTS ---
 
@@ -37,25 +37,26 @@ exports.apiResultsToCSV = async (req, res, next) => {
   }
 };
 
-exports.apiParseTreebank = async (req, res, next) => {
+exports.apiStreamTreebank = async (req, res, next) => {
   try {
     // gets the request's properties
-    const { sentences } = req.fields;
+    const { userId } = req.fields;
 
     // parses the object to conllu text
+    const sentences = await treebanksService.getConlluObj(userId);
     const conlluText = await treebanksService.parseObjectToConllu(sentences);
 
     // returns the text file
     let fileContents = Buffer.from(conlluText, "utf-8");
 
-    let readStream = new stream.PassThrough();
-    readStream.end(fileContents);
+    let readStream = new Readable();
+    readStream.push(fileContents);
+    readStream.push(null);
 
-    res.set(
-      "Content-disposition",
-      "attachment; filename=edited-treebank.conllu"
-    );
-    res.set("Content-Type", "text/plain");
+    res.set({
+      "Content-Disposition": "attachment; filename=edited-treebank.conllu",
+      "Content-Type": "text/plain",
+    });
 
     readStream.pipe(res);
   } catch (error) {

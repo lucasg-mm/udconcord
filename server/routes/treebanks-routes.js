@@ -9,13 +9,10 @@ router.post("/", treebanksController.apiCreateTreebank);
 // route to search for a search (lemma, form, etc) in the treebank
 router.post("/search", treebanksController.apiSearchTreebank);
 
-// route to parse a conll object to a conllu file
-router.post("/parse", treebanksController.apiParseTreebank);
-
 // route to update a sentence in a treebank
 router.post("/update", treebanksController.apiUpdateSentence);
 
-// route to parse search results to .csv
-router.post("/export-results", treebanksController.apiResultsToCSV);
+// route to stream treebank in order for the user to download it
+router.post("/download-treebank", treebanksController.apiStreamTreebank);
 
 module.exports = router;

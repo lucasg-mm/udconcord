@@ -81,7 +81,7 @@
       <SplitButton
         icon="pi pi-download"
         class="export-button"
-        @click="exportTreebank(this.getConlluData)"
+        @click="downloadTreebank()"
         label="Download"
         :model="exportButtonItems"
       ></SplitButton>
@@ -189,7 +189,7 @@ export default {
         {
           label: "Download treebank (.conllu)",
           command: () => {
-            this.exportTreebank(this.getConlluData);
+            this.downloadTreebank();
           },
         },
         {
@@ -246,33 +246,33 @@ export default {
       });
     },
 
-    async exportTreebank(conlluData) {
+    // initializes the download of the whole uploaded treebank
+    async downloadTreebank() {
       // shows loading bar
       this.showLoadingBar();
 
-      // gets the backend treebanks route URL
-      const treebanksSearchRouteUrl =
-        process.env.VUE_APP_URL + "api/treebanks/parse";
+      // gets the backend export results route URL
+      const downloadUrl =
+        process.env.VUE_APP_URL + "api/treebanks/download-treebank";
 
-      // defining the request's body
-      let requestBody = {
-        sentences: conlluData,
-      };
+      let reqBody = JSON.stringify({
+        userId: this.getUserId,
+      });
 
-      requestBody = JSON.stringify(requestBody);
-
-      // makes the request
-      const response = await fetch(treebanksSearchRouteUrl, {
+      const response = await fetch(downloadUrl, {
         method: "POST",
         headers: {
           Accept: "text/plain",
           "Content-Type": "application/json",
         },
-        body: requestBody,
+        body: reqBody,
       });
+
+      console.log(response);
 
       const conlluText = await response.text();
       this.exportFile(conlluText, "edited-treebank.conllu");
+
       // shows loading bar
       this.hideLoadingBar();
     },
@@ -428,7 +428,7 @@ export default {
       });
 
       // makes the request
-      const response = await fetch(exportResultsRouteUrl, {
+      await fetch(exportResultsRouteUrl, {
         method: "POST",
         headers: {
           Accept: "text/plain",
@@ -436,9 +436,6 @@ export default {
         },
         body: requestBody,
       });
-
-      const resultsText = await response.text();
-      this.exportFile(resultsText, `search-results.${fileExtension}`);
 
       this.hideLoadingBar();
     },
