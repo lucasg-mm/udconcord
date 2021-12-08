@@ -8,13 +8,9 @@ const store = createStore({
   state() {
     return {
       // holds the user's id (generated with uuid package)
-      userId: "",
+      userId: null,
 
-      // holds the data of the uploaded conllu file in the form
-      // of an object
-      conlluData: null,
-
-      // holds the indexes (both for searchResults and conlluData arrays)
+      // holds the indexes
       // for the double clicked sentence
       doubleClickedSentenceIndexes: {},
 

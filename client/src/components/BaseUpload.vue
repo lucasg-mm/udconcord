@@ -39,7 +39,7 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component.
      */
-    ...mapActions(["setConlluData", "showLoadingBar", "hideLoadingBar"]),
+    ...mapActions(["showLoadingBar", "hideLoadingBar", "setUserId"]),
 
     // -- DESCRIPTION:
     // Uploads CoNLL-U file to the backend
@@ -55,15 +55,16 @@ export default {
 
       // adds file to FormData
       formData.append("conlluFile", event.files[0]);
-      formData.append("userId", this.getUserId);
 
       // makes request to backend
-      const response = await fetch(treebanksRouteUrl, {
+      const res = await fetch(treebanksRouteUrl, {
         method: "POST",
         body: formData,
       });
 
-      console.log(response);
+      const resJson = await res.json();
+
+      this.setUserId({ userId: resJson.userId });
 
       // hides loading bar
       this.hideLoadingBar();

@@ -21,11 +21,12 @@ export default {
   components: {
     SearchInput,
   },
-  // created() {
-  //   if (!this.getConlluData) {
-  //     window.location.href = "/";
-  //   }
-  // },
+  created() {
+    if (!this.getUserId) {
+      console.log(this.getUserId);
+      window.location.href = "/";
+    }
+  },
   beforeRouteLeave(to) {
     if (to.path === "/") {
       // resets keep-alive component
@@ -33,11 +34,8 @@ export default {
     }
   },
   computed: {
-    /**
-     * -- DESCRIPTION:
-     * Maps store's getters to this component.
-     */
-    ...mapGetters(["getConlluData"]),
+    //store's getters
+    ...mapGetters(["getUserId"]),
   },
   methods: {
     //Maps store's actions to this component

@@ -164,13 +164,13 @@ export default {
     );
   },
 
-  // created() {
-  //   if (!this.getConlluData) {
-  //     window.location.href = "/";
-  //   } else if (!this.getSearchResults) {
-  //     window.location.href = "/search";
-  //   }
-  // },
+  created() {
+    if (!this.getUserId) {
+      window.location.href = "/";
+    } else if (!this.getSearchResults) {
+      window.location.href = "/search";
+    }
+  },
 
   beforeRouteLeave(to) {
     if (to.path === "/") {
@@ -197,7 +197,6 @@ export default {
      * Maps store's actions to this component
      */
     ...mapActions([
-      "updateConlluDataEl",
       "pushEditedRowsIndexes",
       "setMadeChanges",
       "resetsEverything",

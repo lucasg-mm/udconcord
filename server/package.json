@@ -3,7 +3,8 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.12",
     "express-formidable": "^1.2.0",
-    "conllujs": "^3.0.0"
+    "conllujs": "^3.0.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "dev": "nodemon",

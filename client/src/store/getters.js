@@ -1,7 +1,4 @@
 export default {
-  getConlluData(state) {
-    return state.conlluData;
-  },
   getDoubleClickedSentenceIndexes(state) {
     return state.doubleClickedSentenceIndexes;
   },

@@ -162,7 +162,7 @@ export default {
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters(["getConlluData", "getUserId"]),
+    ...mapGetters(["getUserId"]),
   },
 
   mounted() {

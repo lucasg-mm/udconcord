@@ -1,5 +1,6 @@
 const treebanksService = require("../services/treebanks-service");
 const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 
 // --- POST REQUESTS ---
 
@@ -228,7 +229,7 @@ exports.apiCreateTreebank = async (req, res, next) => {
     // the uploaded conllu file in our file system
     // the variable below holds the path to this temp file
     const conlluTempFilePath = req.files.conlluFile.path;
-    const userId = req.fields.userId;
+    const userId = uuidv4();
 
     // data from the uploaded conllu file (its text)
     const conlluData = fs.readFileSync(conlluTempFilePath, "utf8");
@@ -245,8 +246,8 @@ exports.apiCreateTreebank = async (req, res, next) => {
     // saves the created object as json in the file system
     await treebanksService.saveConlluObj(createdTreebank, userId);
 
-    // send to the client the object representing the treebank
-    res.json({ message: "Uploaded successfully!" });
+    // send to the client their user id
+    res.json({ userId });
   } catch (error) {
     // in case of error, send a message and the error object
     res.status(500).json({ message: "Internal error", error: error });

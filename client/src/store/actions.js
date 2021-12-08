@@ -1,10 +1,4 @@
 export default {
-  setConlluData(context, { conlluData }) {
-    context.commit("setConlluData", { conlluData });
-  },
-  updateConlluDataEl(context, { el, index }) {
-    context.commit("updateConlluDataEl", { el, index });
-  },
   //----------------------------
 
   setDoubleClickedSentenceIndexes(context, { doubleClickedSentenceIndexes }) {

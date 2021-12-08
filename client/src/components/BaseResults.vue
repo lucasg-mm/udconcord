@@ -105,13 +105,13 @@ export default {
     SplitButton,
   },
 
-  // created() {
-  //   if (!this.getConlluData) {
-  //     window.location.href = "/";
-  //   } else if (!this.getSearchResults) {
-  //     window.location.href = "/search";
-  //   }
-  // },
+  created() {
+    if (!this.getUserId) {
+      window.location.href = "/";
+    } else if (!this.getSearchResults) {
+      window.location.href = "/search";
+    }
+  },
 
   beforeRouteLeave(to) {
     if (to.path === "/") {
@@ -146,7 +146,6 @@ export default {
      * Maps store's getters to this component.
      */
     ...mapGetters([
-      "getConlluData",
       "getEditedRowsIndexes",
       "getSearchResults",
       "getLastSearchParams",
@@ -344,7 +343,7 @@ export default {
       const container = document.querySelector(".p-datatable-wrapper");
       this.saveScrollState(container);
 
-      // retrieves the sentence's index to be edited in the conlluData vuex store
+      // retrieves the sentence's index to be edited
       const searchResultsArrayIndex = event.index;
 
       // sets the double clicked sentence in the global store
@@ -575,64 +574,6 @@ export default {
           rightContext,
         });
       });
-    },
-
-    getEveryResult() {
-      const allResults = [];
-      this.getSearchResults.forEach((result) => {
-        // for each match in this result...
-
-        // gets the matched sentence
-        const resultSentence = this.getConlluData[result.sentenceIndex];
-
-        let sent_id = resultSentence.metadata.filter(
-          (e) => e.key === "sent_id"
-        );
-        sent_id = sent_id[0]["value"];
-
-        // stores heads
-        const heads = [];
-        // gets the match
-        const match = result["foundNGram"]
-          .map((tokenId) => {
-            // stores match's head
-            heads.push(Number(resultSentence.tokens[tokenId].head));
-
-            // returns matched token's mark up to render in the table rows
-            return this.getMatchedTokenMarkUp(resultSentence, tokenId);
-          })
-          .join("\xa0\xa0\xa0");
-
-        // gets the left context (string)
-        const leftContext = resultSentence.tokens
-          .slice(0, result["foundNGram"][0])
-          .map((e) => {
-            // returns context token's mark up to render in the table rows
-            return this.getContextTokenMarkUp(e, heads);
-          })
-          .join("\xa0\xa0\xa0");
-
-        // gets the right context (string)
-        const rightContext = resultSentence.tokens
-          .slice(
-            result["foundNGram"][result["foundNGram"].length - 1] + 1,
-            resultSentence.tokens.length
-          )
-          .map((e) => {
-            // returns context token's mark up to render in the table rows
-            return this.getContextTokenMarkUp(e, heads);
-          })
-          .join("\xa0\xa0\xa0");
-
-        // organizes the data and stores it in an array
-        allResults.push({
-          sent_id,
-          leftContext,
-          match,
-          rightContext,
-        });
-      });
-      return allResults;
     },
 
     // -- DESCRIPTION:

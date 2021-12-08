@@ -1,10 +1,4 @@
 export default {
-  setConlluData(state, { conlluData }) {
-    state.conlluData = conlluData;
-  },
-  updateConlluDataEl(state, { el, index }) {
-    state.conlluData[index] = { ...el };
-  },
   //----------------------------
 
   setDoubleClickedSentenceIndexes(state, { doubleClickedSentenceIndexes }) {
@@ -59,7 +53,7 @@ export default {
 
   // resets everything to the initial state
   resetsEverything(state) {
-    state.conlluData = null;
+    state.userId = null;
     state.doubleClickedSentenceIndexes = {};
     state.searchResults = [];
     state.editedRowsIndexes = [];
