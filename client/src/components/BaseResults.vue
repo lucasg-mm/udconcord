@@ -195,25 +195,19 @@ export default {
         {
           label: "Download search results (.conllu)",
           command: () => {
-            // downloads every sentence in the results
-            // as .conllu
-            const sentencesToDownload = new Set();
-            this.getSearchResults.forEach((result) => {
-              sentencesToDownload.add(this.getConlluData[result.sentenceIndex]);
-            });
-            this.exportTreebank(Array.from(sentencesToDownload));
+            this.downloadSearchResults("conllu");
           },
         },
         {
           label: "Download search results (.csv)",
           command: () => {
-            this.exportSearchResults("csv");
+            this.downloadSearchResults("csv");
           },
         },
         {
           label: "Download search results (.txt)",
           command: () => {
-            this.exportSearchResults("txt");
+            this.downloadSearchResults("txt");
           },
         },
       ],
@@ -267,8 +261,6 @@ export default {
         },
         body: reqBody,
       });
-
-      console.log(response);
 
       const conlluText = await response.text();
       this.exportFile(conlluText, "edited-treebank.conllu");
@@ -412,23 +404,23 @@ export default {
       };
     },
 
-    async exportSearchResults(fileExtension) {
+    // download search results
+    // in csv, txt, or conllu
+    async downloadSearchResults(fileExtension) {
       this.showLoadingBar();
-      // gets the results array and the string
-      // indicating which property is being searched
-      // organizes all the results at once
 
       // gets the backend export results route URL
-      const exportResultsRouteUrl =
-        process.env.VUE_APP_URL + "api/treebanks/export-results";
+      const downloadResultsRouteUrl =
+        process.env.VUE_APP_URL + "api/treebanks/download-results";
 
       const requestBody = JSON.stringify({
-        organizedResults: this.getEveryResult(),
-        fileExtension,
+        userId: this.getUserId,
+        logicalConditions: this.getLastSearchParams.logicalConditions,
+        format: fileExtension,
       });
 
       // makes the request
-      await fetch(exportResultsRouteUrl, {
+      const response = await fetch(downloadResultsRouteUrl, {
         method: "POST",
         headers: {
           Accept: "text/plain",
@@ -436,6 +428,9 @@ export default {
         },
         body: requestBody,
       });
+
+      const text = await response.text();
+      this.exportFile(text, `results.${fileExtension}`);
 
       this.hideLoadingBar();
     },

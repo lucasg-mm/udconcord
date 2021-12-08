@@ -1,79 +1,6 @@
 const conlluJsLibrary = require("conllujs");
 const fs = require("fs");
 
-// called when user wants to export search results as .txt
-exports.getResultsStringRepresentation = (organizedResults) => {
-  let finalText = "";
-  // iterates through every sentence
-  organizedResults.forEach((sentence) => {
-    // iterates through every token in the left context
-    sentence.leftContext.split("\xa0\xa0\xa0").forEach((token) => {
-      finalText += getContextTokenText(token);
-      finalText += " ";
-    });
-
-    // iterates through every token in the match
-    finalText += "*****";
-    const matchTokens = sentence.match.split("\xa0\xa0\xa0");
-    matchTokens.forEach((token, index) => {
-      finalText += getContextTokenText(token);
-      if (index != matchTokens.length - 1) {
-        finalText += " ";
-      }
-    });
-    finalText += "***** ";
-
-    // iterates through every token in the right context
-    sentence.rightContext.split("\xa0\xa0\xa0").forEach((token) => {
-      finalText += getContextTokenText(token);
-      finalText += " ";
-    });
-
-    finalText += "\n\n\n";
-  });
-
-  return finalText;
-};
-
-exports.parseResultsToCSV = (organizedResults) => {
-  let finalText = "Left Context,Match,Right Context\n";
-  // iterates through every sentence
-  organizedResults.forEach((sentence) => {
-    // iterates through every token in the left context
-    finalText += `"`;
-    const leftContextTokens = sentence.leftContext.split("\xa0\xa0\xa0");
-    leftContextTokens.forEach((token, index) => {
-      finalText += getContextTokenText(token);
-      if (index != leftContextTokens.length - 1) {
-        finalText += " ";
-      }
-    });
-    finalText += `","`;
-
-    // iterates through every token in the match
-    const matchTokens = sentence.match.split("\xa0\xa0\xa0");
-    matchTokens.forEach((token, index) => {
-      finalText += getContextTokenText(token);
-      if (index != matchTokens.length - 1) {
-        finalText += " ";
-      }
-    });
-    finalText += `","`;
-
-    // iterates through every token in the right context
-    const rightContextTokens = sentence.rightContext.split("\xa0\xa0\xa0");
-    rightContextTokens.forEach((token, index) => {
-      finalText += getContextTokenText(token);
-      if (index != rightContextTokens.length - 1) {
-        finalText += " ";
-      }
-    });
-    finalText += `"\n`;
-  });
-
-  return finalText;
-};
-
 // saves a conllu object as json named userId.json
 exports.saveConlluObj = async (conlluObj, userId) => {
   fs.writeFileSync(`/uploads/${userId}.json`, JSON.stringify(conlluObj));
@@ -120,17 +47,7 @@ exports.parseObjectToConllu = async (sentences) => {
   return conlluText;
 };
 
-/**
- * -- DESCRIPTION:
- * Parses the text of a CoNLL-U file to a array of objects.
- *
- * -- PARAMETERS:
- * conlluData: string with the CoNLL-U's file text .
- *
- * -- RETURNS:
- * conlluObject.sentences: array of objects. Each one represents
- *                         a sentence in the CoNLL-U file.
- */
+// parses the text of a CoNLL-U file to a array of objects.
 exports.parseConlluToObject = async (conlluData) => {
   // instantiates a new CoNLL-U object
   const conlluObject = new conlluJsLibrary.Conllu();
@@ -166,8 +83,9 @@ exports.searchTreebank = async (
   sentences,
   logicalConditions,
   n,
-  page,
-  rowsNum
+  page = 0,
+  rowsNum = 100,
+  exportFormat = ""
 ) => {
   // variable to store search results
   const searchResults = [];
@@ -188,8 +106,6 @@ exports.searchTreebank = async (
   }
 
   // iterates through the sentences array
-  let firstItem = (page - 1) * rowsNum;
-  let lastItem = page * rowsNum;
   for (const sentence of sentences) {
     // iterates through the tokens of a sentence
     for (
@@ -204,31 +120,81 @@ exports.searchTreebank = async (
 
         // creates the sentence's corresponding entry
         // in the array and pushes the found token's id in it
-        searchResults.push({ foundNGram: matchesIds, foundSentence: sentence });
+        let result = {
+          foundNGram: matchesIds,
+          foundSentence: sentence,
+        };
+        if (exportFormat === "") {
+          searchResults.push(result);
+        } else if (exportFormat === "conllu") {
+          searchResults.push(sentence);
+          break; // just includes the conllu once
+        } else if (exportFormat === "csv") {
+          searchResults.push(
+            `"${getLeftContext(result)}", "${getMatch(
+              result
+            )}", "${getRightContext(result)}"`
+          );
+        } else if (exportFormat === "txt") {
+          searchResults.push(
+            `${getLeftContext(result)} *****${getMatch(
+              result
+            )}***** ${getRightContext(result)}`
+          );
+        }
       }
     }
   }
 
-  const numResults = searchResults.length;
-
   // returns the search results
-  return {
-    searchResults: searchResults.slice(firstItem, lastItem),
-    numResults,
-  };
+  if (exportFormat === "") {
+    let firstItem = (page - 1) * rowsNum;
+    let lastItem = page * rowsNum;
+    const numResults = searchResults.length;
+
+    return {
+      searchResults: searchResults.slice(firstItem, lastItem),
+      numResults,
+    };
+  } else {
+    return searchResults;
+  }
 };
 
 // -- AUX FUNCTIONS
 
-// returns the text of a token in the context, as it should be
-// displayed in the export .txt and .csv files
-function getContextTokenText(token, shownProps) {
-  token = token.replace("<sub>", "_");
-  token = token.replace("</sub>", "");
-  token = token.replace(/<span .*;">/g, "");
-  token = token.replace("</span>", "");
+function getMatch(result) {
+  const resultSentence = result.foundSentence;
+  return result["foundNGram"]
+    .map((tokenId) => {
+      return resultSentence.tokens[tokenId].form;
+    })
+    .join(" ");
+}
 
-  return token;
+function getRightContext(result) {
+  const resultSentence = result.foundSentence;
+
+  return resultSentence.tokens
+    .slice(
+      result["foundNGram"][result["foundNGram"].length - 1] + 1,
+      resultSentence.tokens.length
+    )
+    .map((e) => {
+      return e.form;
+    })
+    .join(" ");
+}
+
+function getLeftContext(result) {
+  // gets the left context (string)
+  const resultSentence = result.foundSentence;
+  return resultSentence.tokens
+    .slice(0, result["foundNGram"][0])
+    .map((e) => {
+      return e.form;
+    })
+    .join(" ");
 }
 
 function featsComparison(tokenFeats, featsToCompare) {

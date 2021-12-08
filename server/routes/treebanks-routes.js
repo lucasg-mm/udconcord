@@ -15,4 +15,7 @@ router.post("/update", treebanksController.apiUpdateSentence);
 // route to stream treebank in order for the user to download it
 router.post("/download-treebank", treebanksController.apiStreamTreebank);
 
+// route to stream the search results in order for the user to download it
+router.post("/download-results", treebanksController.apiStreamResults);
+
 module.exports = router;
