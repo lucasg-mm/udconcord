@@ -53,6 +53,12 @@ export default {
 
   // ----------------------------------
 
+  setUploadProg(context, { prog }) {
+    context.commit("setUploadProg", {
+      prog,
+    });
+  },
+
   // resets everything
   resetsEverything(context) {
     context.commit("resetsEverything");

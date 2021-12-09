@@ -39,7 +39,12 @@ export default {
      * -- DESCRIPTION:
      * Maps store's actions to this component.
      */
-    ...mapActions(["showLoadingBar", "hideLoadingBar", "setUserId"]),
+    ...mapActions([
+      "showLoadingBar",
+      "hideLoadingBar",
+      "setUserId",
+      "setUploadProg",
+    ]),
 
     // uploads CoNLL-U file to the backend
     async uploadFile(event) {
@@ -59,6 +64,12 @@ export default {
       let request = new XMLHttpRequest();
       request.open("POST", treebanksRouteUrl);
 
+      // upload progress event
+      request.upload.addEventListener("progress", (e) => {
+        // sets upload progress as percentage
+        this.setUploadProg({ prog: (e.loaded / e.total) * 100 });
+      });
+
       // request finished event
       request.addEventListener("load", () => {
         if (request.status === 200) {
@@ -70,12 +81,15 @@ export default {
           // stores user's id
           this.setUserId({ userId: resObj.userId });
 
-          // hides loading bar
-          this.hideLoadingBar();
-
           // goes to the search route
           this.$router.push("/search");
         }
+
+        // resets progress to 0
+        this.setUploadProg({ prog: 0 });
+
+        // hides loading bar
+        this.hideLoadingBar();
       });
 
       // send POST request to server

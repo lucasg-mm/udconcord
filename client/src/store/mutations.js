@@ -51,6 +51,10 @@ export default {
 
   //------------------------------
 
+  setUploadProg(state, { prog }) {
+    state.uploadProg = prog;
+  },
+
   // resets everything to the initial state
   resetsEverything(state) {
     state.userId = null;

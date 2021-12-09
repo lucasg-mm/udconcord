@@ -7,6 +7,9 @@ import rootActions from "./actions.js";
 const store = createStore({
   state() {
     return {
+      // progress (0-100) when uploading a file
+      uploadProg: 0,
+
       // holds the user's id (generated with uuid package)
       userId: null,
 

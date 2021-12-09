@@ -1,6 +1,6 @@
 <template>
   <div class="fixed">
-    <ProgressBar v-if="getIsLoading" mode="indeterminate" />
+    <ProgressBar v-if="getIsLoading" :mode="getMode" :value="getUploadProg" />
 
     <div class="with-divisor">
       <Menubar :model="items" class="navbar">
@@ -29,7 +29,14 @@ export default {
      * -- DESCRIPTION:
      * Maps store's getters to this component.
      */
-    ...mapGetters(["getIsLoading"]),
+    ...mapGetters(["getIsLoading", "getUserId", "getUploadProg"]),
+
+    // tells if the progress bar should be indetermined or determined
+    // determined if it's uploading
+    // indetermined otherwise
+    getMode() {
+      return this.getUserId ? "indeterminate" : "determinate";
+    },
   },
   data() {
     return {

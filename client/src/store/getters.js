@@ -20,4 +20,7 @@ export default {
   getUserId(state) {
     return state.userId;
   },
+  getUploadProg(state) {
+    return state.uploadProg;
+  },
 };
