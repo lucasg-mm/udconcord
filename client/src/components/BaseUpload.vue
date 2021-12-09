@@ -41,8 +41,7 @@ export default {
      */
     ...mapActions(["showLoadingBar", "hideLoadingBar", "setUserId"]),
 
-    // -- DESCRIPTION:
-    // Uploads CoNLL-U file to the backend
+    // uploads CoNLL-U file to the backend
     async uploadFile(event) {
       // shows loading bar
       this.showLoadingBar();
@@ -56,21 +55,31 @@ export default {
       // adds file to FormData
       formData.append("conlluFile", event.files[0]);
 
-      // makes request to backend
-      const res = await fetch(treebanksRouteUrl, {
-        method: "POST",
-        body: formData,
+      // creates request
+      let request = new XMLHttpRequest();
+      request.open("POST", treebanksRouteUrl);
+
+      // request finished event
+      request.addEventListener("load", () => {
+        if (request.status === 200) {
+          // request was sucessful!!!
+
+          // parses response to object
+          const resObj = JSON.parse(request.response);
+
+          // stores user's id
+          this.setUserId({ userId: resObj.userId });
+
+          // hides loading bar
+          this.hideLoadingBar();
+
+          // goes to the search route
+          this.$router.push("/search");
+        }
       });
 
-      const resJson = await res.json();
-
-      this.setUserId({ userId: resJson.userId });
-
-      // hides loading bar
-      this.hideLoadingBar();
-
-      // goes to the search route
-      this.$router.push("/search");
+      // send POST request to server
+      request.send(formData);
     },
   },
 };
