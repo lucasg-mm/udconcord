@@ -56,7 +56,7 @@ export default {
   top: 0; /* Position the navbar at the top of the page */
   width: 100%; /* Full width */
   background-color: white;
-  z-index: 2;
+  z-index: 3;
 }
 
 .with-divisor {
