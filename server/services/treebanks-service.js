@@ -206,7 +206,6 @@ function getLeftContext(result) {
 
 function featsComparison(tokenFeats, featsToCompare) {
   let numberOfMatchs = 0;
-  let sensitivityFlag = "";
 
   // splits the feats that should be searched
   featsToCompare = featsToCompare.split("|");
