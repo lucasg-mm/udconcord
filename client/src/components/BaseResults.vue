@@ -602,6 +602,34 @@ export default {
   margin-top: 80px;
 }
 
+@media (max-width: 300px) {
+  .empty-data-art {
+    height: 60px;
+    margin-top: 80px;
+  }
+}
+
+@media (min-width: 300px) and (max-width: 400px) {
+  .empty-data-art {
+    height: 80px;
+    margin-top: 80px;
+  }
+}
+
+@media (min-width: 400px) and (max-width: 500px) {
+  .empty-data-art {
+    height: 100px;
+    margin-top: 80px;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 800px) {
+  .empty-data-art {
+    height: 150px;
+    margin-top: 80px;
+  }
+}
+
 .nothing-found {
   font-size: 20px;
   margin-top: 30px;
