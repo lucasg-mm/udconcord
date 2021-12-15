@@ -475,24 +475,36 @@ export default {
     // gets the markup of token in the context of a resulting sentence
     getContextTokenMarkUp(e, heads) {
       let formText = e.form;
+      let innerSpan = "";
       let uposText = "";
       let deprelText = "";
       let featsText = "";
       let openingSpanTag = "";
       let closingSpanTag = "";
+      let closeInnerSpan = "";
+      let addtInfo = false; // tels if there is additional info
 
       // show upos
       if (this.getLastSearchParams.shownProps.includes("upos")) {
+        addtInfo = true;
         uposText = "/" + e["upostag"];
+      }
+
+      // show features
+      if (this.getLastSearchParams.shownProps.includes("feats")) {
+        addtInfo = true;
+        featsText = "/" + e["feats"];
       }
 
       // show deprel
       if (this.getLastSearchParams.shownProps.includes("deprel")) {
+        addtInfo = true;
         // put id info in the form
         formText = `${e.form}<sub>${e.id}</sub>`;
 
         // sets tag style if it is a head
         if (heads.includes(e.id)) {
+          addtInfo = false;
           openingSpanTag = `<span style="background-color: #6bb9f7; color: white;padding: 5px; border-radius: 3px;">`;
           closingSpanTag = "</span>";
         }
@@ -500,17 +512,19 @@ export default {
         deprelText = "/" + e["deprel"];
       }
 
-      // show features
-      if (this.getLastSearchParams.shownProps.includes("feats")) {
-        featsText = "/" + e["feats"];
+      if (addtInfo) {
+        innerSpan = `<span style="color: #838383;">`;
+        closeInnerSpan = "</span>";
       }
 
       return (
         openingSpanTag +
         formText +
+        innerSpan +
         uposText +
         deprelText +
         featsText +
+        closeInnerSpan +
         closingSpanTag
       );
     },
