@@ -234,17 +234,17 @@ function checkLogConditions(conds, props) {
     op = index === 0 ? "" : op;
 
     // gets the comparison sign
-    const compSign = curr["negate"] ? "!==" : "===";
+    let compSign = curr["negate"] ? "!==" : "===";
 
     // getting the searched value
-    const searchedVal =
+    let searchedVal =
       curr["caseWay"] === "sensitive"
         ? curr["value"]
         : curr["value"].toLowerCase();
 
     // getting the compared value (the one in the treebank)
     let val = props[curr["prop"]];
-    const compVal =
+    let compVal =
       curr["caseWay"] === "sensitive"
         ? val
         : curr["caseWay"] === "insensitive"
@@ -252,11 +252,13 @@ function checkLogConditions(conds, props) {
         : "";
 
     if (curr["prop"] === "feats") {
-      return `${prev} ${op} (${featsComparison(
-        compVal,
-        searchedVal
-      )} ${compSign} true || "${searchedVal}" === "[any]")`;
+      const featsRes = featsComparison(compVal, searchedVal);
+
+      searchedVal = searchedVal.replace(/"/g, '\\"');
+      return `${prev} ${op} (${featsRes} ${compSign} true || "${searchedVal}" === "[any]")`;
     } else {
+      searchedVal = searchedVal.replace(/"/g, '\\"');
+      compVal = compVal.replace(/"/g, '\\"');
       return `${prev} ${op} ("${searchedVal}" ${compSign} "${compVal}" || "${searchedVal}" === "[any]")`;
     }
   }, "");
