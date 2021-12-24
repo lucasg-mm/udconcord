@@ -254,11 +254,25 @@ function checkLogConditions(conds, props) {
     if (curr["prop"] === "feats") {
       const featsRes = featsComparison(compVal, searchedVal);
 
+      // escape backslashes
+      searchedVal = searchedVal.replace(/\\/g, "\\\\");
+
+      // escape double quotes
       searchedVal = searchedVal.replace(/"/g, '\\"');
       return `${prev} ${op} (${featsRes} ${compSign} true || "${searchedVal}" === "[any]")`;
     } else {
+      // escape backslashes
+      searchedVal = searchedVal.replace(/\\/g, "\\\\");
+
+      // escape double quotes
       searchedVal = searchedVal.replace(/"/g, '\\"');
+
+      // escape backslashes
+      compVal = compVal.replace(/\\/g, "\\\\");
+
+      // escape double quotes
       compVal = compVal.replace(/"/g, '\\"');
+
       return `${prev} ${op} ("${searchedVal}" ${compSign} "${compVal}" || "${searchedVal}" === "[any]")`;
     }
   }, "");
